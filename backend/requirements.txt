@@ -1,5 +1,6 @@
 fastapi[standard]
 sqlmodel
 pydantic-settings
+pyjwt
 pytest
 httpx

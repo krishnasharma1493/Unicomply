@@ -11,6 +11,10 @@ from app.core.config import Settings, get_settings, load_and_validate_settings
 from app.core.db import init_db
 from app.core.errors import register_error_handlers
 from app.core.schemas import HealthData
+from app.modules.auth.router import router as auth_router
+from app.modules.demo.router import router as demo_router
+from app.modules.users.router import router as users_router
+from app.seed import seed_if_empty
 from app.utils.time import iso_utcnow
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -51,12 +55,15 @@ def create_app(custom_settings: Optional[Settings] = None) -> FastAPI:
         logger.info(
             f"Starting {settings.PROJECT_NAME} in '{settings.APP_ENV}' environment"
         )
-        # Ensure database tables are created at startup without destructive resets
+        # Create tables (never destructive) and, if enabled, load the demo data into an empty DB
         try:
-            init_db()
-            logger.info("Database initialized successfully.")
-        except Exception as e:
-            logger.warning(f"Database initialization deferred or encountered warning: {e}")
+            if settings.SEED_ON_STARTUP and seed_if_empty():
+                logger.info("Database was empty: demo data loaded.")
+            else:
+                init_db()
+                logger.info("Database initialized successfully.")
+        except Exception:
+            logger.exception("Database initialization failed")
 
         yield
 
@@ -91,6 +98,8 @@ def create_app(custom_settings: Optional[Settings] = None) -> FastAPI:
     # 4. Mount API v1 router and include versioned health at /api/v1/health
     api_v1_router = APIRouter()
     api_v1_router.include_router(create_health_router())
+    for module_router in (auth_router, users_router, demo_router):
+        api_v1_router.include_router(module_router)
     application.include_router(api_v1_router, prefix=settings.API_V1_PREFIX)
 
     return application
