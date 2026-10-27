@@ -1,77 +1,63 @@
-"""Reusable Pydantic response envelopes, pagination, and error models."""
+"""Reusable Pydantic response envelopes, pagination, and error models (base blueprint §4)."""
 
-from typing import Any, Generic, List, Optional, TypeVar
+from typing import Any, Dict, Generic, List, Literal, Optional, TypeVar
+
 from pydantic import BaseModel, Field
 
 T = TypeVar("T")
 
 
-class ErrorBody(BaseModel):
-    """Standardized error payload."""
+class Envelope(BaseModel, Generic[T]):
+    """Standard success envelope: `{"success": true, "data": ...}`."""
 
-    code: str = Field(..., description="Stable machine-readable error code")
-    message: str = Field(..., description="Human-readable error explanation")
-    details: Optional[Any] = Field(
-        default=None, description="Optional structured details, e.g. field errors"
-    )
-
-
-class ErrorResponse(BaseModel):
-    """Standard error response envelope."""
-
-    success: bool = Field(default=False, description="Always false for error responses")
-    error: ErrorBody = Field(..., description="Structured error information")
+    success: Literal[True] = True
+    data: T
 
 
 class Pagination(BaseModel):
-    """Pagination metadata for list endpoints."""
+    """Pagination metadata for list endpoints (`?page&limit`, limit max 100)."""
 
-    page: int = Field(default=1, ge=1, description="Current 1-indexed page number")
-    page_size: int = Field(default=20, ge=1, description="Page size limit")
-    total: int = Field(default=0, ge=0, description="Total matching items count")
-    total_pages: int = Field(default=0, ge=0, description="Total available pages")
+    total: int = Field(..., ge=0, description="Total matching items count")
+    page: int = Field(..., ge=1, description="Current 1-indexed page number")
+    limit: int = Field(..., ge=1, le=100, description="Page size")
+    total_pages: int = Field(..., ge=0, description="Total available pages")
 
 
 class Page(BaseModel, Generic[T]):
-    """Generic paginated collection."""
+    """Paginated success envelope: `{"success": true, "data": [...], "pagination": {...}}`."""
 
-    items: List[T] = Field(default_factory=list, description="Paginated items")
-    pagination: Pagination = Field(..., description="Pagination metadata")
+    success: Literal[True] = True
+    data: List[T]
+    pagination: Pagination
 
     @classmethod
-    def create(
-        cls,
-        items: List[T],
-        total: int,
-        page: int = 1,
-        page_size: int = 20,
-    ) -> "Page[T]":
-        """Compute total_pages and assemble Page instance."""
-        total_pages = (total + page_size - 1) // page_size if page_size > 0 else 0
+    def create(cls, items: List[T], total: int, page: int = 1, limit: int = 20) -> "Page[T]":
+        """Compute total_pages and assemble a Page."""
+        total_pages = (total + limit - 1) // limit if limit > 0 else 0
         return cls(
-            items=items,
-            pagination=Pagination(
-                page=page,
-                page_size=page_size,
-                total=total,
-                total_pages=total_pages,
-            ),
+            data=items,
+            pagination=Pagination(total=total, page=page, limit=limit, total_pages=total_pages),
         )
 
 
-class Envelope(BaseModel, Generic[T]):
-    """Standard success and data envelope for API responses."""
+class ErrorDetail(BaseModel):
+    """Error payload. `fields` only on VALIDATION_ERROR; `details` only when a domain error needs it."""
 
-    success: bool = Field(default=True, description="Indicates request success")
-    data: Optional[T] = Field(default=None, description="Response payload")
-    error: Optional[ErrorBody] = Field(
-        default=None, description="Error payload when success is false"
+    code: str = Field(..., description="Stable machine-readable error code")
+    message: str = Field(..., description="Human-readable message, shown to the user as-is")
+    fields: Optional[Dict[str, List[str]]] = Field(
+        default=None, description="Field name -> messages, only on VALIDATION_ERROR"
+    )
+    details: Optional[Any] = Field(
+        default=None, description="Structured extra data, e.g. linked case refs for OPEN_OVERLAP"
     )
 
-    @classmethod
-    def ok(cls, data: T) -> "Envelope[T]":
-        """Convenience constructor for success envelope."""
-        return cls(success=True, data=data, error=None)
+
+class ErrorBody(BaseModel):
+    """Standard error envelope: `{"success": false, "error": {...}}`."""
+
+    success: Literal[False] = False
+    error: ErrorDetail
 
 
 class HealthData(BaseModel):

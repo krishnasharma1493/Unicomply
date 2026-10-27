@@ -8,15 +8,13 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-# Configure SQLite-specific parameters when SQLite is used
-connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
-    connect_args["check_same_thread"] = False
+_is_sqlite = settings.DATABASE_URL.startswith("sqlite")
 
+# check_same_thread: FastAPI runs sync routes in a threadpool; timeout: wait instead of "database is locked".
+# SQL echo stays off: it would log bound parameters such as complaint text (PRD §6).
 engine = create_engine(
     settings.DATABASE_URL,
-    echo=settings.DEBUG and settings.ENVIRONMENT == "development",
-    connect_args=connect_args,
+    connect_args={"check_same_thread": False, "timeout": 15} if _is_sqlite else {},
 )
 
 

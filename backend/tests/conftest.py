@@ -14,6 +14,20 @@ backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
+# Runs before the app is imported: required settings + an in-memory DB, so tests never
+# depend on a developer's backend/.env or create app.db.
+os.environ.update(
+    APP_ENV="test",
+    DATABASE_URL="sqlite://",
+    JWT_SECRET="t" * 64,
+    DEMO_PASSWORD="test-demo-pass",
+    AUTH_DISABLED="false",
+    ENABLE_REALTIME="false",
+    ENABLE_SCHEDULER="false",
+    SEED_ON_STARTUP="false",
+    EMBEDDINGS_MODE="tfidf",
+)
+
 from app.core.config import Settings, get_settings
 from app.core.db import get_session
 from app.main import create_app
@@ -24,23 +38,12 @@ def test_settings_fixture() -> Settings:
     """Provide deterministic test configuration."""
     return Settings(
         PROJECT_NAME="Unicomply Test",
-        ENVIRONMENT="test",
-        DEBUG=True,
-        API_V1_PREFIX="/api/v1",
-        DATABASE_URL="sqlite:///:memory:",
-        CORS_ORIGINS=["http://testserver"],
-        SECRET_KEY="test-secret-key-for-unit-testing-only",
+        APP_ENV="test",
+        DATABASE_URL="sqlite://",
+        CORS_ORIGINS="http://testserver",
+        JWT_SECRET="t" * 64,
+        DEMO_PASSWORD="test-demo-pass",
         EMBEDDINGS_MODE="tfidf",
-        MATCH_TOP_K=5,
-        MATCH_T_AUTO=0.85,
-        MATCH_T_REVIEW=0.65,
-        OVERLAP_T_PROBABLE=0.75,
-        OVERLAP_T_POSSIBLE=0.50,
-        OVERLAP_WINDOW_DAYS=180,
-        SLA_DEFAULT_DAYS=30,
-        SLA_WARN_DAY=20,
-        NO_ACTION_REMINDER_DAYS=7,
-        JOB_TICK_SECONDS=60,
         DEMO_TODAY=None,
     )
 

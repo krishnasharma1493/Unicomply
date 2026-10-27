@@ -13,6 +13,7 @@ from app.core.errors import register_error_handlers
 from app.core.schemas import HealthData
 from app.utils.time import iso_utcnow
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger("unicomply.app")
 
 
@@ -31,7 +32,7 @@ def create_health_router() -> APIRouter:
         return HealthData(
             status="ok",
             timestamp=iso_utcnow(),
-            environment=settings.ENVIRONMENT,
+            environment=settings.APP_ENV,
             version="0.1.0",
         )
 
@@ -48,7 +49,7 @@ def create_app(custom_settings: Optional[Settings] = None) -> FastAPI:
     async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         """Lifespan context manager for application startup and graceful shutdown."""
         logger.info(
-            f"Starting {settings.PROJECT_NAME} in '{settings.ENVIRONMENT}' environment"
+            f"Starting {settings.PROJECT_NAME} in '{settings.APP_ENV}' environment"
         )
         # Ensure database tables are created at startup without destructive resets
         try:
@@ -67,17 +68,17 @@ def create_app(custom_settings: Optional[Settings] = None) -> FastAPI:
             "AICTE Complaint Tracking and Cross-Bureau Overlap Detection Dashboard API."
         ),
         version="0.1.0",
-        debug=settings.DEBUG,
         lifespan=lifespan,
+        # debug stays off: Starlette's debug mode returns raw tracebacks on 500s.
     )
 
-    # 1. Register base CORS middleware
+    # 1. CORS — explicit origins only; no cookies are used, so credentials stay off
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.CORS_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_origins=settings.cors_origins,
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type"],
     )
 
     # 2. Register global error handlers (AppError, ValidationError, HTTPException, 500s)

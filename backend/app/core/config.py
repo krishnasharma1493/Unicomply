@@ -1,21 +1,19 @@
 """Centralized application configuration using Pydantic Settings."""
 
-import json
 import logging
 import sys
 from datetime import date
 from functools import lru_cache
-from typing import Any, List, Literal, Optional, Union
+from typing import Any, List, Literal, Optional
 
-from pydantic import Field, field_validator, model_validator
-from pydantic_core import ValidationError
+from pydantic import Field, ValidationError, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = logging.getLogger("unicomply.config")
 
 
 class Settings(BaseSettings):
-    """Application settings with environment variable loading and validation."""
+    """Application settings: base blueprint §3 variables plus the PRD §3 domain block."""
 
     model_config = SettingsConfigDict(
         env_file=(".env", "backend/.env"),
@@ -23,94 +21,90 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # Base settings
+    # ── Server ──────────────────────────────────────────────────────────
     PROJECT_NAME: str = Field(default="Unicomply", description="Application name")
-    ENVIRONMENT: Literal["development", "staging", "production", "test"] = Field(
+    APP_ENV: Literal["development", "demo", "test"] = Field(
         default="development", description="Runtime environment"
     )
-    DEBUG: bool = Field(default=True, description="Enable debug mode")
+    PORT: int = Field(default=8000, description="Port uvicorn listens on")
     API_V1_PREFIX: str = Field(default="/api/v1", description="API v1 route prefix")
+
+    # ── Database ────────────────────────────────────────────────────────
     DATABASE_URL: str = Field(
         default="sqlite:///./app.db", description="SQLModel/SQLAlchemy database connection URL"
     )
-    CORS_ORIGINS: Union[List[str], str] = Field(
-        default_factory=lambda: ["http://localhost:5173", "http://localhost:3000"],
-        description="Allowed CORS origins",
+
+    # ── Auth (demo-grade) ───────────────────────────────────────────────
+    JWT_SECRET: str = Field(min_length=32, description="Secret used to sign JWTs")
+    JWT_EXPIRES_MINUTES: int = Field(
+        default=720, ge=5, le=60 * 48, description="Access token lifetime (default 12 hours)"
     )
-    SECRET_KEY: str = Field(
-        default="unicomply-dev-secret-key-change-in-production",
-        description="Cryptographic secret key for signing tokens",
-    )
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
-        default=720, description="Access token expiration in minutes (default 12 hours)"
+    DEMO_PASSWORD: str = Field(min_length=8, description="Shared password for seeded personas")
+    AUTH_DISABLED: bool = Field(
+        default=False, description="Emergency switch: every request acts as the first seeded user"
     )
 
-    # PRD §3 Domain block
+    # ── CORS ────────────────────────────────────────────────────────────
+    CORS_ORIGINS: str = Field(
+        default="http://localhost:5173",
+        description="Comma-separated exact origins, no trailing slash",
+    )
+
+    # ── Demo data & optional features ───────────────────────────────────
+    SEED_ON_STARTUP: bool = Field(default=True, description="Seed an empty DB on boot")
+    ENABLE_REALTIME: bool = Field(default=False, description="python-socketio on the same port")
+    ENABLE_SCHEDULER: bool = Field(default=False, description="asyncio background job loop")
+
+    # ── Matching & overlap engine (PRD §3) ──────────────────────────────
     EMBEDDINGS_MODE: Literal["model", "tfidf"] = Field(
-        default="tfidf", description="Embeddings mode: 'model' or 'tfidf'"
+        default="model", description="'model' = sentence-transformers, 'tfidf' = offline fallback"
     )
     EMBEDDING_MODEL_NAME: str = Field(
-        default="sentence-transformers/all-MiniLM-L6-v2",
-        description="Pretrained embedding model identifier",
+        default="paraphrase-multilingual-MiniLM-L12-v2",
+        description="Multilingual sentence-transformers model (downloaded before the event)",
     )
     MATCH_TOP_K: int = Field(
-        default=5, ge=1, description="Number of top candidate matches to return"
+        default=5, ge=1, description="Candidates returned to intake preview / review queue"
     )
-    MATCH_T_AUTO: Optional[float] = Field(
-        default=0.85, description="Score threshold for automated institution resolution"
-    )
-    MATCH_T_REVIEW: Optional[float] = Field(
-        default=0.65, description="Score threshold for routing to manual review"
-    )
+    # Thresholds live in seed_data/thresholds.json; these only override the file when set.
+    MATCH_T_AUTO: Optional[float] = Field(default=None, description="Override: auto-link cutoff")
+    MATCH_T_REVIEW: Optional[float] = Field(default=None, description="Override: review cutoff")
     OVERLAP_T_PROBABLE: Optional[float] = Field(
-        default=0.75, description="Score threshold for probable cross-bureau overlap"
+        default=None, description="Override: 'Coordination Required' cutoff"
     )
     OVERLAP_T_POSSIBLE: Optional[float] = Field(
-        default=0.50, description="Score threshold for possible cross-bureau overlap"
+        default=None, description="Override: 'Possible overlap' cutoff"
     )
     OVERLAP_WINDOW_DAYS: int = Field(
-        default=180, ge=1, description="Historical lookback window in days for overlap search"
+        default=180, ge=1, description="Compare with cases received / active in this window"
     )
+
+    # ── SLA & alerts ────────────────────────────────────────────────────
     SLA_DEFAULT_DAYS: int = Field(
-        default=30, ge=1, description="Default complaint resolution SLA in calendar days"
+        default=21, ge=1, description="CPGRAMS disposal limit (DARPG, Aug 2024)"
     )
-    SLA_WARN_DAY: int = Field(
-        default=20, ge=1, description="Elapsed day at which warning alert is raised"
-    )
+    SLA_WARN_DAY: int = Field(default=17, ge=1, description="SLA-warning alert from this day")
     NO_ACTION_REMINDER_DAYS: int = Field(
-        default=7, ge=1, description="Days of officer inactivity before reminder is sent"
+        default=7, ge=1, description="Reminder if no case action in N days"
     )
-    JOB_TICK_SECONDS: int = Field(
-        default=60, ge=1, description="Polling interval in seconds for background jobs"
-    )
+    JOB_TICK_SECONDS: int = Field(default=60, ge=1, description="Background job loop interval")
+
+    # ── Demo ────────────────────────────────────────────────────────────
     DEMO_TODAY: Optional[date] = Field(
-        default=None, description="Deterministic mock date for demo / testing (YYYY-MM-DD)"
+        default=None, description="Freeze 'today' so ageing/SLA numbers match the demo script"
     )
 
-    @field_validator("CORS_ORIGINS", mode="after")
+    @field_validator(
+        "MATCH_T_AUTO",
+        "MATCH_T_REVIEW",
+        "OVERLAP_T_PROBABLE",
+        "OVERLAP_T_POSSIBLE",
+        "DEMO_TODAY",
+        mode="before",
+    )
     @classmethod
-    def parse_cors_origins(cls, v: Any) -> List[str]:
-        """Support comma-separated string or JSON string for CORS_ORIGINS."""
-        if isinstance(v, str):
-            v = v.strip()
-            if not v:
-                return []
-            if v.startswith("[") and v.endswith("]"):
-                try:
-                    parsed = json.loads(v)
-                    if isinstance(parsed, list):
-                        return [str(item).strip() for item in parsed if str(item).strip()]
-                except Exception:
-                    pass
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
-        if isinstance(v, list):
-            return [str(origin).strip() for origin in v if str(origin).strip()]
-        return v
-
-    @field_validator("DEMO_TODAY", mode="before")
-    @classmethod
-    def parse_demo_today(cls, v: Any) -> Optional[Any]:
-        """Convert empty string to None for DEMO_TODAY."""
+    def blank_to_none(cls, v: Any) -> Any:
+        """Treat an empty env value (e.g. `MATCH_T_AUTO=`) as 'not set'."""
         if isinstance(v, str) and not v.strip():
             return None
         return v
@@ -130,7 +124,8 @@ class Settings(BaseSettings):
             if val is not None and not (0.0 <= val <= 1.0):
                 raise ValueError(f"Threshold '{name}' must be between 0.0 and 1.0; received {val}")
 
-        # 2. MATCH_T_REVIEW must be strictly less than MATCH_T_AUTO
+        # 2. MATCH_T_REVIEW must be strictly less than MATCH_T_AUTO (when both are overridden;
+        #    app/matching/thresholds.py validates the merged file + env values)
         if self.MATCH_T_REVIEW is not None and self.MATCH_T_AUTO is not None:
             if self.MATCH_T_REVIEW >= self.MATCH_T_AUTO:
                 raise ValueError(
@@ -155,26 +150,31 @@ class Settings(BaseSettings):
 
         return self
 
-
-@lru_cache
-def get_settings() -> Settings:
-    """Return cached settings instance."""
-    return Settings()
+    @property
+    def cors_origins(self) -> List[str]:
+        """CORS_ORIGINS as a list, trimmed and without trailing slashes."""
+        return [o.strip().rstrip("/") for o in self.CORS_ORIGINS.split(",") if o.strip()]
 
 
 def load_and_validate_settings() -> Settings:
     """
-    Load settings at application startup and exit with code 1 and a human-readable
-    message if the configuration is invalid.
+    Load settings and exit with code 1 and a human-readable message if the
+    configuration is invalid. Never run with bad config.
     """
     try:
-        return Settings()
+        return Settings()  # type: ignore[call-arg]  # values come from env vars / .env
     except ValidationError as exc:
-        sys.stderr.write(f"\n[FATAL] Invalid Unicomply application configuration:\n")
+        sys.stderr.write("\n[FATAL] Invalid Unicomply application configuration:\n")
         for err in exc.errors():
-            loc = " -> ".join(str(l) for l in err.get("loc", []))
+            loc = " -> ".join(str(part) for part in err.get("loc", []))
             msg = err.get("msg", "")
-            sys.stderr.write(f"  * {loc}: {msg}\n")
-        sys.stderr.write("\nCheck your environment variables or .env file.\n\n")
+            sys.stderr.write(f"  * {loc or 'settings'}: {msg}\n")
+        sys.stderr.write("\nCheck your environment variables or backend/.env file.\n\n")
         sys.stderr.flush()
         sys.exit(1)
+
+
+@lru_cache
+def get_settings() -> Settings:
+    """Return the cached, validated settings instance (exits on invalid config)."""
+    return load_and_validate_settings()
