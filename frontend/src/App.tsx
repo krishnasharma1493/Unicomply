@@ -20,6 +20,7 @@ import { AlertsPage } from './pages/AlertsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { AdminPage } from './pages/AdminPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { PrimitivesDevPage } from './pages/dev/PrimitivesDevPage';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -134,6 +135,11 @@ export const AppRoutes: React.FC = () => {
           </RequireAuth>
         }
       />
+
+      {/* Dev-only route */}
+      {import.meta.env.DEV && (
+        <Route path="/dev/primitives" element={<PrimitivesDevPage />} />
+      )}
 
       {/* Catch-all 404 Route */}
       <Route path="*" element={<NotFoundPage />} />
