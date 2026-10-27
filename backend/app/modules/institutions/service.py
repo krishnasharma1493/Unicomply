@@ -25,7 +25,7 @@ from app.matching.types import BANNERS
 
 
 def search(session: Session, params: InstitutionListParams) -> tuple[List[InstitutionListItem], int]:
-    stmt = select(Institution).where(Institution.is_active.is_(True))
+    stmt = select(Institution).where(col(Institution.is_active).is_(True))
     if params.q:
         value = params.q.strip()
         escaped = value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
@@ -112,6 +112,7 @@ def get_360(session: Session, permanent_id: str, viewer: User) -> Institution360
     ).order_by(col(OverlapGroup.id))).all()
     summaries = []
     for group in groups:
+        assert group.id is not None
         members = session.exec(select(OverlapLink.case_id).where(OverlapLink.group_id == group.id)
                                .order_by(col(OverlapLink.case_id))).all()
         linked = [session.get(Case, case_id) for case_id in members]

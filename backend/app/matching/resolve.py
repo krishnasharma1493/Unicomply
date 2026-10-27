@@ -8,8 +8,10 @@ from rapidfuzz import fuzz
 from rapidfuzz.distance import Levenshtein
 
 from app.matching.index import MatchIndex
-from app.matching.normalize import acronym_of, extract_district_hint, extract_permanent_id, normalize_name, tokens
-from app.matching.types import Candidate, InstitutionLite, ResolutionResult, Thresholds
+from app.matching.normalize import (
+    extract_district_hint, extract_permanent_id, load_abbreviations, load_district_aliases, normalize_name, tokens,
+)
+from app.matching.types import Candidate, Decision, InstitutionLite, ResolutionResult, Thresholds
 
 
 def resolve_institution(
@@ -30,7 +32,7 @@ def resolve_institution(
             return ResolutionResult("auto", (_candidate(institution, 1.0, ["Permanent ID found in the text"]),))
         return ResolutionResult("unresolved")
 
-    abbreviations = _abbreviations()
+    abbreviations = load_abbreviations()
     query = normalize_name(raw_text, abbreviations)
     exact_alias = idx.resolve_alias(query)
     if exact_alias:
@@ -41,7 +43,7 @@ def resolve_institution(
     # Exact registered-name matches score 0.99, but duplicates remain ambiguous.
     pool = list(idx.candidates_in_state(raw_state))
     districts = {inst.district.upper(): inst.district.upper() for inst in pool}
-    districts["JBP"] = "JABALPUR"
+    districts.update(load_district_aliases())
     district_hint = raw_district.strip().upper() if raw_district else extract_district_hint(raw_text, districts)
     if district_hint:
         pool = [inst for inst in pool if _district_matches(inst, district_hint, districts)]
@@ -52,7 +54,7 @@ def resolve_institution(
     if exact:
         candidates = tuple(_candidate(inst, 0.99, ["Exact registered institution name"])
                            for inst in exact[:top_k])
-        decision = "auto" if len(exact) == 1 else "pending_review"
+        decision: Decision = "auto" if len(exact) == 1 else "pending_review"
         return ResolutionResult(decision, candidates)
 
     ids = [inst.permanent_id for inst in pool]
@@ -99,6 +101,7 @@ def resolve_institution(
     top = scored[0][0]
     runner_up = scored[1][0] if len(scored) > 1 else 0.0
     margin_ok = top - runner_up >= th.margin
+    decision = "unresolved"
     if top >= th.t_auto and margin_ok:
         decision = "auto"
     elif top >= th.t_review:
@@ -138,8 +141,3 @@ def _location_score(inst: InstitutionLite, state: Optional[str], district: Optio
         return 0.8
     return 0.5
 
-
-def _abbreviations() -> Dict[str, str]:
-    from app.matching.normalize import load_abbreviations
-
-    return dict(load_abbreviations())

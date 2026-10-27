@@ -89,6 +89,7 @@ def decide(session: Session, review_id: int, body, actor: User) -> ReviewDecideR
 
 
 def _item(session: Session, review: MatchReview) -> ReviewItem:
+    assert review.id is not None
     case = session.get(Case, review.case_id)
     if case is None:
         raise NotFoundError("Case not found")

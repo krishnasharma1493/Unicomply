@@ -7,6 +7,7 @@ from app.core.enums import Role
 from app.core.scope import require_roles
 from app.core.schemas import Envelope, Page, error_responses
 from app.modules.reviews import service
+from app.modules.engine.service import reset_indexes
 from app.modules.reviews.schemas import ReviewDecideIn, ReviewDecideResult, ReviewItem, ReviewListParams
 from app.modules.users.models import User
 
@@ -35,5 +36,6 @@ def decide_review(
         session.commit()
     except BaseException:
         session.rollback()
+        reset_indexes()
         raise
     return Envelope(data=result)

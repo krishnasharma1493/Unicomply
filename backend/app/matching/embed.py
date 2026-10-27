@@ -39,7 +39,8 @@ class _TfidfEmbedder:
         if not texts:
             return np.zeros((0, len(self.vectorizer.vocabulary_)), dtype=np.float32)
         matrix = self.vectorizer.transform([text.strip() or " " for text in texts])
-        return normalize(matrix, norm="l2", copy=False).toarray().astype(np.float32, copy=False)
+        dense: np.ndarray = normalize(matrix, norm="l2", copy=False).toarray()
+        return dense.astype(np.float32, copy=False)
 
 
 class _SentenceTransformerEmbedder:

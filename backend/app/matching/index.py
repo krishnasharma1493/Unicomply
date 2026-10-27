@@ -17,6 +17,10 @@ from app.matching.embed import Embedder
 from app.matching.types import AliasLite, CaseLite, InstitutionLite, Level
 
 
+def _ordered(a: int, b: int) -> Tuple[int, int]:
+    return (a, b) if a <= b else (b, a)
+
+
 class MatchIndex:
     """A deterministic snapshot of the registry and known cases."""
 
@@ -34,7 +38,7 @@ class MatchIndex:
         self.institutions = {row.permanent_id: row for row in institutions}
         self.aliases: Dict[str, str] = {a.alias_norm: a.permanent_id for a in aliases}
         self.cases = {case.id: case for case in cases}
-        self.dismissed: Set[Tuple[int, int]] = {tuple(sorted(pair)) for pair in dismissed_pairs}
+        self.dismissed: Set[Tuple[int, int]] = {_ordered(a, b) for a, b in dismissed_pairs}
         self.embedder = embedder
         self.trust_names = dict(trust_names or {})
         self._ids = list(self.institutions)
@@ -97,7 +101,10 @@ class MatchIndex:
         ]
 
     def is_dismissed(self, case_a: int, case_b: int) -> bool:
-        return tuple(sorted((case_a, case_b))) in self.dismissed
+        return _ordered(case_a, case_b) in self.dismissed
+
+    def case(self, case_id: int) -> Optional[CaseLite]:
+        return self.cases.get(case_id)
 
     def add_alias(self, alias_norm: str, permanent_id: str) -> None:
         if permanent_id not in self.institutions:
@@ -131,7 +138,7 @@ def build_index(
         "institutions": [asdict(x) for x in institutions],
         "aliases": [asdict(x) for x in aliases],
         "cases": [asdict(x) for x in cases],
-        "dismissed": sorted(tuple(sorted(p)) for p in dismissed_pairs),
+        "dismissed": sorted(_ordered(a, b) for a, b in dismissed_pairs),
         "trust_names": dict(trust_names or {}),
         "embedder": getattr(embedder, "model_name", embedder.mode),
     }, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()
@@ -140,7 +147,7 @@ def build_index(
         try:
             with cache.open("rb") as handle:
                 saved_hash, index = pickle.load(handle)
-            if saved_hash == corpus_hash:
+            if saved_hash == corpus_hash and isinstance(index, MatchIndex):
                 return index
         except (OSError, EOFError, pickle.PickleError, ValueError, AttributeError):
             pass

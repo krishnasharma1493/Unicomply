@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import List, Mapping, Optional
+from functools import lru_cache
+from typing import List, Mapping, Optional, Tuple
 
 PERMANENT_ID_RE = re.compile(r"\b1-\d{6,10}\b")
 _WORD_RE = re.compile(r"[A-Z0-9]+")
@@ -23,17 +24,35 @@ def extract_permanent_id(text: str) -> Optional[str]:
     return match.group(0) if match else None
 
 
-def load_abbreviations(path: Optional[Path] = None) -> Mapping[str, str]:
-    """Load normalized aliases; supports a flat map and the structured seed format."""
-    source = path or Path(__file__).resolve().parents[2] / "seed_data" / "abbreviations.json"
+_DEFAULT_PATH = Path(__file__).resolve().parents[2] / "seed_data" / "abbreviations.json"
+
+
+@lru_cache(maxsize=8)
+def _load_sections(source: Path) -> Tuple[Mapping[str, str], Mapping[str, str]]:
+    """(abbreviations, district aliases) from one file, parsed once per path."""
     if not source.exists():
-        return dict(_DEFAULT_ABBREVIATIONS)
+        return dict(_DEFAULT_ABBREVIATIONS), {}
     data = json.loads(source.read_text(encoding="utf-8"))
     if "abbreviations" in data or "districts" in data:
-        aliases = {**data.get("abbreviations", {}), **data.get("districts", {})}
-    else:
-        aliases = data
-    return {str(k).upper().rstrip("."): str(v).upper() for k, v in aliases.items()}
+        abbreviations, districts = data.get("abbreviations", {}), data.get("districts", {})
+    else:  # a flat map is all abbreviations
+        abbreviations, districts = data, {}
+
+    def clean(raw: Mapping[str, str]) -> Mapping[str, str]:
+        return {str(k).upper().rstrip("."): str(v).upper() for k, v in raw.items()}
+
+    return clean(abbreviations), clean(districts)
+
+
+def load_abbreviations(path: Optional[Path] = None) -> Mapping[str, str]:
+    """Short form -> expansion, district short forms included (JBP -> JABALPUR). Cached; do not mutate."""
+    abbreviations, districts = _load_sections(path or _DEFAULT_PATH)
+    return {**abbreviations, **districts}
+
+
+def load_district_aliases(path: Optional[Path] = None) -> Mapping[str, str]:
+    """District short form -> district name, e.g. JBP -> JABALPUR. Cached; do not mutate."""
+    return _load_sections(path or _DEFAULT_PATH)[1]
 
 
 def tokens(text_norm: str) -> List[str]:
@@ -45,7 +64,7 @@ def normalize_name(text: str, abbreviations: Mapping[str, str]) -> str:
     expanded = text.upper().replace("&", " AND ")
     raw_tokens = _WORD_RE.findall(expanded)
     aliases = {str(k).upper().rstrip("."): str(v).upper() for k, v in abbreviations.items()}
-    normalized = []
+    normalized: List[str] = []
     for token in raw_tokens:
         replacement = aliases.get(token, token)
         normalized.extend(part for part in _WORD_RE.findall(replacement) if part not in _STOPWORDS)

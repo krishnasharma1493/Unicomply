@@ -80,8 +80,6 @@ def apply_action(session: Session, case: Case, body: CaseActionIn, actor: User) 
             raise _invalid_field("to_bureau_id", "Unknown destination bureau")
         if body.to_bureau_id == case.current_bureau_id:
             raise _invalid_field("to_bureau_id", "Destination must differ from current bureau")
-    if body.action_type == ActionType.escalate and actor.role not in (Role.bureau_head, Role.senior_mgmt):
-        raise AppError(403, "FORBIDDEN", "Only a bureau head or senior officer can escalate")
     if body.action_type == ActionType.interim_reply:
         if body.expected_disposal_date is None:
             raise _invalid_field("expected_disposal_date", "An expected disposal date is required")
@@ -94,6 +92,7 @@ def apply_action(session: Session, case: Case, body: CaseActionIn, actor: User) 
     elif body.outcome is not None:
         raise _invalid_field("outcome", "Outcome is only valid when disposing a case")
 
+    assert case.id is not None and actor.id is not None
     now = utcnow()
     old_status = case.status
     old_last_action_type = case.last_action_type
@@ -179,7 +178,7 @@ def apply_action(session: Session, case: Case, body: CaseActionIn, actor: User) 
         alerts.create_alert(
             session,
             AlertType.escalation,
-            AlertSeverity.warning,
+            AlertSeverity.critical,
             recipients,
             title=f"Case escalated: {case.case_ref}",
             body=body.remarks or "Case escalated",
