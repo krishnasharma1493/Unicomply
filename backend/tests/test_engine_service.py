@@ -223,7 +223,7 @@ def test_review_decision_learns_the_alias_and_finds_overlaps(session: Session) -
     assert (case.permanent_id, case.match_status, case.match_score) == (NARMADA, MatchStatus.reviewed, 0.76)
     alias = session.exec(select(InstitutionAlias).where(InstitutionAlias.permanent_id == NARMADA,
                                                         InstitutionAlias.source == "review")).one()
-    assert (alias.alias_norm, alias.created_by) == ("NARMADA COLLEGE OF ENGG", 5)
+    assert (alias.alias_norm, alias.created_by) == ("NARMADA COLLEGE ENGINEERING", 5)
 
     [summary] = summaries
     assert (summary.level, summary.tier) == (OverlapLevel.institution, OverlapTier.possible)

@@ -4,3 +4,7 @@ pydantic-settings
 pyjwt
 pytest
 httpx
+numpy
+scikit-learn
+rapidfuzz
+sentence-transformers

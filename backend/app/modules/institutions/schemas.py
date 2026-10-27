@@ -107,7 +107,8 @@ class BureauCaseColumn(BaseModel):
     bureau_id: int
     bureau_code: str
     bureau_name: str
-    cases: List[LinkedCaseCard]
+    # Full CaseRead values in scope; reduced LinkedCaseCard values otherwise.
+    cases: List[dict]
 
 
 class Institution360(BaseModel):

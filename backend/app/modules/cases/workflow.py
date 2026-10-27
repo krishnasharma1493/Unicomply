@@ -141,6 +141,10 @@ def apply_action(session: Session, case: Case, body: CaseActionIn, actor: User) 
     )
     session.add(entry)
     session.flush()
+    if body.action_type == ActionType.dispose:
+        from app.modules.overlaps.service import auto_resolve_disposed_groups
+
+        auto_resolve_disposed_groups(session, case)
     changes = {
         "status": (old_status.value, case.status.value),
         "last_action_type": (
