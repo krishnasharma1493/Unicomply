@@ -14,3 +14,13 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: () => false,
   }),
 });
+
+// Polyfill ResizeObserver for Ant Design components (Table, Layout, Menu) in jsdom
+class MockResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+window.ResizeObserver = MockResizeObserver;
+global.ResizeObserver = MockResizeObserver;

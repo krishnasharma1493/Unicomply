@@ -28,7 +28,7 @@ describe('Route Protection & Navigation', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Login Page Placeholder/i)).toBeInTheDocument();
+      expect(screen.getByText(/UNICOMPLY PORTAL/i)).toBeInTheDocument();
     });
   });
 
@@ -44,7 +44,7 @@ describe('Route Protection & Navigation', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Login Page Placeholder/i)).toBeInTheDocument();
+      expect(screen.getByText(/UNICOMPLY PORTAL/i)).toBeInTheDocument();
     });
   });
 

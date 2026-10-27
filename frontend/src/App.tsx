@@ -1,9 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConfigProvider } from 'antd';
 import { AuthProvider } from './auth/AuthProvider';
 import { RequireAuth } from './components/RequireAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { AppShell } from './components/layout';
+import { themeConfig } from './theme';
 
 // Pages
 import { LoginPage } from './pages/LoginPage';
@@ -38,103 +41,27 @@ export const AppRoutes: React.FC = () => {
       {/* Public Route */}
       <Route path="/login" element={<LoginPage />} />
 
-      {/* Protected PRD §7 Routes */}
+      {/* Protected PRD §7 Routes in AppShell */}
       <Route
-        path="/"
         element={
           <RequireAuth>
-            <DashboardPage />
+            <AppShell />
           </RequireAuth>
         }
-      />
-      <Route
-        path="/cases"
-        element={
-          <RequireAuth>
-            <CasesPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/cases/new"
-        element={
-          <RequireAuth>
-            <CaseIntakePage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/cases/:id"
-        element={
-          <RequireAuth>
-            <CaseDetailPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/reviews"
-        element={
-          <RequireAuth>
-            <MatchReviewPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/overlaps"
-        element={
-          <RequireAuth>
-            <OverlapCenterPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/overlaps/:id"
-        element={
-          <RequireAuth>
-            <OverlapDetailPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/institutions"
-        element={
-          <RequireAuth>
-            <InstitutionsPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/institutions/:pid"
-        element={
-          <RequireAuth>
-            <InstitutionDetailPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/alerts"
-        element={
-          <RequireAuth>
-            <AlertsPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/reports"
-        element={
-          <RequireAuth>
-            <ReportsPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <RequireAuth>
-            <AdminPage />
-          </RequireAuth>
-        }
-      />
+      >
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/cases" element={<CasesPage />} />
+        <Route path="/cases/new" element={<CaseIntakePage />} />
+        <Route path="/cases/:id" element={<CaseDetailPage />} />
+        <Route path="/reviews" element={<MatchReviewPage />} />
+        <Route path="/overlaps" element={<OverlapCenterPage />} />
+        <Route path="/overlaps/:id" element={<OverlapDetailPage />} />
+        <Route path="/institutions" element={<InstitutionsPage />} />
+        <Route path="/institutions/:pid" element={<InstitutionDetailPage />} />
+        <Route path="/alerts" element={<AlertsPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+      </Route>
 
       {/* Dev-only route */}
       {import.meta.env.DEV && (
@@ -150,13 +77,15 @@ export const AppRoutes: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </AuthProvider>
-      </QueryClientProvider>
+      <ConfigProvider theme={themeConfig}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </AuthProvider>
+        </QueryClientProvider>
+      </ConfigProvider>
     </ErrorBoundary>
   );
 };
