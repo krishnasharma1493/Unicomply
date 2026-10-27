@@ -1,0 +1,138 @@
+{
+  "success": true,
+  "data": {
+    "case": {
+      "id": 101,
+      "case_ref": "PGRC/2026/00412",
+      "source_channel": "cpgrams",
+      "external_ref": "AICTE/E/2026/0004127",
+      "received_at": "2026-11-01",
+      "complainant_type": "student",
+      "complainant_name": "Rohit Verma",
+      "raw_institution_text": "VVIET Jabalpur",
+      "raw_state": "Madhya Pradesh",
+      "raw_district": "Jabalpur",
+      "permanent_id": "1-4812730561",
+      "match_score": 0.96,
+      "match_status": "auto",
+      "category_id": 1,
+      "category_suggested_id": null,
+      "subject": "Fee refund refused after withdrawal; original certificates withheld",
+      "description": "I withdrew from the B.Tech programme in August 2026 within the refund window. The institute has refused to refund the fees and is holding my original 10th and 12th certificates until I pay the full four-year fee.",
+      "status": "under_process",
+      "current_bureau_id": 2,
+      "assigned_officer_id": 6,
+      "last_action_type": "remark",
+      "last_action_at": "2026-11-08T07:15:00Z",
+      "next_action": "Verify refund status and certificate custody register with the institute",
+      "expected_disposal_date": null,
+      "sla_due_on": "2026-11-22",
+      "disposed_at": null,
+      "reopen_count": 0,
+      "escalation_level": 0,
+      "delay_risk": null,
+      "created_by": 5,
+      "created_at": "2026-11-01T05:30:00Z",
+      "updated_at": "2026-11-08T07:15:00Z",
+      "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+      "region": "central",
+      "age_days": 19,
+      "beyond_sla": false,
+      "in_overlap": true
+    },
+    "institution": {
+      "permanent_id": "1-4812730561",
+      "name": "Vindhya Valley Institute of Engineering & Technology",
+      "district": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "inst_type": "engineering",
+      "region": "central",
+      "trust_id": 1,
+      "trust_name": "Vindhya Valley Education Trust"
+    },
+    "actions": [
+      {
+        "id": 1001,
+        "case_id": 101,
+        "action_type": "assign",
+        "actor_id": 2,
+        "actor_name": "Anil Deshmukh",
+        "bureau_id": 2,
+        "from_bureau_id": null,
+        "to_bureau_id": null,
+        "to_officer_id": 6,
+        "outcome": null,
+        "remarks": "Assigned to Sunita Mishra for verification with the institute.",
+        "created_at": "2026-11-03T05:42:00Z"
+      },
+      {
+        "id": 1002,
+        "case_id": 101,
+        "action_type": "remark",
+        "actor_id": 2,
+        "actor_name": "Anil Deshmukh",
+        "bureau_id": 2,
+        "from_bureau_id": null,
+        "to_bureau_id": null,
+        "to_officer_id": null,
+        "outcome": null,
+        "remarks": "Institute asked to submit the fee refund status and certificate custody register within 7 days.",
+        "created_at": "2026-11-08T07:15:00Z"
+      }
+    ],
+    "overlaps": [
+      {
+        "group_id": 1,
+        "level": "institution",
+        "tier": "probable",
+        "status": "open",
+        "banner": "Potential Overlapping Cases – Coordination Required",
+        "cases": [
+          {
+            "case_id": 102,
+            "case_ref": "RB/2026/00087",
+            "permanent_id": "1-4812730561",
+            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+            "bureau_id": 1,
+            "bureau_code": "RB",
+            "status": "under_process",
+            "category_id": 4,
+            "category_code": "faculty_shortage",
+            "subject": "Faculty shortage found during inspection; show-cause notice issued",
+            "assigned_officer_id": 7,
+            "assigned_officer_name": "Vikram Choudhary",
+            "last_action_type": "remark",
+            "last_action_at": "2026-11-12T10:30:00Z",
+            "received_at": "2026-11-10",
+            "in_scope": false
+          },
+          {
+            "case_id": 103,
+            "case_ref": "RO-CRO/2026/00133",
+            "permanent_id": "1-4812730561",
+            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+            "bureau_id": 5,
+            "bureau_code": "RO-CRO",
+            "status": "received",
+            "category_id": 2,
+            "category_code": "certificate_withheld",
+            "subject": "Original certificates of 4 students withheld",
+            "assigned_officer_id": null,
+            "assigned_officer_name": null,
+            "last_action_type": null,
+            "last_action_at": null,
+            "received_at": "2026-11-15",
+            "in_scope": false
+          }
+        ],
+        "reasons": [
+          "Same institution 1-4812730561 (Vindhya Valley Institute of Engineering & Technology)",
+          "Handled by PGRC, RB and RO-CRO",
+          "PGRC/2026/00412 and RO-CRO/2026/00133 are both about original certificates being withheld",
+          "Description similarity 0.81 (PGRC/2026/00412 ↔ RO-CRO/2026/00133)",
+          "Received 14 days apart"
+        ]
+      }
+    ]
+  }
+}

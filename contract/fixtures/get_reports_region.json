@@ -1,0 +1,64 @@
+{
+  "success": true,
+  "data": {
+    "kind": "region",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "region",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "region_name",
+        "label": "Region"
+      },
+      {
+        "key": "total",
+        "label": "Total"
+      },
+      {
+        "key": "open",
+        "label": "Open"
+      },
+      {
+        "key": "disposed",
+        "label": "Disposed"
+      },
+      {
+        "key": "beyond_sla",
+        "label": "Beyond SLA"
+      }
+    ],
+    "rows": [
+      {
+        "region": "central",
+        "region_name": "Central",
+        "total": 9,
+        "open": 8,
+        "disposed": 1,
+        "beyond_sla": 3
+      },
+      {
+        "region": "western",
+        "region_name": "Western",
+        "total": 2,
+        "open": 2,
+        "disposed": 0,
+        "beyond_sla": 0
+      },
+      {
+        "region": null,
+        "region_name": "Institution not yet resolved",
+        "total": 2,
+        "open": 2,
+        "disposed": 0,
+        "beyond_sla": 0
+      }
+    ],
+    "totals": {
+      "total": 13,
+      "open": 12,
+      "disposed": 1,
+      "beyond_sla": 3
+    }
+  }
+}

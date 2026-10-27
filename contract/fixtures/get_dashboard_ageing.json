@@ -1,0 +1,40 @@
+{
+  "success": true,
+  "data": [
+    {
+      "bucket": "0_7",
+      "label": "0–7 days",
+      "min_days": 0,
+      "max_days": 7,
+      "count": 3
+    },
+    {
+      "bucket": "8_14",
+      "label": "8–14 days",
+      "min_days": 8,
+      "max_days": 14,
+      "count": 3
+    },
+    {
+      "bucket": "15_21",
+      "label": "15–21 days",
+      "min_days": 15,
+      "max_days": 21,
+      "count": 2
+    },
+    {
+      "bucket": "22_45",
+      "label": "22–45 days",
+      "min_days": 22,
+      "max_days": 45,
+      "count": 3
+    },
+    {
+      "bucket": "45_plus",
+      "label": "45+ days",
+      "min_days": 46,
+      "max_days": null,
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "data": {
+    "id": 5,
+    "email": "intake@aicte.example",
+    "name": "Neha Joshi",
+    "role": "intake_operator",
+    "bureau_id": null,
+    "region": null,
+    "is_admin": false
+  }
+}

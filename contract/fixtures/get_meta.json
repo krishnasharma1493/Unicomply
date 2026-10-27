@@ -1,0 +1,434 @@
+{
+  "success": true,
+  "data": {
+    "bureaus": [
+      {
+        "id": 1,
+        "code": "RB",
+        "name": "Regulation Bureau",
+        "kind": "bureau",
+        "region": null
+      },
+      {
+        "id": 2,
+        "code": "PGRC",
+        "name": "Public Grievance Redressal Cell",
+        "kind": "cell",
+        "region": null
+      },
+      {
+        "id": 3,
+        "code": "AB",
+        "name": "Approval Bureau",
+        "kind": "bureau",
+        "region": null
+      },
+      {
+        "id": 4,
+        "code": "ACAD",
+        "name": "Academic Bureau",
+        "kind": "bureau",
+        "region": null
+      },
+      {
+        "id": 5,
+        "code": "RO-CRO",
+        "name": "Central Regional Office",
+        "kind": "regional_office",
+        "region": "central"
+      },
+      {
+        "id": 6,
+        "code": "RO-ERO",
+        "name": "Eastern Regional Office",
+        "kind": "regional_office",
+        "region": "eastern"
+      },
+      {
+        "id": 7,
+        "code": "RO-NERO",
+        "name": "North-Eastern Regional Office",
+        "kind": "regional_office",
+        "region": "north_eastern"
+      },
+      {
+        "id": 8,
+        "code": "RO-NRO",
+        "name": "Northern Regional Office",
+        "kind": "regional_office",
+        "region": "northern"
+      },
+      {
+        "id": 9,
+        "code": "RO-NWRO",
+        "name": "North-Western Regional Office",
+        "kind": "regional_office",
+        "region": "north_western"
+      },
+      {
+        "id": 10,
+        "code": "RO-SCRO",
+        "name": "South-Central Regional Office",
+        "kind": "regional_office",
+        "region": "south_central"
+      },
+      {
+        "id": 11,
+        "code": "RO-SERO",
+        "name": "South-Eastern Regional Office",
+        "kind": "regional_office",
+        "region": "south_eastern"
+      },
+      {
+        "id": 12,
+        "code": "RO-SRO",
+        "name": "Southern Regional Office",
+        "kind": "regional_office",
+        "region": "southern"
+      },
+      {
+        "id": 13,
+        "code": "RO-SWRO",
+        "name": "South-Western Regional Office",
+        "kind": "regional_office",
+        "region": "south_western"
+      },
+      {
+        "id": 14,
+        "code": "RO-WRO",
+        "name": "Western Regional Office",
+        "kind": "regional_office",
+        "region": "western"
+      }
+    ],
+    "regions": [
+      {
+        "code": "central",
+        "name": "Central"
+      },
+      {
+        "code": "eastern",
+        "name": "Eastern"
+      },
+      {
+        "code": "north_eastern",
+        "name": "North-Eastern"
+      },
+      {
+        "code": "northern",
+        "name": "Northern"
+      },
+      {
+        "code": "north_western",
+        "name": "North-Western"
+      },
+      {
+        "code": "south_central",
+        "name": "South-Central"
+      },
+      {
+        "code": "south_eastern",
+        "name": "South-Eastern"
+      },
+      {
+        "code": "southern",
+        "name": "Southern"
+      },
+      {
+        "code": "south_western",
+        "name": "South-Western"
+      },
+      {
+        "code": "western",
+        "name": "Western"
+      }
+    ],
+    "categories": [
+      {
+        "id": 1,
+        "code": "fee_refund",
+        "name": "Fee refund",
+        "default_sla_days": 21,
+        "default_bureau_code": "PGRC"
+      },
+      {
+        "id": 2,
+        "code": "certificate_withheld",
+        "name": "Certificates withheld",
+        "default_sla_days": 21,
+        "default_bureau_code": "PGRC"
+      },
+      {
+        "id": 3,
+        "code": "admission_irregularity",
+        "name": "Admission irregularity",
+        "default_sla_days": 21,
+        "default_bureau_code": "RB"
+      },
+      {
+        "id": 4,
+        "code": "faculty_shortage",
+        "name": "Faculty shortage",
+        "default_sla_days": 21,
+        "default_bureau_code": "RB"
+      },
+      {
+        "id": 5,
+        "code": "infrastructure_deficiency",
+        "name": "Infrastructure deficiency",
+        "default_sla_days": 21,
+        "default_bureau_code": "RB"
+      },
+      {
+        "id": 6,
+        "code": "salary_non_payment",
+        "name": "Salary non-payment",
+        "default_sla_days": 21,
+        "default_bureau_code": "PGRC"
+      },
+      {
+        "id": 7,
+        "code": "ragging",
+        "name": "Ragging",
+        "default_sla_days": 7,
+        "default_bureau_code": "PGRC"
+      },
+      {
+        "id": 8,
+        "code": "unapproved_course",
+        "name": "Unapproved course",
+        "default_sla_days": 21,
+        "default_bureau_code": "AB"
+      },
+      {
+        "id": 9,
+        "code": "scholarship",
+        "name": "Scholarship",
+        "default_sla_days": 21,
+        "default_bureau_code": "PGRC"
+      },
+      {
+        "id": 10,
+        "code": "harassment",
+        "name": "Harassment",
+        "default_sla_days": 21,
+        "default_bureau_code": "PGRC"
+      },
+      {
+        "id": 11,
+        "code": "exam_result",
+        "name": "Exam result",
+        "default_sla_days": 21,
+        "default_bureau_code": "ACAD"
+      },
+      {
+        "id": 12,
+        "code": "other",
+        "name": "Other",
+        "default_sla_days": 21,
+        "default_bureau_code": "PGRC"
+      }
+    ],
+    "statuses": [
+      {
+        "code": "received",
+        "name": "Received"
+      },
+      {
+        "code": "under_process",
+        "name": "Under process"
+      },
+      {
+        "code": "interim_reply",
+        "name": "Interim reply"
+      },
+      {
+        "code": "transferred",
+        "name": "Transferred"
+      },
+      {
+        "code": "escalated",
+        "name": "Escalated"
+      },
+      {
+        "code": "reopened",
+        "name": "Reopened"
+      },
+      {
+        "code": "disposed",
+        "name": "Disposed"
+      }
+    ],
+    "channels": [
+      {
+        "code": "cpgrams",
+        "name": "CPGRAMS"
+      },
+      {
+        "code": "aicte_portal",
+        "name": "AICTE feedback portal"
+      },
+      {
+        "code": "email",
+        "name": "Email"
+      },
+      {
+        "code": "letter",
+        "name": "Letter"
+      },
+      {
+        "code": "ro_referral",
+        "name": "Regional Office referral"
+      },
+      {
+        "code": "rb_suo_motu",
+        "name": "RB suo motu"
+      },
+      {
+        "code": "inspection",
+        "name": "Inspection"
+      }
+    ],
+    "action_types": [
+      {
+        "code": "assign",
+        "name": "Assign officer"
+      },
+      {
+        "code": "transfer",
+        "name": "Transfer"
+      },
+      {
+        "code": "escalate",
+        "name": "Escalate"
+      },
+      {
+        "code": "interim_reply",
+        "name": "Interim reply"
+      },
+      {
+        "code": "remark",
+        "name": "Add remark"
+      },
+      {
+        "code": "dispose",
+        "name": "Dispose"
+      },
+      {
+        "code": "reopen",
+        "name": "Reopen"
+      }
+    ],
+    "complainant_types": [
+      {
+        "code": "student",
+        "name": "Student"
+      },
+      {
+        "code": "parent",
+        "name": "Parent"
+      },
+      {
+        "code": "faculty",
+        "name": "Faculty"
+      },
+      {
+        "code": "staff",
+        "name": "Staff"
+      },
+      {
+        "code": "public",
+        "name": "Member of the public"
+      },
+      {
+        "code": "anonymous",
+        "name": "Anonymous"
+      },
+      {
+        "code": "internal",
+        "name": "AICTE (internal)"
+      }
+    ],
+    "dispose_outcomes": [
+      {
+        "code": "redressed",
+        "name": "Redressed"
+      },
+      {
+        "code": "action_taken_against_institution",
+        "name": "Action taken against institution"
+      },
+      {
+        "code": "rejected_not_maintainable",
+        "name": "Rejected – not maintainable"
+      },
+      {
+        "code": "forwarded_to_institution_grc",
+        "name": "Forwarded to institution GRC"
+      }
+    ],
+    "inst_types": [
+      {
+        "code": "engineering",
+        "name": "Engineering & Technology"
+      },
+      {
+        "code": "management",
+        "name": "Management"
+      },
+      {
+        "code": "pharmacy",
+        "name": "Pharmacy"
+      },
+      {
+        "code": "polytechnic",
+        "name": "Polytechnic"
+      },
+      {
+        "code": "university",
+        "name": "University"
+      },
+      {
+        "code": "university_department",
+        "name": "University department"
+      }
+    ],
+    "officers": [
+      {
+        "id": 6,
+        "name": "Sunita Mishra",
+        "bureau_id": 2
+      },
+      {
+        "id": 7,
+        "name": "Vikram Choudhary",
+        "bureau_id": 1
+      },
+      {
+        "id": 8,
+        "name": "Pooja Saxena",
+        "bureau_id": 1
+      },
+      {
+        "id": 9,
+        "name": "Arvind Kulkarni",
+        "bureau_id": 3
+      },
+      {
+        "id": 10,
+        "name": "Sanjay Patil",
+        "bureau_id": 14
+      },
+      {
+        "id": 11,
+        "name": "Deepak Shrivastava",
+        "bureau_id": 5
+      },
+      {
+        "id": 12,
+        "name": "Farhan Qureshi",
+        "bureau_id": 2
+      }
+    ]
+  }
+}

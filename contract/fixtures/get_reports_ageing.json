@@ -1,0 +1,60 @@
+{
+  "success": true,
+  "data": {
+    "kind": "ageing",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "bucket",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "label",
+        "label": "Age since received"
+      },
+      {
+        "key": "open",
+        "label": "Open cases"
+      },
+      {
+        "key": "beyond_sla",
+        "label": "Beyond SLA"
+      }
+    ],
+    "rows": [
+      {
+        "bucket": "0_7",
+        "label": "0–7 days",
+        "open": 3,
+        "beyond_sla": 0
+      },
+      {
+        "bucket": "8_14",
+        "label": "8–14 days",
+        "open": 3,
+        "beyond_sla": 0
+      },
+      {
+        "bucket": "15_21",
+        "label": "15–21 days",
+        "open": 2,
+        "beyond_sla": 0
+      },
+      {
+        "bucket": "22_45",
+        "label": "22–45 days",
+        "open": 3,
+        "beyond_sla": 3
+      },
+      {
+        "bucket": "45_plus",
+        "label": "45+ days",
+        "open": 1,
+        "beyond_sla": 0
+      }
+    ],
+    "totals": {
+      "open": 12,
+      "beyond_sla": 3
+    }
+  }
+}

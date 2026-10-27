@@ -1,0 +1,18 @@
+{
+  "success": false,
+  "error": {
+    "code": "OPEN_OVERLAP",
+    "message": "PGRC/2026/00412 is part of an open overlap group. Confirm to dispose anyway.",
+    "details": {
+      "case_ref": "PGRC/2026/00412",
+      "group_ids": [
+        1
+      ],
+      "linked_case_refs": [
+        "RB/2026/00087",
+        "RO-CRO/2026/00133",
+        "PGRC/2026/00519"
+      ]
+    }
+  }
+}

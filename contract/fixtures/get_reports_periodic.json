@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "data": {
+    "kind": "periodic",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "month",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "period",
+        "label": "Month"
+      },
+      {
+        "key": "received",
+        "label": "Received"
+      },
+      {
+        "key": "disposed",
+        "label": "Disposed"
+      },
+      {
+        "key": "reopened",
+        "label": "Reopened"
+      }
+    ],
+    "rows": [
+      {
+        "period": "2026-09",
+        "received": 1,
+        "disposed": 0,
+        "reopened": 0
+      },
+      {
+        "period": "2026-10",
+        "received": 5,
+        "disposed": 1,
+        "reopened": 0
+      },
+      {
+        "period": "2026-11",
+        "received": 7,
+        "disposed": 1,
+        "reopened": 1
+      }
+    ],
+    "totals": {
+      "received": 13,
+      "disposed": 2,
+      "reopened": 1
+    }
+  }
+}

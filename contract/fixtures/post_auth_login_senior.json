@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzk1MTY1MDgwLCJleHAiOjE3OTUyMDgyODB9.bW9jay1zaWduYXR1cmUtbm90LWEtcmVhbC10b2tlbg",
+    "token_type": "bearer",
+    "user": {
+      "id": 1,
+      "email": "senior@aicte.example",
+      "name": "Dr. Meera Raghavan",
+      "role": "senior_mgmt",
+      "bureau_id": null,
+      "region": null,
+      "is_admin": true
+    }
+  }
+}

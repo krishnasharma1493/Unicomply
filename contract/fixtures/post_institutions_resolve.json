@@ -1,0 +1,43 @@
+{
+  "success": true,
+  "data": {
+    "decision": "auto",
+    "candidates": [
+      {
+        "permanent_id": "1-4812730561",
+        "name": "Vindhya Valley Institute of Engineering & Technology",
+        "district": "Jabalpur",
+        "state": "Madhya Pradesh",
+        "score": 0.93,
+        "reasons": [
+          "Name 88% similar after expanding ENGG",
+          "District Jabalpur matches",
+          "Acronym VVIET matches a confirmed alias"
+        ]
+      },
+      {
+        "permanent_id": "1-4812730987",
+        "name": "Vindhya Valley Institute of Management",
+        "district": "Jabalpur",
+        "state": "Madhya Pradesh",
+        "score": 0.71,
+        "reasons": [
+          "Name 74% similar after expanding ENGG",
+          "District Jabalpur matches",
+          "Management institute; the text mentions engineering"
+        ]
+      },
+      {
+        "permanent_id": "1-4812744105",
+        "name": "Narmada Valley College of Engineering",
+        "district": "Jabalpur",
+        "state": "Madhya Pradesh",
+        "score": 0.58,
+        "reasons": [
+          "Name 61% similar (shares VALLEY, ENGINEERING, COLLEGE)",
+          "District Jabalpur matches"
+        ]
+      }
+    ]
+  }
+}

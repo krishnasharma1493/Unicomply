@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0IiwiaWF0IjoxNzk1MTY1MjYwLCJleHAiOjE3OTUyMDg0NjB9.bW9jay1zaWduYXR1cmUtbm90LWEtcmVhbC10b2tlbg",
+    "token_type": "bearer",
+    "user": {
+      "id": 4,
+      "email": "ro.central@aicte.example",
+      "name": "Rakesh Tiwari",
+      "role": "ro_officer",
+      "bureau_id": 5,
+      "region": "central",
+      "is_admin": false
+    }
+  }
+}

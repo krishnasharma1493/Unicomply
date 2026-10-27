@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "data": {
+    "id": 3,
+    "email": "rb.head@aicte.example",
+    "name": "Kavita Rao",
+    "role": "bureau_head",
+    "bureau_id": 1,
+    "region": null,
+    "is_admin": false
+  }
+}

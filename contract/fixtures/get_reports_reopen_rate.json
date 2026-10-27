@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "data": {
+    "kind": "reopen_rate",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "bureau",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "bureau_code",
+        "label": "Bureau"
+      },
+      {
+        "key": "disposed",
+        "label": "Disposed at least once"
+      },
+      {
+        "key": "reopened",
+        "label": "Reopened"
+      },
+      {
+        "key": "reopen_rate",
+        "label": "Reopen rate"
+      }
+    ],
+    "rows": [
+      {
+        "bureau_code": "RB",
+        "disposed": 0,
+        "reopened": 0,
+        "reopen_rate": null
+      },
+      {
+        "bureau_code": "PGRC",
+        "disposed": 2,
+        "reopened": 1,
+        "reopen_rate": 0.5
+      },
+      {
+        "bureau_code": "AB",
+        "disposed": 0,
+        "reopened": 0,
+        "reopen_rate": null
+      },
+      {
+        "bureau_code": "RO-CRO",
+        "disposed": 0,
+        "reopened": 0,
+        "reopen_rate": null
+      },
+      {
+        "bureau_code": "RO-WRO",
+        "disposed": 0,
+        "reopened": 0,
+        "reopen_rate": null
+      }
+    ],
+    "totals": {
+      "disposed": 2,
+      "reopened": 1,
+      "reopen_rate": 0.5
+    }
+  }
+}

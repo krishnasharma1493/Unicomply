@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzk1MTY1MTQwLCJleHAiOjE3OTUyMDgzNDB9.bW9jay1zaWduYXR1cmUtbm90LWEtcmVhbC10b2tlbg",
+    "token_type": "bearer",
+    "user": {
+      "id": 2,
+      "email": "pgrc.head@aicte.example",
+      "name": "Anil Deshmukh",
+      "role": "bureau_head",
+      "bureau_id": 2,
+      "region": null,
+      "is_admin": false
+    }
+  }
+}

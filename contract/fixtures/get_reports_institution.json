@@ -1,0 +1,129 @@
+{
+  "success": true,
+  "data": {
+    "kind": "institution",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "institution",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "permanent_id",
+        "label": "Permanent ID"
+      },
+      {
+        "key": "name",
+        "label": "Institution"
+      },
+      {
+        "key": "total",
+        "label": "Total"
+      },
+      {
+        "key": "open",
+        "label": "Open"
+      },
+      {
+        "key": "disposed",
+        "label": "Disposed"
+      },
+      {
+        "key": "beyond_sla",
+        "label": "Beyond SLA"
+      },
+      {
+        "key": "reopened",
+        "label": "Reopened"
+      },
+      {
+        "key": "overlap_groups",
+        "label": "Overlap groups"
+      }
+    ],
+    "rows": [
+      {
+        "permanent_id": "1-4812730561",
+        "name": "Vindhya Valley Institute of Engineering & Technology",
+        "region": "central",
+        "total": 3,
+        "open": 3,
+        "disposed": 0,
+        "beyond_sla": 0,
+        "reopened": 0,
+        "overlap_groups": 2
+      },
+      {
+        "permanent_id": "1-4812730987",
+        "name": "Vindhya Valley Institute of Management",
+        "region": "central",
+        "total": 1,
+        "open": 1,
+        "disposed": 0,
+        "beyond_sla": 1,
+        "reopened": 0,
+        "overlap_groups": 1
+      },
+      {
+        "permanent_id": "1-4812744105",
+        "name": "Narmada Valley College of Engineering",
+        "region": "central",
+        "total": 2,
+        "open": 1,
+        "disposed": 1,
+        "beyond_sla": 0,
+        "reopened": 0,
+        "overlap_groups": 0
+      },
+      {
+        "permanent_id": "1-4870215534",
+        "name": "Satpura Institute of Technology",
+        "region": "central",
+        "total": 1,
+        "open": 1,
+        "disposed": 0,
+        "beyond_sla": 1,
+        "reopened": 0,
+        "overlap_groups": 0
+      },
+      {
+        "permanent_id": "1-4800112233",
+        "name": "Mahakaushal Technical University",
+        "region": "central",
+        "total": 1,
+        "open": 1,
+        "disposed": 0,
+        "beyond_sla": 1,
+        "reopened": 0,
+        "overlap_groups": 1
+      },
+      {
+        "permanent_id": "1-4800112290",
+        "name": "Mahakaushal Technical University – Department of Pharmacy",
+        "region": "central",
+        "total": 1,
+        "open": 1,
+        "disposed": 0,
+        "beyond_sla": 0,
+        "reopened": 0,
+        "overlap_groups": 1
+      },
+      {
+        "permanent_id": "1-3156608124",
+        "name": "Deccan Plateau Institute of Technology",
+        "region": "western",
+        "total": 2,
+        "open": 2,
+        "disposed": 0,
+        "beyond_sla": 0,
+        "reopened": 1,
+        "overlap_groups": 1
+      }
+    ],
+    "totals": {
+      "total": 11,
+      "open": 10,
+      "disposed": 1,
+      "beyond_sla": 3
+    }
+  }
+}

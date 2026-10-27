@@ -1,0 +1,80 @@
+{
+  "success": true,
+  "data": [
+    {
+      "bureau_id": 2,
+      "bureau_code": "PGRC",
+      "bureau_name": "Public Grievance Redressal Cell",
+      "open": 5,
+      "beyond_sla": 1,
+      "by_status": {
+        "received": 2,
+        "under_process": 1,
+        "interim_reply": 1,
+        "transferred": 0,
+        "escalated": 0,
+        "reopened": 1
+      }
+    },
+    {
+      "bureau_id": 1,
+      "bureau_code": "RB",
+      "bureau_name": "Regulation Bureau",
+      "open": 4,
+      "beyond_sla": 2,
+      "by_status": {
+        "received": 0,
+        "under_process": 2,
+        "interim_reply": 0,
+        "transferred": 1,
+        "escalated": 1,
+        "reopened": 0
+      }
+    },
+    {
+      "bureau_id": 3,
+      "bureau_code": "AB",
+      "bureau_name": "Approval Bureau",
+      "open": 1,
+      "beyond_sla": 0,
+      "by_status": {
+        "received": 0,
+        "under_process": 1,
+        "interim_reply": 0,
+        "transferred": 0,
+        "escalated": 0,
+        "reopened": 0
+      }
+    },
+    {
+      "bureau_id": 5,
+      "bureau_code": "RO-CRO",
+      "bureau_name": "Central Regional Office",
+      "open": 1,
+      "beyond_sla": 0,
+      "by_status": {
+        "received": 1,
+        "under_process": 0,
+        "interim_reply": 0,
+        "transferred": 0,
+        "escalated": 0,
+        "reopened": 0
+      }
+    },
+    {
+      "bureau_id": 14,
+      "bureau_code": "RO-WRO",
+      "bureau_name": "Western Regional Office",
+      "open": 1,
+      "beyond_sla": 0,
+      "by_status": {
+        "received": 0,
+        "under_process": 1,
+        "interim_reply": 0,
+        "transferred": 0,
+        "escalated": 0,
+        "reopened": 0
+      }
+    }
+  ]
+}

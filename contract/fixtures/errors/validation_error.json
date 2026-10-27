@@ -1,0 +1,15 @@
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed",
+    "fields": {
+      "permanent_id": [
+        "String should match pattern '^1-\\d{6,10}$'"
+      ],
+      "description": [
+        "String should have at least 10 characters"
+      ]
+    }
+  }
+}

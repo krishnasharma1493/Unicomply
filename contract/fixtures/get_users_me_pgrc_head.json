@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "data": {
+    "id": 2,
+    "email": "pgrc.head@aicte.example",
+    "name": "Anil Deshmukh",
+    "role": "bureau_head",
+    "bureau_id": 2,
+    "region": null,
+    "is_admin": false
+  }
+}

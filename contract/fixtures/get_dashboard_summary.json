@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "data": {
+    "as_of": "2026-11-20",
+    "total": 13,
+    "pending": 12,
+    "under_process": 6,
+    "disposed": 1,
+    "transferred": 1,
+    "escalated": 1,
+    "beyond_sla": 3,
+    "open_overlaps": 3
+  }
+}
