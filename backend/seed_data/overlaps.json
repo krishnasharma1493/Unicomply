@@ -1,0 +1,192 @@
+{
+  "as_of": "2026-11-20",
+  "groups": [
+    {
+      "id": 1,
+      "level": "institution",
+      "anchor_key": "1-4812730561",
+      "tier": "probable",
+      "status": "open",
+      "coordinator_id": null,
+      "decided_by": null,
+      "decided_at": null,
+      "decision_remark": null,
+      "created_at": "2026-11-10T08:40:02Z",
+      "updated_at": "2026-11-15T04:48:03Z",
+      "links": [
+        {
+          "case_id": 101,
+          "added_at": "2026-11-10T08:40:02Z"
+        },
+        {
+          "case_id": 102,
+          "added_at": "2026-11-10T08:40:02Z"
+        },
+        {
+          "case_id": 103,
+          "added_at": "2026-11-15T04:48:03Z"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "level": "trust",
+      "anchor_key": "trust:1",
+      "tier": "possible",
+      "status": "open",
+      "coordinator_id": null,
+      "decided_by": null,
+      "decided_at": null,
+      "decision_remark": null,
+      "created_at": "2026-11-15T04:48:03Z",
+      "updated_at": "2026-11-15T04:48:03Z",
+      "links": [
+        {
+          "case_id": 103,
+          "added_at": "2026-11-15T04:48:03Z"
+        },
+        {
+          "case_id": 104,
+          "added_at": "2026-11-15T04:48:03Z"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "level": "parent",
+      "anchor_key": "parent:1-4800112233",
+      "tier": "possible",
+      "status": "dismissed",
+      "coordinator_id": null,
+      "decided_by": 1,
+      "decided_at": "2026-11-06T11:20:00Z",
+      "decision_remark": "Different issues: hostel and lab facilities at the main campus vs an unapproved D.Pharm batch in the pharmacy department. No coordination needed.",
+      "created_at": "2026-10-30T08:15:02Z",
+      "updated_at": "2026-11-06T11:20:00Z",
+      "links": [
+        {
+          "case_id": 108,
+          "added_at": "2026-10-30T08:15:02Z"
+        },
+        {
+          "case_id": 109,
+          "added_at": "2026-10-30T08:15:02Z"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "level": "institution",
+      "anchor_key": "1-3156608124",
+      "tier": "possible",
+      "status": "open",
+      "coordinator_id": null,
+      "decided_by": null,
+      "decided_at": null,
+      "decision_remark": null,
+      "created_at": "2026-11-06T09:20:02Z",
+      "updated_at": "2026-11-12T06:45:01Z",
+      "links": [
+        {
+          "case_id": 110,
+          "added_at": "2026-11-06T09:20:02Z"
+        },
+        {
+          "case_id": 111,
+          "added_at": "2026-11-06T09:20:02Z"
+        }
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "id": 201,
+      "case_a_id": 101,
+      "case_b_id": 102,
+      "level": "institution",
+      "score": 0.33,
+      "reasons": [
+        "Same institution 1-4812730561",
+        "Handled by PGRC and RB",
+        "Received 9 days apart"
+      ],
+      "decision": "none",
+      "created_at": "2026-11-10T08:40:02Z"
+    },
+    {
+      "id": 202,
+      "case_a_id": 101,
+      "case_b_id": 103,
+      "level": "institution",
+      "score": 0.73,
+      "reasons": [
+        "Same institution 1-4812730561",
+        "Handled by PGRC and RO-CRO",
+        "Both about original certificates being withheld",
+        "Description similarity 0.81",
+        "Received 14 days apart"
+      ],
+      "decision": "none",
+      "created_at": "2026-11-15T04:48:03Z"
+    },
+    {
+      "id": 203,
+      "case_a_id": 102,
+      "case_b_id": 103,
+      "level": "institution",
+      "score": 0.31,
+      "reasons": [
+        "Same institution 1-4812730561",
+        "Handled by RB and RO-CRO",
+        "Received 5 days apart"
+      ],
+      "decision": "none",
+      "created_at": "2026-11-15T04:48:03Z"
+    },
+    {
+      "id": 204,
+      "case_a_id": 103,
+      "case_b_id": 104,
+      "level": "trust",
+      "score": 0.61,
+      "reasons": [
+        "Both run by Vindhya Valley Education Trust",
+        "Handled by RO-CRO and RB",
+        "Both about certificates being withheld",
+        "Description similarity 0.79",
+        "Received 25 days apart"
+      ],
+      "decision": "none",
+      "created_at": "2026-11-15T04:48:03Z"
+    },
+    {
+      "id": 205,
+      "case_a_id": 108,
+      "case_b_id": 109,
+      "level": "parent",
+      "score": 0.52,
+      "reasons": [
+        "Main campus and Department of Pharmacy of Mahakaushal Technical University",
+        "Handled by RO-CRO and AB",
+        "Related issues: infrastructure deficiency and unapproved course",
+        "Received 18 days apart"
+      ],
+      "decision": "dismissed",
+      "created_at": "2026-10-30T08:15:02Z"
+    },
+    {
+      "id": 206,
+      "case_a_id": 110,
+      "case_b_id": 111,
+      "level": "institution",
+      "score": 0.38,
+      "reasons": [
+        "Same institution 1-3156608124",
+        "Handled by PGRC and RO-WRO",
+        "Received 52 days apart"
+      ],
+      "decision": "none",
+      "created_at": "2026-11-06T09:20:02Z"
+    }
+  ]
+}
