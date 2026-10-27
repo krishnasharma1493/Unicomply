@@ -123,15 +123,13 @@ STUBS: List[Tuple[str, str, Any, str, int]] = [
     ("GET", "/api/v1/institutions?q=vviet&page=1&limit=20", None, "get_institutions", 200),
     ("GET", "/api/v1/institutions/1-4812730561", None, "get_institutions_permanent_id", 200),
     ("POST", "/api/v1/institutions/resolve", "requests/post_institutions_resolve", "post_institutions_resolve", 200),
-    ("GET", "/api/v1/cases?status=under_process&from=2026-09-01&to=2026-11-20&beyond_sla=false", None, "get_cases", 200),
-    ("POST", "/api/v1/cases", "requests/post_cases", "post_cases", 201),
-    ("GET", "/api/v1/cases/101", None, "get_cases_id", 200),
     ("POST", "/api/v1/cases/103/actions", "requests/post_cases_id_actions", "post_cases_id_actions", 200),
     ("GET", "/api/v1/reviews?status=pending", None, "get_reviews", 200),
     ("POST", "/api/v1/reviews/2/decide", "requests/post_reviews_id_decide", "post_reviews_id_decide", 200),
     ("GET", "/api/v1/overlaps?tier=probable", None, "get_overlaps", 200),
     ("GET", "/api/v1/overlaps/1", None, "get_overlaps_id", 200),
     ("POST", "/api/v1/overlaps/1/decision", "requests/post_overlaps_id_decision", "post_overlaps_id_decision", 200),
+    # cases list/detail/intake are real since #14: tests/test_cases_api.py
     # alerts are real since #13: tests/test_alerts.py
     ("GET", "/api/v1/dashboard/summary", None, "get_dashboard_summary", 200),
     ("GET", "/api/v1/dashboard/workload", None, "get_dashboard_workload", 200),

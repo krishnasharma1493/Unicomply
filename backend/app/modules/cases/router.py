@@ -1,8 +1,12 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Query, status
+from sqlmodel import col, func, select
 
+from app.core.db import SessionDep
 from app.core.deps import CurrentUser
+from app.core.enums import Role
+from app.core.scope import get_case_in_scope_or_404, require_roles, scope_cases
 from app.core.fixtures import fixture
 from app.core.schemas import Envelope, Page, error_responses
 from app.modules.cases.schemas import (
@@ -14,17 +18,25 @@ from app.modules.cases.schemas import (
     CaseListParams,
     CaseRead,
 )
+from app.modules.cases import service
+from app.modules.cases.models import Case
+from app.modules.cases.service import case_reads, filter_cases
+from app.modules.users.models import User
 
 router = APIRouter(prefix="/cases", tags=["cases"])
 
 
 @router.get("", response_model=Page[CaseRead], responses=error_responses(400, 401))
-def list_cases(_: CurrentUser, params: Annotated[CaseListParams, Query()]) -> Page[CaseRead]:
-    """Search & filters (PS feature 6), scoped to the caller.
-
-    Stub (#7): serves contract/fixtures/get_cases.json until #14.
-    """
-    return fixture("get_cases", Page[CaseRead])
+def list_cases(user: CurrentUser, session: SessionDep, params: Annotated[CaseListParams, Query()]) -> Page[CaseRead]:
+    """Search & filters (PS feature 6), scoped to the caller; newest received first."""
+    base = filter_cases(scope_cases(select(Case), user), params)
+    total = session.exec(select(func.count()).select_from(base.subquery())).one()
+    rows = session.exec(
+        base.order_by(col(Case.received_at).desc(), col(Case.id).desc())
+        .offset((params.page - 1) * params.limit)
+        .limit(params.limit)
+    ).all()
+    return Page.create(case_reads(session, rows), total, params.page, params.limit)
 
 
 @router.post(
@@ -33,21 +45,25 @@ def list_cases(_: CurrentUser, params: Annotated[CaseListParams, Query()]) -> Pa
     response_model=Envelope[CaseIntakeResult],
     responses=error_responses(400, 401, 403),
 )
-def create_case(_: CurrentUser, body: CaseCreate) -> Envelope[CaseIntakeResult]:
-    """Intake: creates the case, resolves the institution and runs overlap detection in one transaction.
-
-    Stub (#7): serves contract/fixtures/post_cases.json until #14 / #38.
-    """
-    return fixture("post_cases", Envelope[CaseIntakeResult])
+def create_case(
+    body: CaseCreate,
+    session: SessionDep,
+    user: User = require_roles(Role.intake_operator, Role.bureau_head, Role.senior_mgmt),
+) -> Envelope[CaseIntakeResult]:
+    """Intake: creates the case, resolves the institution and runs overlap detection in one transaction."""
+    try:
+        result = service.create_case(session, body, user)
+        session.commit()
+    except BaseException:
+        session.rollback()  # the case row goes with whatever failed
+        raise
+    return Envelope(data=result)
 
 
 @router.get("/{case_id}", response_model=Envelope[CaseDetail], responses=error_responses(401, 404))
-def get_case(_: CurrentUser, case_id: int) -> Envelope[CaseDetail]:
-    """Case detail: tracking fields, action history, linked-case summaries and reasons.
-
-    Stub (#7): serves contract/fixtures/get_cases_id.json until #14.
-    """
-    return fixture("get_cases_id", Envelope[CaseDetail])
+def get_case(user: CurrentUser, session: SessionDep, case_id: int) -> Envelope[CaseDetail]:
+    """Case detail: tracking fields, action history, linked-case summaries and reasons."""
+    return Envelope(data=service.case_detail(session, get_case_in_scope_or_404(session, case_id, user), user))
 
 
 @router.post(
