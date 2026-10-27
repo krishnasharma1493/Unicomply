@@ -1,0 +1,66 @@
+{
+  "success": true,
+  "data": {
+    "kind": "overlaps",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "level,tier,status",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "level",
+        "label": "Level"
+      },
+      {
+        "key": "tier",
+        "label": "Tier"
+      },
+      {
+        "key": "status",
+        "label": "Status"
+      },
+      {
+        "key": "groups",
+        "label": "Groups"
+      },
+      {
+        "key": "cases",
+        "label": "Cases"
+      }
+    ],
+    "rows": [
+      {
+        "level": "institution",
+        "tier": "possible",
+        "status": "open",
+        "groups": 1,
+        "cases": 2
+      },
+      {
+        "level": "institution",
+        "tier": "probable",
+        "status": "open",
+        "groups": 1,
+        "cases": 3
+      },
+      {
+        "level": "parent",
+        "tier": "possible",
+        "status": "dismissed",
+        "groups": 1,
+        "cases": 2
+      },
+      {
+        "level": "trust",
+        "tier": "possible",
+        "status": "open",
+        "groups": 1,
+        "cases": 2
+      }
+    ],
+    "totals": {
+      "groups": 4,
+      "cases": 9
+    }
+  }
+}

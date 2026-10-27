@@ -1,0 +1,100 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "level": "institution",
+      "anchor_key": "1-4812730561",
+      "anchor_name": "Vindhya Valley Institute of Engineering & Technology",
+      "tier": "probable",
+      "status": "open",
+      "banner": "Potential Overlapping Cases – Coordination Required",
+      "coordinator_id": null,
+      "coordinator_name": null,
+      "decided_by": null,
+      "decided_at": null,
+      "decision_remark": null,
+      "created_at": "2026-11-10T08:40:02Z",
+      "updated_at": "2026-11-15T04:48:03Z",
+      "case_count": 3,
+      "bureau_codes": [
+        "PGRC",
+        "RB",
+        "RO-CRO"
+      ],
+      "top_score": 0.73
+    },
+    {
+      "id": 2,
+      "level": "trust",
+      "anchor_key": "trust:1",
+      "anchor_name": "Vindhya Valley Education Trust",
+      "tier": "possible",
+      "status": "open",
+      "banner": "Possible Overlapping Cases – Review Suggested",
+      "coordinator_id": null,
+      "coordinator_name": null,
+      "decided_by": null,
+      "decided_at": null,
+      "decision_remark": null,
+      "created_at": "2026-11-15T04:48:03Z",
+      "updated_at": "2026-11-15T04:48:03Z",
+      "case_count": 2,
+      "bureau_codes": [
+        "RB",
+        "RO-CRO"
+      ],
+      "top_score": 0.61
+    },
+    {
+      "id": 4,
+      "level": "institution",
+      "anchor_key": "1-3156608124",
+      "anchor_name": "Deccan Plateau Institute of Technology",
+      "tier": "possible",
+      "status": "open",
+      "banner": "Possible Overlapping Cases – Review Suggested",
+      "coordinator_id": null,
+      "coordinator_name": null,
+      "decided_by": null,
+      "decided_at": null,
+      "decision_remark": null,
+      "created_at": "2026-11-06T09:20:02Z",
+      "updated_at": "2026-11-12T06:45:01Z",
+      "case_count": 2,
+      "bureau_codes": [
+        "PGRC",
+        "RO-WRO"
+      ],
+      "top_score": 0.38
+    },
+    {
+      "id": 3,
+      "level": "parent",
+      "anchor_key": "parent:1-4800112233",
+      "anchor_name": "Mahakaushal Technical University",
+      "tier": "possible",
+      "status": "dismissed",
+      "banner": "Possible Overlapping Cases – Review Suggested",
+      "coordinator_id": null,
+      "coordinator_name": null,
+      "decided_by": 1,
+      "decided_at": "2026-11-06T11:20:00Z",
+      "decision_remark": "Different issues: hostel and lab facilities at the main campus vs an unapproved D.Pharm batch in the pharmacy department. No coordination needed.",
+      "created_at": "2026-10-30T08:15:02Z",
+      "updated_at": "2026-11-06T11:20:00Z",
+      "case_count": 2,
+      "bureau_codes": [
+        "AB",
+        "RB"
+      ],
+      "top_score": 0.52
+    }
+  ],
+  "pagination": {
+    "total": 4,
+    "page": 1,
+    "limit": 20,
+    "total_pages": 1
+  }
+}

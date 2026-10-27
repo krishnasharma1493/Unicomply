@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "email": "senior@aicte.example",
+    "name": "Dr. Meera Raghavan",
+    "role": "senior_mgmt",
+    "bureau_id": null,
+    "region": null,
+    "is_admin": true
+  }
+}

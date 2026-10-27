@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiaWF0IjoxNzk1MTY1MjAwLCJleHAiOjE3OTUyMDg0MDB9.bW9jay1zaWduYXR1cmUtbm90LWEtcmVhbC10b2tlbg",
+    "token_type": "bearer",
+    "user": {
+      "id": 3,
+      "email": "rb.head@aicte.example",
+      "name": "Kavita Rao",
+      "role": "bureau_head",
+      "bureau_id": 1,
+      "region": null,
+      "is_admin": false
+    }
+  }
+}

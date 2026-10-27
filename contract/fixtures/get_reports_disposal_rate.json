@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "data": {
+    "kind": "disposal_rate",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "bureau",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "bureau_code",
+        "label": "Bureau"
+      },
+      {
+        "key": "received",
+        "label": "Received"
+      },
+      {
+        "key": "disposed",
+        "label": "Disposed"
+      },
+      {
+        "key": "disposal_rate",
+        "label": "Disposal rate"
+      }
+    ],
+    "rows": [
+      {
+        "bureau_code": "RB",
+        "received": 4,
+        "disposed": 0,
+        "disposal_rate": 0.0
+      },
+      {
+        "bureau_code": "PGRC",
+        "received": 6,
+        "disposed": 1,
+        "disposal_rate": 0.167
+      },
+      {
+        "bureau_code": "AB",
+        "received": 1,
+        "disposed": 0,
+        "disposal_rate": 0.0
+      },
+      {
+        "bureau_code": "RO-CRO",
+        "received": 1,
+        "disposed": 0,
+        "disposal_rate": 0.0
+      },
+      {
+        "bureau_code": "RO-WRO",
+        "received": 1,
+        "disposed": 0,
+        "disposal_rate": 0.0
+      }
+    ],
+    "totals": {
+      "received": 13,
+      "disposed": 1,
+      "disposal_rate": 0.077
+    }
+  }
+}

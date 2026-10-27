@@ -1,0 +1,11 @@
+{
+  "success": false,
+  "error": {
+    "code": "REMARKS_REQUIRED",
+    "message": "Remarks are required to transfer a case",
+    "details": {
+      "case_ref": "RB/2026/00087",
+      "action_type": "transfer"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "case_id": 112,
+      "candidates": [
+        {
+          "permanent_id": "1-4870215534",
+          "name": "Satpura Institute of Technology",
+          "district": "Bhopal",
+          "state": "Madhya Pradesh",
+          "score": 0.83,
+          "reasons": [
+            "Acronym SIT matches",
+            "District Bhopal matches"
+          ]
+        },
+        {
+          "permanent_id": "1-4870219908",
+          "name": "Sarovar Institute of Technology",
+          "district": "Bhopal",
+          "state": "Madhya Pradesh",
+          "score": 0.82,
+          "reasons": [
+            "Acronym SIT matches",
+            "District Bhopal matches",
+            "Two institutions share this acronym in Bhopal"
+          ]
+        }
+      ],
+      "status": "pending",
+      "decided_permanent_id": null,
+      "decided_by": null,
+      "decided_at": null,
+      "case_ref": "PGRC/2026/00431",
+      "raw_institution_text": "S.I.T. Bhopal",
+      "raw_state": "Madhya Pradesh",
+      "raw_district": "Bhopal",
+      "subject": "Migration certificate not issued",
+      "received_at": "2026-11-18",
+      "created_at": "2026-11-18T06:05:00Z"
+    },
+    {
+      "id": 2,
+      "case_id": 113,
+      "candidates": [
+        {
+          "permanent_id": "1-4812744105",
+          "name": "Narmada Valley College of Engineering",
+          "district": "Jabalpur",
+          "state": "Madhya Pradesh",
+          "score": 0.76,
+          "reasons": [
+            "Name 84% similar after expanding ENGG",
+            "State Madhya Pradesh matches; no district given"
+          ]
+        },
+        {
+          "permanent_id": "1-4812730561",
+          "name": "Vindhya Valley Institute of Engineering & Technology",
+          "district": "Jabalpur",
+          "state": "Madhya Pradesh",
+          "score": 0.44,
+          "reasons": [
+            "Name 52% similar after expanding ENGG",
+            "State Madhya Pradesh matches; no district given"
+          ]
+        }
+      ],
+      "status": "pending",
+      "decided_permanent_id": null,
+      "decided_by": null,
+      "decided_at": null,
+      "case_ref": "PGRC/2026/00428",
+      "raw_institution_text": "Narmada College of Engg",
+      "raw_state": "Madhya Pradesh",
+      "raw_district": null,
+      "subject": "Caution deposit not refunded after course completion",
+      "received_at": "2026-11-17",
+      "created_at": "2026-11-17T10:40:00Z"
+    }
+  ],
+  "pagination": {
+    "total": 2,
+    "page": 1,
+    "limit": 20,
+    "total_pages": 1
+  }
+}

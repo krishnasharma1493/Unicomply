@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzk1MTY1MzIwLCJleHAiOjE3OTUyMDg1MjB9.bW9jay1zaWduYXR1cmUtbm90LWEtcmVhbC10b2tlbg",
+    "token_type": "bearer",
+    "user": {
+      "id": 5,
+      "email": "intake@aicte.example",
+      "name": "Neha Joshi",
+      "role": "intake_operator",
+      "bureau_id": null,
+      "region": null,
+      "is_admin": false
+    }
+  }
+}

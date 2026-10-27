@@ -1,0 +1,15 @@
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_TRANSITION",
+    "message": "Cannot reopen a case that is under process",
+    "details": {
+      "case_ref": "PGRC/2026/00412",
+      "status": "under_process",
+      "action_type": "reopen",
+      "allowed_from": [
+        "disposed"
+      ]
+    }
+  }
+}

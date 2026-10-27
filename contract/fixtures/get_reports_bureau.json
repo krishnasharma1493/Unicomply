@@ -1,0 +1,93 @@
+{
+  "success": true,
+  "data": {
+    "kind": "bureau",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "bureau",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "bureau_code",
+        "label": "Bureau"
+      },
+      {
+        "key": "bureau_name",
+        "label": "Name"
+      },
+      {
+        "key": "total",
+        "label": "Total"
+      },
+      {
+        "key": "open",
+        "label": "Open"
+      },
+      {
+        "key": "disposed",
+        "label": "Disposed"
+      },
+      {
+        "key": "beyond_sla",
+        "label": "Beyond SLA"
+      },
+      {
+        "key": "avg_open_age_days",
+        "label": "Avg. age of open cases (days)"
+      }
+    ],
+    "rows": [
+      {
+        "bureau_code": "RB",
+        "bureau_name": "Regulation Bureau",
+        "total": 4,
+        "open": 4,
+        "disposed": 0,
+        "beyond_sla": 2,
+        "avg_open_age_days": 21.8
+      },
+      {
+        "bureau_code": "PGRC",
+        "bureau_name": "Public Grievance Redressal Cell",
+        "total": 6,
+        "open": 5,
+        "disposed": 1,
+        "beyond_sla": 1,
+        "avg_open_age_days": 23.4
+      },
+      {
+        "bureau_code": "AB",
+        "bureau_name": "Approval Bureau",
+        "total": 1,
+        "open": 1,
+        "disposed": 0,
+        "beyond_sla": 0,
+        "avg_open_age_days": 21.0
+      },
+      {
+        "bureau_code": "RO-CRO",
+        "bureau_name": "Central Regional Office",
+        "total": 1,
+        "open": 1,
+        "disposed": 0,
+        "beyond_sla": 0,
+        "avg_open_age_days": 5.0
+      },
+      {
+        "bureau_code": "RO-WRO",
+        "bureau_name": "Western Regional Office",
+        "total": 1,
+        "open": 1,
+        "disposed": 0,
+        "beyond_sla": 0,
+        "avg_open_age_days": 14.0
+      }
+    ],
+    "totals": {
+      "total": 13,
+      "open": 12,
+      "disposed": 1,
+      "beyond_sla": 3
+    }
+  }
+}

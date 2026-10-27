@@ -1,0 +1,60 @@
+{
+  "success": true,
+  "data": {
+    "kind": "status",
+    "from": "2026-09-01",
+    "to": "2026-11-20",
+    "group_by": "status",
+    "generated_at": "2026-11-20T10:00:00Z",
+    "columns": [
+      {
+        "key": "status_name",
+        "label": "Status"
+      },
+      {
+        "key": "count",
+        "label": "Cases"
+      }
+    ],
+    "rows": [
+      {
+        "status": "received",
+        "status_name": "Received",
+        "count": 3
+      },
+      {
+        "status": "under_process",
+        "status_name": "Under process",
+        "count": 5
+      },
+      {
+        "status": "interim_reply",
+        "status_name": "Interim reply",
+        "count": 1
+      },
+      {
+        "status": "transferred",
+        "status_name": "Transferred",
+        "count": 1
+      },
+      {
+        "status": "escalated",
+        "status_name": "Escalated",
+        "count": 1
+      },
+      {
+        "status": "reopened",
+        "status_name": "Reopened",
+        "count": 1
+      },
+      {
+        "status": "disposed",
+        "status_name": "Disposed",
+        "count": 1
+      }
+    ],
+    "totals": {
+      "count": 13
+    }
+  }
+}

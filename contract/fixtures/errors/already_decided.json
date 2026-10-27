@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "error": {
+    "code": "ALREADY_DECIDED",
+    "message": "This overlap group has already been dismissed",
+    "details": {
+      "group_id": 3,
+      "status": "dismissed",
+      "decided_at": "2026-11-06T11:20:00Z"
+    }
+  }
+}
