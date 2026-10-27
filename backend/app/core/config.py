@@ -56,6 +56,9 @@ class Settings(BaseSettings):
     ENABLE_SCHEDULER: bool = Field(default=False, description="asyncio background job loop")
 
     # ── Matching & overlap engine (PRD §3) ──────────────────────────────
+    MATCHING_ENGINE: Literal["stub", "real"] = Field(
+        default="stub", description="'stub' = canned hero results until the real engine is wired (#38)"
+    )
     EMBEDDINGS_MODE: Literal["model", "tfidf"] = Field(
         default="model", description="'model' = sentence-transformers, 'tfidf' = offline fallback"
     )
