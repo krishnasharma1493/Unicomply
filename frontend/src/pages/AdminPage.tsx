@@ -204,48 +204,6 @@ export const AdminPage: React.FC = () => {
                 </Text>
               </div>
             </Col>
-
-            <Col xs={24} sm={12} md={8}>
-              <div
-                style={{
-                  padding: '14px',
-                  backgroundColor: '#f8fafc',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                }}
-              >
-                <Text type="secondary" style={{ fontSize: '12px' }}>
-                  Overlap Fuzzy Match Threshold
-                </Text>
-                <div style={{ fontSize: '16px', fontWeight: 600, color: '#0f172a', marginTop: '4px' }}>
-                  80% Similarity (Tier 2/3)
-                </div>
-                <Text type="secondary" style={{ fontSize: '11px' }}>
-                  Subject + Institution name norm
-                </Text>
-              </div>
-            </Col>
-
-            <Col xs={24} sm={12} md={8}>
-              <div
-                style={{
-                  padding: '14px',
-                  backgroundColor: '#f8fafc',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                }}
-              >
-                <Text type="secondary" style={{ fontSize: '12px' }}>
-                  Active Bureaus & Regional Offices
-                </Text>
-                <div style={{ fontSize: '16px', fontWeight: 600, color: '#0f172a', marginTop: '4px' }}>
-                  4 Central · 9 Regional
-                </div>
-                <Text type="secondary" style={{ fontSize: '11px' }}>
-                  RB, PGRC, AB, ACAD & ROs
-                </Text>
-              </div>
-            </Col>
           </Row>
 
           <Alert
