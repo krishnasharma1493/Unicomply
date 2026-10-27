@@ -14,5 +14,12 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    // Tests must not depend on a developer's local .env (src/lib/env.ts validates on import).
+    env: {
+      VITE_API_URL: 'http://localhost:8000',
+      VITE_USE_MOCKS: 'false',
+      VITE_AUTH_DISABLED: 'false',
+      VITE_DEMO_MODE: 'false',
+    },
   },
 });

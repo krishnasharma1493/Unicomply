@@ -1,5 +1,6 @@
 {
   "name": "frontend",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,8 +9,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
-    "lint": "echo 'Lint passed'"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
