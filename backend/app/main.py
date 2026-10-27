@@ -10,6 +10,7 @@ from fastapi.openapi.utils import get_openapi
 
 from app.core.config import Settings, get_settings, load_and_validate_settings
 from app.core.db import init_db
+from app.core.db import engine as db_engine
 from app.core.errors import register_error_handlers
 from app.core.schemas import HealthData
 from app.modules.alerts.router import router as alerts_router
@@ -23,6 +24,7 @@ from app.modules.overlaps.router import router as overlaps_router
 from app.modules.reports.router import router as reports_router
 from app.modules.reviews.router import router as reviews_router
 from app.modules.users.router import router as users_router
+from app.modules.engine.service import current_index
 from app.seed import seed_if_empty
 from app.utils.time import iso_utcnow
 
@@ -71,6 +73,11 @@ def create_app(custom_settings: Optional[Settings] = None) -> FastAPI:
             else:
                 init_db()
                 logger.info("Database initialized successfully.")
+            from sqlmodel import Session
+
+            with Session(db_engine) as session:
+                current_index(session)
+            logger.info("Institution and case matching index is ready.")
         except Exception:
             logger.exception("Database initialization failed")
 

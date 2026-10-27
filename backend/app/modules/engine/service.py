@@ -16,6 +16,7 @@ from __future__ import annotations
 import re
 from dataclasses import asdict
 from datetime import datetime, time, timedelta, timezone
+from threading import RLock
 from typing import Dict, List, Optional, Sequence, Set, cast
 
 from sqlmodel import Session, col, or_, select
@@ -33,8 +34,12 @@ from app.core.enums import (
 from app.matching import get_engine
 from app.matching.engine import MatchingEngine
 from app.matching.index import MatchIndex
+from app.matching.index import build_index
+from app.matching.embed import make_embedder
 from app.matching.normalize import load_abbreviations, normalize_name
+from app.matching.thresholds import load_thresholds
 from app.matching.types import (
+    AliasLite,
     BANNERS,
     Candidate as MatchCandidate,
     GroupLite,
@@ -51,10 +56,11 @@ from app.modules.engine.builders import (
     InScope,
     case_lite,
     everyone,
+    institution_lite,
     linked_case_card,
     resolution_schema,
 )
-from app.modules.institutions.models import Institution, InstitutionAlias
+from app.modules.institutions.models import Institution, InstitutionAlias, Trust
 from app.modules.institutions.schemas import Resolution
 from app.modules.overlaps.models import OverlapGroup, OverlapLink, OverlapPair
 from app.modules.overlaps.schemas import OverlapSummary
@@ -69,14 +75,49 @@ def current_engine() -> MatchingEngine:
     return get_engine(get_settings().MATCHING_ENGINE)
 
 
-def current_index() -> Optional[MatchIndex]:
-    """The in-memory MatchIndex; None until #20 / #38 build it at startup."""
-    return None
+_INDEXES: Dict[int, MatchIndex] = {}
+_INDEX_LOCK = RLock()
+
+
+def current_index(session: Optional[Session] = None) -> Optional[MatchIndex]:
+    """Get the process cache, building a snapshot on demand for the session's database."""
+    if session is None:
+        return next(iter(_INDEXES.values()), None)
+    key = id(session.get_bind())
+    cached = _INDEXES.get(key)
+    if cached is not None:
+        return cached
+    with _INDEX_LOCK:
+        cached = _INDEXES.get(key)
+        if cached is not None:
+            return cached
+        institutions = [institution_lite(row) for row in session.exec(select(Institution)).all()]
+        aliases = [
+            AliasLite(row.alias_norm, row.permanent_id, row.source.value)
+            for row in session.exec(select(InstitutionAlias)).all()
+        ]
+        cases = [case_lite(session, row) for row in session.exec(select(Case)).all()]
+        dismissed = session.exec(
+            select(OverlapPair.case_a_id, OverlapPair.case_b_id).where(OverlapPair.decision == PairDecision.dismissed)
+        ).all()
+        trusts = {row.id: row.name for row in session.exec(select(Trust)).all() if row.id is not None}
+        settings = get_settings()
+        index = build_index(
+            institutions, aliases, cases, dismissed,
+            make_embedder(settings.EMBEDDINGS_MODE, settings.EMBEDDING_MODEL_NAME), trusts,
+        )
+        _INDEXES[key] = index
+        return index
 
 
 def current_thresholds() -> Optional[Thresholds]:
-    """Loaded thresholds; None until #19 / #38 load seed_data/thresholds.json."""
-    return None
+    settings = get_settings()
+    return load_thresholds(overrides={
+        "MATCH_T_AUTO": settings.MATCH_T_AUTO,
+        "MATCH_T_REVIEW": settings.MATCH_T_REVIEW,
+        "OVERLAP_T_PROBABLE": settings.OVERLAP_T_PROBABLE,
+        "OVERLAP_T_POSSIBLE": settings.OVERLAP_T_POSSIBLE,
+    })
 
 
 # ── Resolution ───────────────────────────────────────────────────────────
@@ -92,7 +133,7 @@ def resolve_preview(
     Writes: nothing.
     """
     result = current_engine().resolve_institution(
-        raw_text, state, district, current_index(), current_thresholds(), top_k=get_settings().MATCH_TOP_K
+        raw_text, state, district, current_index(session), current_thresholds(), top_k=get_settings().MATCH_TOP_K
     )
     return resolution_schema(_registered_only(session, result))
 
@@ -128,7 +169,7 @@ def resolve_for_intake(session: Session, case: Case) -> Resolution:
     else:
         result = current_engine().resolve_institution(
             case.raw_institution_text, case.raw_state, case.raw_district,
-            current_index(), current_thresholds(), top_k=get_settings().MATCH_TOP_K,
+            current_index(session), current_thresholds(), top_k=get_settings().MATCH_TOP_K,
         )
         result = _registered_only(session, result)
 
@@ -137,6 +178,8 @@ def resolve_for_intake(session: Session, case: Case) -> Resolution:
     case.match_status = MatchStatus(result.decision)
     case.updated_at = utcnow()
     session.add(case)
+    if idx := current_index(session):
+        idx.upsert_case(case_lite(session, case))
 
     if result.decision in ("pending_review", "unresolved"):
         assert case.id is not None
@@ -168,8 +211,10 @@ def apply_overlaps(session: Session, case: Case, in_scope: InScope = everyone) -
         session.add(case)
         session.flush()
 
-    engine, idx, th = current_engine(), current_index(), current_thresholds()
+    engine, idx, th = current_engine(), current_index(session), current_thresholds()
     new = case_lite(session, case)
+    if idx is not None:
+        idx.upsert_case(new)
     related = [case_lite(session, row) for row in _related_cases(session, case)]
     evidence = [p for p in engine.detect_overlaps(new, related, idx, th) if not _is_dismissed(session, p)]
     plans = engine.plan_group_updates(new, evidence, _existing_groups(session, case), idx, th)
@@ -239,6 +284,10 @@ def on_review_decided(
                 created_by=review.decided_by,
             )
         )
+    if idx := current_index(session):
+        if alias_norm:
+            idx.add_alias(alias_norm, permanent_id)
+        idx.upsert_case(case_lite(session, case))
     session.flush()
     return apply_overlaps(session, case, in_scope)
 

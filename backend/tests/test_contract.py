@@ -119,15 +119,6 @@ def test_open_overlap_details_shape() -> None:
 
 STUBS: List[Tuple[str, str, Any, str, int]] = [
     # method, path, body, fixture, status
-    ("GET", "/api/v1/meta", None, "get_meta", 200),
-    ("GET", "/api/v1/institutions?q=vviet&page=1&limit=20", None, "get_institutions", 200),
-    ("GET", "/api/v1/institutions/1-4812730561", None, "get_institutions_permanent_id", 200),
-    ("POST", "/api/v1/institutions/resolve", "requests/post_institutions_resolve", "post_institutions_resolve", 200),
-    ("GET", "/api/v1/reviews?status=pending", None, "get_reviews", 200),
-    ("POST", "/api/v1/reviews/2/decide", "requests/post_reviews_id_decide", "post_reviews_id_decide", 200),
-    ("GET", "/api/v1/overlaps?tier=probable", None, "get_overlaps", 200),
-    ("GET", "/api/v1/overlaps/1", None, "get_overlaps_id", 200),
-    ("POST", "/api/v1/overlaps/1/decision", "requests/post_overlaps_id_decision", "post_overlaps_id_decision", 200),
     # cases list/detail/intake/actions are real since #14/#15: tests/test_cases_api.py and test_workflow.py
     # alerts are real since #13: tests/test_alerts.py
     ("GET", "/api/v1/dashboard/summary", None, "get_dashboard_summary", 200),

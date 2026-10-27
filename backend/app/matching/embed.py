@@ -1,26 +1,71 @@
-"""Text embeddings: sentence-transformers, or TF-IDF char n-grams offline (PRD §1, A8). Implemented in #20."""
+"""Local semantic vectors: multilingual sentence-transformers or offline character TF-IDF."""
 
 from __future__ import annotations
 
 from typing import Any, Literal, Protocol, Sequence
 
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import normalize
+
 EmbeddingsMode = Literal["model", "tfidf"]
 
 
 class Embedder(Protocol):
-    """Turns texts into L2-normalized vectors, so cosine similarity is a dot product."""
-
     mode: EmbeddingsMode
 
+    def fit(self, corpus: Sequence[str]) -> None: ...
+
+    def encode(self, texts: Sequence[str]) -> np.ndarray: ...
+
+
+class _TfidfEmbedder:
+    mode: EmbeddingsMode = "tfidf"
+
+    def __init__(self) -> None:
+        self.vectorizer = TfidfVectorizer(analyzer="char", ngram_range=(3, 5), lowercase=True, sublinear_tf=True)
+        self.fitted = False
+
     def fit(self, corpus: Sequence[str]) -> None:
-        """Fit on institution names + case descriptions (needed by `tfidf`; a no-op for `model`)."""
-        ...
+        rows = [text.strip() or " " for text in corpus]
+        if not rows:
+            rows = ["unicomply"]
+        self.vectorizer.fit(rows)
+        self.fitted = True
 
-    def encode(self, texts: Sequence[str]) -> Any:
-        """Return an L2-normalized numpy array of shape (len(texts), dim)."""
-        ...
+    def encode(self, texts: Sequence[str]) -> np.ndarray:
+        if not self.fitted:
+            self.fit(texts)
+        if not texts:
+            return np.zeros((0, len(self.vectorizer.vocabulary_)), dtype=np.float32)
+        matrix = self.vectorizer.transform([text.strip() or " " for text in texts])
+        return normalize(matrix, norm="l2", copy=False).toarray().astype(np.float32, copy=False)
 
 
-def make_embedder(mode: EmbeddingsMode, model_name: str) -> Embedder:
-    """`model` loads `model_name` once; `tfidf` uses char 3–5 grams with no download."""
-    raise NotImplementedError("Implemented in #20")
+class _SentenceTransformerEmbedder:
+    mode: EmbeddingsMode = "model"
+
+    def __init__(self, model_name: str) -> None:
+        self.model_name = model_name
+        try:
+            from sentence_transformers import SentenceTransformer
+        except ImportError as exc:
+            raise RuntimeError(
+                "EMBEDDINGS_MODE=model requires sentence-transformers; install it or use EMBEDDINGS_MODE=tfidf"
+            ) from exc
+        self.model = SentenceTransformer(model_name)
+
+    def fit(self, corpus: Sequence[str]) -> None:
+        return None
+
+    def encode(self, texts: Sequence[str]) -> np.ndarray:
+        vectors = self.model.encode(list(texts), convert_to_numpy=True, normalize_embeddings=True)
+        return np.asarray(vectors, dtype=np.float32)
+
+
+def make_embedder(mode: EmbeddingsMode, model_name: str) -> Any:
+    if mode == "tfidf":
+        return _TfidfEmbedder()
+    if mode == "model":
+        return _SentenceTransformerEmbedder(model_name)
+    raise ValueError(f"Unsupported embedding mode: {mode}")

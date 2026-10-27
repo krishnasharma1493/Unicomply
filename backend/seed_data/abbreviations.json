@@ -1,0 +1,17 @@
+{
+  "abbreviations": {
+    "ENG": "ENGINEERING",
+    "ENGG": "ENGINEERING",
+    "INST": "INSTITUTE",
+    "INSTT": "INSTITUTE",
+    "TECH": "TECHNOLOGY",
+    "COLL": "COLLEGE",
+    "MGMT": "MANAGEMENT",
+    "MGT": "MANAGEMENT",
+    "UNIV": "UNIVERSITY",
+    "POLY": "POLYTECHNIC"
+  },
+  "districts": {
+    "JBP": "JABALPUR"
+  }
+}

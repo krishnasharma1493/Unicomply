@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Generic, List, Optional, TypeVar
 
 from pydantic import BaseModel
@@ -77,3 +78,4 @@ class Meta(BaseModel):
     dispose_outcomes: List[CodeName[DisposeOutcome]]
     inst_types: List[CodeName[InstType]]
     officers: List[Officer]
+    today: date

@@ -1,0 +1,24 @@
+{
+  "t_auto": 0.68,
+  "t_review": 0.46,
+  "t_probable": 0.68,
+  "t_possible": 0.45,
+  "margin": 0.05,
+  "resolution": {
+    "fuzzy": 0.45,
+    "semantic": 0.25,
+    "acronym": 0.15,
+    "location": 0.15
+  },
+  "pair": {
+    "text": 0.6,
+    "category": 0.25,
+    "time": 0.15,
+    "time_decay_days": 60
+  },
+  "level": {
+    "institution": 1.0,
+    "parent": 0.8,
+    "trust": 0.6
+  }
+}
