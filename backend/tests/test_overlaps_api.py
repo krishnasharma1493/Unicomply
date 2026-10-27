@@ -36,8 +36,16 @@ def test_confirm_notifies_involved_bureau_heads_and_records_audit(seeded_client,
         recipients = set(session.exec(select(Alert.recipient_id).where(Alert.group_id == 1)).all())
         assert {1, 2, 3, 4}.issubset(recipients)
         assert session.exec(select(AuditLog).where(AuditLog.entity == "overlap_group", AuditLog.entity_id == "1")).all()
+    # a confirmed group can be dismissed no more, but it can still be resolved...
+    dismiss = seeded_client.post("/api/v1/overlaps/1/decision", headers=auth_headers(PGRC),
+                                 json={"decision": "dismiss", "remark": "Changed my mind"})
+    assert dismiss.status_code == 409 and dismiss.json()["error"]["code"] == "ALREADY_DECIDED"
+    resolved = seeded_client.post("/api/v1/overlaps/1/decision", headers=auth_headers(PGRC),
+                                  json={"decision": "resolve", "remark": "Done"})
+    assert resolved.status_code == 200 and resolved.json()["data"]["group"]["status"] == "resolved"
+    # ...and a resolved one is final.
     again = seeded_client.post("/api/v1/overlaps/1/decision", headers=auth_headers(PGRC),
-                               json={"decision": "resolve", "remark": "Done"})
+                               json={"decision": "resolve", "remark": "Done again"})
     assert again.status_code == 409 and again.json()["error"]["code"] == "ALREADY_DECIDED"
 
 

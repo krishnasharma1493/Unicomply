@@ -19,6 +19,7 @@ from app.modules.cases.schemas import (
     CaseRead,
 )
 from app.modules.cases import service
+from app.modules.engine.service import reset_indexes
 from app.modules.cases import workflow
 from app.modules.cases.models import Case
 from app.modules.cases.service import case_reads, filter_cases
@@ -57,6 +58,7 @@ def create_case(
         session.commit()
     except BaseException:
         session.rollback()  # the case row goes with whatever failed
+        reset_indexes()  # ...and so must the in-memory index edits
         raise
     return Envelope(data=result)
 
@@ -86,5 +88,6 @@ def apply_case_action(
         session.commit()
     except BaseException:
         session.rollback()
+        reset_indexes()
         raise
     return Envelope(data=result)

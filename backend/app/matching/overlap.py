@@ -7,7 +7,7 @@ from typing import Dict, List, Sequence, Tuple
 
 from app.matching.index import MatchIndex
 from app.matching.types import (
-    CaseLite, GroupLite, GroupPlan, IssueCluster, PairEvidence, Thresholds,
+    CaseLite, GroupAction, GroupLite, GroupPlan, IssueCluster, Level, PairEvidence, Thresholds, Tier,
 )
 
 _RELATED_CATEGORIES = (
@@ -17,7 +17,7 @@ _RELATED_CATEGORIES = (
 )
 
 
-def pair_score(new: CaseLite, other: CaseLite, level: str, idx: MatchIndex, th: Thresholds) -> float:
+def pair_score(new: CaseLite, other: CaseLite, level: Level, idx: MatchIndex, th: Thresholds) -> float:
     similarity = idx.description_similarity(new.id, other.id)
     if new.category_code == other.category_code:
         category = 1.0
@@ -71,7 +71,7 @@ def issue_clusters(
         for i, left in enumerate(clusters):
             for j in range(i + 1, len(clusters)):
                 right = clusters[j]
-                if all(scores.get(tuple(sorted((a, b))), -1.0) >= t_possible for a in left for b in right):
+                if all(scores.get((a, b) if a <= b else (b, a), -1.0) >= t_possible for a in left for b in right):
                     merge = i, j
                     break
             if merge:
@@ -95,21 +95,21 @@ def plan_group_updates(
     """Plan one isolated update per registry anchor; no pairwise transitive merging."""
     if not new.permanent_id or not evidence:
         return []
-    grouped: Dict[Tuple[str, str], List[PairEvidence]] = {}
+    grouped: Dict[Tuple[Level, str], List[PairEvidence]] = {}
     for pair in evidence:
         anchor = _anchor(new.permanent_id, pair.level, idx)
         if anchor:
             grouped.setdefault((pair.level, anchor), []).append(pair)
 
-    plans = []
+    plans: List[GroupPlan] = []
     for (level, anchor), pairs in sorted(grouped.items()):
         group = next((g for g in sorted(existing, key=lambda row: row.group_id)
                       if g.level == level and g.anchor_key == anchor and g.status in ("open", "confirmed", "dismissed")), None)
-        action = "create" if group is None else ("reopen" if group.status == "dismissed" else "extend")
+        action: GroupAction = "create" if group is None else ("reopen" if group.status == "dismissed" else "extend")
         pair_case_ids = {cid for pair in pairs for cid in (pair.case_a, pair.case_b)}
         case_ids = tuple(sorted(pair_case_ids if action == "reopen" or group is None
                                 else pair_case_ids | set(group.case_ids)))
-        tier = "probable" if any(
+        tier: Tier = "probable" if any(
             pair.level == "institution" and _cross_bureau(pair, new, idx) and pair.score >= th.t_probable
             for pair in pairs
         ) else "possible"
@@ -142,8 +142,7 @@ def _anchor(permanent_id: str, level: str, idx: MatchIndex) -> str:
 
 def _cross_bureau(pair: PairEvidence, new: CaseLite, idx: MatchIndex) -> bool:
     other_id = pair.case_a if pair.case_b == new.id else pair.case_b
-    # Case bureau ids are available on the related evidence through the caller, not the index protocol.
-    other = getattr(idx, "cases", {}).get(other_id)
+    other = idx.case(other_id)
     return bool(other and other.bureau_id != new.bureau_id)
 
 

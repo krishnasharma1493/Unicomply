@@ -18,7 +18,7 @@ from app.modules.institutions.models import Institution, Trust
 from app.modules.meta.models import Bureau
 from app.modules.overlaps.models import OverlapGroup, OverlapLink, OverlapPair
 from app.modules.overlaps.schemas import (
-    OverlapCluster, OverlapGroupDetail, OverlapGroupListItem, OverlapListParams,
+    OverlapCluster, OverlapGroupDetail, OverlapGroupListItem, OverlapListParams, OverlapPairRead,
 )
 from app.modules.users.models import User
 from app.utils.time import utcnow
@@ -68,7 +68,10 @@ def decide(session: Session, group_id: int, body, user: User) -> OverlapGroupDet
             raise NotFoundError("Overlap group not found")
     elif user.role != Role.senior_mgmt:
         raise ForbiddenError("Only involved bureau heads or senior management can decide overlaps")
-    if group.status != OverlapGroupStatus.open:
+    # open: any decision. confirmed: it can still be resolved. dismissed / resolved are final.
+    if group.status == OverlapGroupStatus.confirmed and body.decision != "resolve":
+        raise AlreadyDecidedError()
+    if group.status not in (OverlapGroupStatus.open, OverlapGroupStatus.confirmed):
         raise AlreadyDecidedError()
 
     if body.decision == "dismiss" and not (body.remark and body.remark.strip()):
@@ -164,14 +167,20 @@ def _group_in_scope(session: Session, group_id: int, user: User) -> OverlapGroup
     return group
 
 
+def _bureau_code(session: Session, bureau_id: int) -> str:
+    bureau = session.get(Bureau, bureau_id)
+    return bureau.code if bureau else str(bureau_id)
+
+
 def _member_cases(session: Session, group_id: int) -> List[Case]:
-    return session.exec(select(Case).join(OverlapLink, col(OverlapLink.case_id) == col(Case.id))
-                        .where(OverlapLink.group_id == group_id).order_by(col(Case.id))).all()
+    return list(session.exec(select(Case).join(OverlapLink, col(OverlapLink.case_id) == col(Case.id))
+                             .where(OverlapLink.group_id == group_id).order_by(col(Case.id))).all())
 
 
 def _list_item(session: Session, group: OverlapGroup) -> OverlapGroupListItem:
+    assert group.id is not None
     cases = _member_cases(session, group.id)
-    bureau_codes = sorted({(session.get(Bureau, c.current_bureau_id).code if session.get(Bureau, c.current_bureau_id) else str(c.current_bureau_id)) for c in cases})
+    bureau_codes = sorted({_bureau_code(session, c.current_bureau_id) for c in cases})
     scores = session.exec(select(OverlapPair.score).where(
         col(OverlapPair.case_a_id).in_([c.id for c in cases]), col(OverlapPair.case_b_id).in_([c.id for c in cases])
     )).all()
@@ -192,8 +201,9 @@ def _list_item(session: Session, group: OverlapGroup) -> OverlapGroupListItem:
 
 
 def _detail(session: Session, group: OverlapGroup, user: User) -> OverlapGroupDetail:
+    assert group.id is not None
     cases = _member_cases(session, group.id)
-    case_ids = [case.id for case in cases]
+    case_ids = [case.id for case in cases if case.id is not None]
     in_scope = in_scope_callback(session, user)
     details = [case_read_payload(session, case) if in_scope(case)
                else linked_case_card(session, case, in_scope).model_dump(mode="json")
@@ -203,13 +213,14 @@ def _detail(session: Session, group: OverlapGroup, user: User) -> OverlapGroupDe
     ).order_by(col(OverlapPair.score).desc())).all()
     evidence = [PairEvidence(p.case_a_id, p.case_b_id, p.level.value, p.score, tuple(p.reasons)) for p in pairs]
     thresholds = engine_service.current_thresholds()
+    assert thresholds is not None
     # Stored evidence is used directly; complete linkage does not depend on the resolver index.
     from app.matching.overlap import issue_clusters
     issue_clusters_value = issue_clusters(case_ids, evidence, thresholds.t_possible)
     return OverlapGroupDetail(
         group=_list_item(session, group), cases=details,
         clusters=[OverlapCluster(cluster_id=c.cluster_id, label=c.label, case_ids=list(c.case_ids)) for c in issue_clusters_value],
-        pairs=pairs, reasons=list(dict.fromkeys(r for pair in pairs for r in pair.reasons)),
+        pairs=[OverlapPairRead.model_validate(pair) for pair in pairs], reasons=list(dict.fromkeys(r for pair in pairs for r in pair.reasons)),
     )
 
 

@@ -17,8 +17,10 @@ import re
 from dataclasses import asdict
 from datetime import datetime, time, timedelta, timezone
 from threading import RLock
+from weakref import WeakKeyDictionary
 from typing import Dict, List, Optional, Sequence, Set, cast
 
+from sqlalchemy.engine import Engine
 from sqlmodel import Session, col, or_, select
 
 from app.core.config import get_settings
@@ -75,15 +77,24 @@ def current_engine() -> MatchingEngine:
     return get_engine(get_settings().MATCHING_ENGINE)
 
 
-_INDEXES: Dict[int, MatchIndex] = {}
+# One MatchIndex per database engine. Weak keys: a collected engine can never hand its slot to a
+# new one (an `id()` key could). The index is mutated mid-request (upsert_case, add_alias), so
+# anything that rolls a request back must call `reset_indexes()` to drop those uncommitted edits.
+_INDEXES: "WeakKeyDictionary[Engine, MatchIndex]" = WeakKeyDictionary()
 _INDEX_LOCK = RLock()
+
+
+def reset_indexes() -> None:
+    """Forget every cached index; the next request rebuilds from the database."""
+    with _INDEX_LOCK:
+        _INDEXES.clear()
 
 
 def current_index(session: Optional[Session] = None) -> Optional[MatchIndex]:
     """Get the process cache, building a snapshot on demand for the session's database."""
     if session is None:
         return next(iter(_INDEXES.values()), None)
-    key = id(session.get_bind())
+    key = session.get_bind().engine
     cached = _INDEXES.get(key)
     if cached is not None:
         return cached
