@@ -1,3 +1,4 @@
+import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
@@ -8,6 +9,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  server: {
+    fs: {
+      // The mock API (#10) imports the shared fixtures from <repo>/contract.
+      allow: [searchForWorkspaceRoot(process.cwd()), fileURLToPath(new URL('../contract', import.meta.url))],
     },
   },
   test: {
