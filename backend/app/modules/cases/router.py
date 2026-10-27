@@ -6,7 +6,7 @@ from sqlmodel import col, func, select
 from app.core.db import SessionDep
 from app.core.deps import CurrentUser
 from app.core.enums import Role
-from app.core.scope import get_case_in_scope_or_404, require_roles, scope_cases
+from app.core.scope import get_case_in_scope_or_404, require_can_act, require_roles, scope_cases
 from app.core.fixtures import fixture
 from app.core.schemas import Envelope, Page, error_responses
 from app.modules.cases.schemas import (
@@ -19,6 +19,7 @@ from app.modules.cases.schemas import (
     CaseRead,
 )
 from app.modules.cases import service
+from app.modules.cases import workflow
 from app.modules.cases.models import Case
 from app.modules.cases.service import case_reads, filter_cases
 from app.modules.users.models import User
@@ -71,9 +72,19 @@ def get_case(user: CurrentUser, session: SessionDep, case_id: int) -> Envelope[C
     response_model=Envelope[CaseActionResult],
     responses=error_responses(400, 401, 403, 404, 409),
 )
-def apply_case_action(_: CurrentUser, case_id: int, body: CaseActionIn) -> Envelope[CaseActionResult]:
+def apply_case_action(
+    user: CurrentUser, session: SessionDep, case_id: int, body: CaseActionIn
+) -> Envelope[CaseActionResult]:
     """assign / transfer / escalate / interim_reply / remark / dispose / reopen (§4.3 state machine).
 
-    Stub (#7): serves contract/fixtures/post_cases_id_actions.json until #15.
+    Applies the validated workflow state machine and appends action/audit history atomically.
     """
-    return fixture("post_cases_id_actions", Envelope[CaseActionResult])
+    case = get_case_in_scope_or_404(session, case_id, user)
+    require_can_act(user, case)
+    try:
+        result = workflow.apply_action(session, case, body, user)
+        session.commit()
+    except BaseException:
+        session.rollback()
+        raise
+    return Envelope(data=result)
