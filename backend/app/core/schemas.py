@@ -60,6 +60,29 @@ class ErrorBody(BaseModel):
     error: ErrorDetail
 
 
+class PageParams(BaseModel):
+    """`?page=1&limit=20` on every list endpoint (limit max 100)."""
+
+    page: int = Field(default=1, ge=1)
+    limit: int = Field(default=20, ge=1, le=100)
+
+
+_ERROR_DESCRIPTIONS = {
+    400: "Validation error, INVALID_TRANSITION or REMARKS_REQUIRED",
+    401: "Missing, invalid or expired access token",
+    403: "In scope to read, but this role cannot do this (FORBIDDEN)",
+    404: "Not found, or out of the caller's scope (never 403 for scope)",
+    409: "OPEN_OVERLAP, ALREADY_DECIDED or CONFLICT",
+}
+
+
+def error_responses(*status_codes: int) -> Dict[int | str, Dict[str, Any]]:
+    """`responses=` for a route: documents each error status with the standard error body in /docs."""
+    return {
+        code: {"model": ErrorBody, "description": _ERROR_DESCRIPTIONS[code]} for code in status_codes
+    }
+
+
 class HealthData(BaseModel):
     """Health check payload."""
 

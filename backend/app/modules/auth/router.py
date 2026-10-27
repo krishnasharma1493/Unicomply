@@ -5,7 +5,7 @@ from app.core.db import SessionDep
 from app.core.deps import SettingsDep
 from app.core.enums import LOGIN_ROLES
 from app.core.errors import AppError
-from app.core.schemas import Envelope
+from app.core.schemas import Envelope, error_responses
 from app.core.security import check_demo_password, create_access_token
 from app.modules.auth.schemas import LoginIn, LoginOut
 from app.modules.users.models import User
@@ -14,7 +14,7 @@ from app.modules.users.schemas import UserRead
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/login", response_model=Envelope[LoginOut])
+@router.post("/login", response_model=Envelope[LoginOut], responses=error_responses(400, 401))
 def login(body: LoginIn, session: SessionDep, settings: SettingsDep) -> Envelope[LoginOut]:
     """Persona login with the shared demo password. Case officers are data only and cannot log in."""
     user = session.exec(select(User).where(User.email == body.email.strip().lower())).first()

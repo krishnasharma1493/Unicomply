@@ -148,3 +148,18 @@ class AlertSeverity(str, Enum):
     info = "info"
     warning = "warning"
     critical = "critical"
+
+
+class ResolutionDecision(str, Enum):
+    """`resolution.decision` (PRD §5); `provided` = the operator supplied the Permanent ID."""
+
+    auto = "auto"
+    pending_review = "pending_review"
+    unresolved = "unresolved"
+    provided = "provided"
+
+
+class OverlapDecision(str, Enum):
+    confirm = "confirm"
+    dismiss = "dismiss"
+    resolve = "resolve"
