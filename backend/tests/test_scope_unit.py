@@ -94,14 +94,13 @@ def test_out_of_scope_id_is_404_not_found(db: Session) -> None:
 
 
 @pytest.fixture(name="probe")
-def probe_client(seeded_engine, test_settings) -> Iterator[TestClient]:
+def probe_client(db, test_settings) -> Iterator[TestClient]:
     """A throwaway app wiring the helpers into routes, as #13–#18 will."""
     app = FastAPI()
     register_error_handlers(app)
 
     def session_dep() -> Iterator[Session]:
-        with Session(seeded_engine) as s:
-            yield s
+        yield db  # one connection backs the in-memory DB: share the test's session
 
     app.dependency_overrides[get_session] = session_dep
     app.dependency_overrides[get_settings] = lambda: test_settings
