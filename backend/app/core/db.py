@@ -2,6 +2,8 @@
 
 from typing import Annotated, Generator
 from fastapi import Depends
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
 from sqlmodel import Session, SQLModel, create_engine
 
 from app.core.config import get_settings
@@ -16,6 +18,29 @@ engine = create_engine(
     settings.DATABASE_URL,
     connect_args={"check_same_thread": False, "timeout": 15} if _is_sqlite else {},
 )
+
+
+def sqlite_savepoints(target: Engine) -> Engine:
+    """
+    Make SAVEPOINT work on SQLite. The driver delays BEGIN until the first write, so a savepoint
+    taken first (create_alert's duplicate guard) would release into autocommit and break the
+    caller's rollback. This is the SQLAlchemy-documented recipe: the driver stops managing
+    transactions and we emit BEGIN ourselves.
+    """
+
+    @event.listens_for(target, "connect")
+    def _no_driver_begin(dbapi_connection, _record):  # type: ignore[no-untyped-def]
+        dbapi_connection.isolation_level = None
+
+    @event.listens_for(target, "begin")
+    def _begin(conn):  # type: ignore[no-untyped-def]
+        conn.exec_driver_sql("BEGIN")
+
+    return target
+
+
+if _is_sqlite:
+    sqlite_savepoints(engine)
 
 
 def init_db(target_engine=None) -> None:

@@ -132,9 +132,7 @@ STUBS: List[Tuple[str, str, Any, str, int]] = [
     ("GET", "/api/v1/overlaps?tier=probable", None, "get_overlaps", 200),
     ("GET", "/api/v1/overlaps/1", None, "get_overlaps_id", 200),
     ("POST", "/api/v1/overlaps/1/decision", "requests/post_overlaps_id_decision", "post_overlaps_id_decision", 200),
-    ("GET", "/api/v1/alerts?unread_only=true", None, "get_alerts", 200),
-    ("POST", "/api/v1/alerts/502/read", None, "post_alerts_id_read", 200),
-    ("POST", "/api/v1/alerts/read-all", None, "post_alerts_read_all", 200),
+    # alerts are real since #13: tests/test_alerts.py
     ("GET", "/api/v1/dashboard/summary", None, "get_dashboard_summary", 200),
     ("GET", "/api/v1/dashboard/workload", None, "get_dashboard_workload", 200),
     ("GET", "/api/v1/dashboard/ageing", None, "get_dashboard_ageing", 200),

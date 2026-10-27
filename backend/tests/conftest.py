@@ -31,7 +31,7 @@ os.environ.update(
 )
 
 from app.core.config import Settings, get_settings
-from app.core.db import get_session
+from app.core.db import get_session, sqlite_savepoints
 from app.main import create_app
 from app.seed import load_seed
 
@@ -57,10 +57,12 @@ def test_settings_fixture() -> Settings:
 
 
 def _memory_engine() -> Engine:
-    return create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
+    return sqlite_savepoints(
+        create_engine(
+            "sqlite://",
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
+        )
     )
 
 
