@@ -16,7 +16,7 @@ from sqlmodel.pool import StaticPool
 from app.core.enums import AlertSeverity, AlertType, OverlapLevel
 from app.modules.alerts.models import Alert
 from app.modules.cases.models import Case, CaseAction
-from app.modules.cases.schemas import CaseCreate, CaseRead
+from app.modules.cases.schemas import CaseCreate, CaseRecord
 from app.modules.institutions.models import InstitutionAlias
 from app.modules.overlaps.models import OverlapPair
 from app.modules.reviews.schemas import MatchReviewUpdate
@@ -82,7 +82,7 @@ def test_seeded_cases_match_the_contract_fixtures(seeded_engine) -> None:
         cases = session.exec(select(Case)).all()
         assert {c.id for c in cases} == set(fixture)
         for case in cases:
-            row: Dict[str, Any] = CaseRead.model_validate(case).model_dump(mode="python")
+            row: Dict[str, Any] = CaseRecord.model_validate(case).model_dump(mode="python")
             for field, stored in row.items():
                 expected = fixture[case.id][field]
                 if isinstance(stored, date) and not isinstance(stored, datetime):
