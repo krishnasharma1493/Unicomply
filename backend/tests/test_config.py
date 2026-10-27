@@ -21,6 +21,7 @@ def test_default_settings_match_prd() -> None:
     assert settings.SLA_WARN_DAY == 17
     assert settings.EMBEDDING_MODEL_NAME == "paraphrase-multilingual-MiniLM-L12-v2"
     assert settings.JWT_EXPIRES_MINUTES == 720
+    assert settings.MATCHING_ENGINE == "stub"
     # Thresholds come from seed_data/thresholds.json unless overridden
     assert settings.MATCH_T_AUTO is None
     assert settings.MATCH_T_REVIEW is None
@@ -46,6 +47,12 @@ def test_invalid_embeddings_mode_rejected() -> None:
     """Invalid EMBEDDINGS_MODE is rejected by Literal validation."""
     with pytest.raises(ValidationError):
         Settings(EMBEDDINGS_MODE="invalid_mode")  # type: ignore[arg-type]
+
+
+def test_invalid_matching_engine_rejected() -> None:
+    """MATCHING_ENGINE accepts only 'stub' or 'real'."""
+    with pytest.raises(ValidationError):
+        Settings(MATCHING_ENGINE="fast")  # type: ignore[arg-type]
 
 
 @pytest.mark.parametrize(
