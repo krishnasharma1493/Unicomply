@@ -64,7 +64,7 @@ Every fixture is cut from one small synthetic world, so ids, refs and names matc
 | `get_overlaps.json` | GET `/overlaps` | 200 | senior | Overlap Center list: groups 1, 2, 4 (open) and 3 (dismissed) |
 | `get_overlaps_id.json` | GET `/overlaps/{id}` (1) | 200 | PGRC head | Side-by-side cases, issue clusters, pair reasons (seeded, 3 cases) |
 | `post_overlaps_id_decision.json` | POST `/overlaps/{id}/decision` (1) | 200 | PGRC head | Demo step 5: confirm with the PGRC head as coordinator (after intake, 4 cases). Request: `requests/post_overlaps_id_decision.json` |
-| `get_alerts.json` | GET `/alerts` | 200 | RB head | Overlap, SLA-breach and reminder alerts, sorted by severity |
+| `get_alerts.json` | GET `/alerts` | 200 | RB head | Overlap, SLA-breach and reminder alerts, newest first. The Alerts page (#33) groups them by institution and day and sorts by severity |
 | `post_alerts_id_read.json` | POST `/alerts/{id}/read` (502) | 200 | RB head | Returns the alert with `is_read: true` |
 | `post_alerts_read_all.json` | POST `/alerts/read-all` | 200 | RB head | `{updated}` = the 5 unread alerts in `get_alerts.json` |
 | `get_dashboard_summary.json` | GET `/dashboard/summary` | 200 | senior | KPI cards |
