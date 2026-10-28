@@ -1,0 +1,46 @@
+UNICOMPLY HERO INTAKE (demo step 3). Paste each value into Case Intake exactly as written.
+Persona: Intake operator (intake@aicte.example). Page: Case Intake (/cases/new).
+Leave "AICTE Permanent ID", "Route to" and "External reference" empty.
+
+Institution name, as written in the complaint:
+vindya valley engg college jabalpur
+
+State:
+Madhya Pradesh
+
+District:
+(leave empty)
+
+Received through:
+Email
+
+Date received:
+today (2026-11-20 when DEMO_TODAY=2026-11-20, which is the default after a reset)
+
+Complainant:
+Parent
+
+Complainant name:
+Sushila Dubey
+
+Category:
+Certificates withheld
+
+Subject:
+10th/12th original certificates not returned; full fees demanded
+
+Description:
+My son left the college after the first semester. The college is not returning his 10th and 12th original mark sheets and is demanding fees for all four years before it will release them.
+
+---
+Expected after the institution name is typed (the candidates panel, about a second):
+Top candidate: Vindhya Valley Institute of Engineering & Technology (Jabalpur, Madhya Pradesh), 1-4812730561
+Decision: linked automatically (no "needs review" label)
+Reasons shown: name similar after expanding ENGG, district Jabalpur matches, acronym VVIET matches
+
+Expected after Submit:
+New case in PGRC (the category's default bureau), status Received, ref PGRC/2026/00715 on the full seed
+Red banner: Potential Overlapping Cases – Coordination Required
+Linked cases: PGRC/2026/00412, RB/2026/00087, RO-CRO/2026/00133
+
+Same values as contract/fixtures/requests/post_cases.json (category_id 2 = Certificates withheld).
