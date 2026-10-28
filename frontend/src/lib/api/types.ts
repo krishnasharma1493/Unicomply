@@ -118,6 +118,8 @@ export type Meta = {
   dispose_outcomes: CodeName<DisposeOutcome>[];
   inst_types: CodeName<InstType>[];
   officers: Officer[];
+  /** The server's "today" (DEMO_TODAY when set): ageing and SLA numbers are relative to it. */
+  today: IsoDate;
 };
 
 export type DemoResetResult = { status: 'reset' };
