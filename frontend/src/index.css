@@ -1522,3 +1522,29 @@ code {
   color: var(--uc-text-2);
   font-size: 0.75rem;
 }
+
+@media (max-width: 600px) {
+  .uc-persona-label {
+    display: none;
+  }
+  .uc-persona {
+    padding-left: var(--uc-s1);
+  }
+  body .uc-persona .ant-select {
+    min-width: 0 !important;
+    max-width: 8.5rem;
+  }
+  .uc-toolbar-group {
+    gap: var(--uc-s1);
+  }
+}
+
+/* The page scrolls; a second floating scrollbar over the rows only adds noise */
+body .ant-table-wrapper .ant-table-sticky-scroll {
+  display: none;
+}
+@media (max-width: 1439px) {
+  .uc-content {
+    padding-inline: var(--uc-s6);
+  }
+}

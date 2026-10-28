@@ -87,7 +87,7 @@ const CaseTable: React.FC<{ filters: CaseFilters; meta: Meta; setFilters: (f: Ca
           rowKey="id"
           dataSource={page.data}
           columns={columns(meta)}
-          scroll={{ x: 1100 }}
+          scroll={{ x: 1000 }}
           sticky={{ offsetHeader: 52 }}
           loading={list.isFetching}
           onRow={(c) => ({ onClick: () => navigate(`/cases/${c.id}`), style: { cursor: 'pointer' } })}
