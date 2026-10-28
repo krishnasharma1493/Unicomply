@@ -22,7 +22,7 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
   it.each([
     ['/', 'Dashboard'],
     ['/cases', 'Cases'],
-    ['/cases/new', 'Case Intake'],
+    ['/cases/new', 'Register a case'],
     ['/cases/101', 'Case Detail'],
     ['/reviews', 'Match Review'],
     ['/overlaps', 'Overlap Center'],
