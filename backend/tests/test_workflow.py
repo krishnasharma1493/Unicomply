@@ -114,3 +114,14 @@ def test_senior_officer_may_only_escalate_or_remark(seeded_client, auth_headers)
     for body in ({"action_type": "transfer", "to_bureau_id": 1, "remarks": "x"}, {"action_type": "dispose", "outcome": "redressed", "remarks": "x"}):
         res = act(seeded_client, auth_headers(SENIOR), 101, **body)
         assert (res.status_code, res.json()["error"]["code"]) == (403, "FORBIDDEN")
+
+
+def test_a_case_in_a_confirmed_overlap_group_still_needs_confirmation_to_dispose(seeded_client, auth_headers):
+    """Confirmed means the bureaus are coordinating right now: disposing silently would break that (PRD §4.3, run order 5-7)."""
+    assert seeded_client.post("/api/v1/overlaps/1/decision", headers=auth_headers(PGRC),
+                              json={"decision": "confirm", "coordinator_id": 6, "remark": "PGRC leads"}).status_code == 200
+    refused = act(seeded_client, auth_headers(PGRC), 101, action_type="dispose", outcome="redressed", remarks="Closing")
+    assert refused.status_code == 409 and refused.json()["error"]["code"] == "OPEN_OVERLAP"
+    assert set(refused.json()["error"]["details"]["linked_case_refs"]) == {"RB/2026/00087", "RO-CRO/2026/00133"}
+    allowed = act(seeded_client, auth_headers(PGRC), 101, action_type="dispose", outcome="redressed", remarks="Closing", confirm_open_overlap=True)
+    assert allowed.status_code == 200

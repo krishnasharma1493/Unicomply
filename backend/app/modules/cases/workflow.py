@@ -200,7 +200,11 @@ def _guard_open_overlaps(session: Session, case: Case, confirmed: bool) -> None:
     links = session.exec(
         select(OverlapLink.group_id)
         .join(OverlapGroup, col(OverlapGroup.id) == col(OverlapLink.group_id))
-        .where(OverlapLink.case_id == case.id, col(OverlapGroup.status) == OverlapGroupStatus.open)
+        .where(
+            OverlapLink.case_id == case.id,
+            # open: still to be decided; confirmed: being coordinated right now. Both mean other bureaus are acting.
+            col(OverlapGroup.status).in_([OverlapGroupStatus.open, OverlapGroupStatus.confirmed]),
+        )
     ).all()
     if links and not confirmed:
         refs = session.exec(
