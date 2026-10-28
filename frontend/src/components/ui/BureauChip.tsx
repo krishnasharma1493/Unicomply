@@ -1,5 +1,4 @@
 import React from 'react';
-import { Tag } from 'antd';
 import { BUREAU_KIND_LABELS, type BureauKind } from '../../lib/api/enums';
 
 export interface BureauChipProps {
@@ -11,12 +10,7 @@ export interface BureauChipProps {
   style?: React.CSSProperties;
 }
 
-const KIND_COLORS: Record<BureauKind, string> = {
-  bureau: 'blue',
-  cell: 'purple',
-  regional_office: 'cyan',
-};
-
+/** A bureau or Regional Office code as a neutral label; the full name is in the tooltip. */
 export const BureauChip: React.FC<BureauChipProps> = ({
   code,
   kind,
@@ -28,21 +22,13 @@ export const BureauChip: React.FC<BureauChipProps> = ({
   // Determine kind if omitted: RO-* codes are regional offices
   const effectiveKind: BureauKind =
     kind ?? (code.startsWith('RO-') || code.startsWith('RO') ? 'regional_office' : 'bureau');
-
-  const color = KIND_COLORS[effectiveKind] ?? 'blue';
   const kindLabel = BUREAU_KIND_LABELS[effectiveKind];
-
   const displayText = showKind && kindLabel ? `${code} · ${kindLabel}` : code;
 
   return (
-    <Tag
-      color={color}
-      title={name ?? kindLabel}
-      className={className}
-      style={{ fontWeight: 500, ...style }}
-    >
+    <span title={name ?? kindLabel} className={['uc-label', className].filter(Boolean).join(' ')} style={style}>
       {displayText}
-    </Tag>
+    </span>
   );
 };
 

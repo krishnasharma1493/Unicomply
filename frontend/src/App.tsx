@@ -2,11 +2,12 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConfigProvider } from 'antd';
+import { useReducedMotion } from 'motion/react';
 import { AuthProvider } from './auth/AuthProvider';
 import { RequireAuth } from './components/RequireAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppShell } from './components/layout';
-import { themeConfig } from './theme';
+import { buildTheme } from './theme';
 
 // Pages
 import { LoginPage } from './pages/LoginPage';
@@ -79,9 +80,11 @@ export const AppRoutes: React.FC = () => {
 };
 
 export const App: React.FC = () => {
+  const reducedMotion = Boolean(useReducedMotion());
+  const theme = React.useMemo(() => buildTheme({ reducedMotion }), [reducedMotion]);
   return (
     <ErrorBoundary>
-      <ConfigProvider theme={themeConfig}>
+      <ConfigProvider theme={theme} wave={{ disabled: true }}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <BrowserRouter>

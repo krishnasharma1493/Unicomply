@@ -1,7 +1,5 @@
 import React from 'react';
-import { Card, Typography, Space } from 'antd';
-
-const { Text } = Typography;
+import { Skeleton } from 'antd';
 
 export interface KpiCardProps {
   label: string;
@@ -18,6 +16,10 @@ export interface KpiCardProps {
   style?: React.CSSProperties;
 }
 
+/**
+ * One figure in a KPI strip: the label above, the number below in tabular figures. It carries no box
+ * of its own; the strip around it provides the surface and the hairlines.
+ */
 export const KpiCard: React.FC<KpiCardProps> = ({
   label,
   value,
@@ -31,9 +33,8 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   const isClickable = Boolean(onClick);
 
   return (
-    <Card
-      loading={loading}
-      className={className}
+    <div
+      className={['uc-kpi', isClickable ? 'uc-kpi--link uc-pressable' : '', className].filter(Boolean).join(' ')}
       onClick={onClick}
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
@@ -47,43 +48,26 @@ export const KpiCard: React.FC<KpiCardProps> = ({
             }
           : undefined
       }
-      style={{
-        borderRadius: '8px',
-        cursor: isClickable ? 'pointer' : 'default',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-        transition: 'all 0.2s ease-in-out',
-        ...style,
-      }}
-      styles={{ body: { padding: '20px 24px' } }}
+      style={style}
     >
-      <Space orientation="vertical" size="small" style={{ width: '100%' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text type="secondary" style={{ fontSize: '14px', fontWeight: 500 }}>
-            {label}
-          </Text>
-          {icon && <span style={{ fontSize: '18px', color: '#64748b' }}>{icon}</span>}
+      <div className="uc-kpi-label">
+        <span>{label}</span>
+        {icon && <span aria-hidden="true">{icon}</span>}
+      </div>
+      {loading ? (
+        <Skeleton.Input active size="small" style={{ width: 64, minWidth: 64, marginTop: 6 }} />
+      ) : (
+        <div className="uc-kpi-value uc-num">{value}</div>
+      )}
+      {delta && (
+        <div className="uc-kpi-delta">
+          <span style={{ color: delta.isPositive === false ? 'var(--uc-red)' : 'var(--uc-green)', fontWeight: 600 }}>
+            {delta.isPositive ? '▲' : delta.isPositive === false ? '▼' : ''} {delta.value}
+          </span>
+          {delta.label && <span className="uc-muted">{delta.label}</span>}
         </div>
-
-        <div style={{ fontSize: '28px', fontWeight: 700, color: '#0f172a', lineHeight: 1.2 }}>
-          {value}
-        </div>
-
-        {delta && (
-          <div style={{ fontSize: '12px', marginTop: '4px' }}>
-            <span
-              style={{
-                color: delta.isPositive === false ? '#dc2626' : '#16a34a',
-                fontWeight: 600,
-                marginRight: '6px',
-              }}
-            >
-              {delta.isPositive ? '▲' : delta.isPositive === false ? '▼' : ''} {delta.value}
-            </span>
-            {delta.label && <Text type="secondary">{delta.label}</Text>}
-          </div>
-        )}
-      </Space>
-    </Card>
+      )}
+    </div>
   );
 };
 
