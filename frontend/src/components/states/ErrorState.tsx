@@ -1,5 +1,5 @@
 import React from 'react';
-import { Result, Button, Card } from 'antd';
+import { Result, Button } from 'antd';
 import { apiErrorMessage } from '../../lib/format';
 
 export interface ErrorStateProps {
@@ -37,7 +37,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       <Result
         status="error"
         title="Unable to load data"
-        subTitle={<span style={{ color: '#475569' }}>{errorMessage}</span>}
+        subTitle={<span style={{ color: 'var(--uc-text-2)' }}>{errorMessage}</span>}
         extra={
           onRetry && (
             <Button type="primary" onClick={onRetry}>
@@ -50,7 +50,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   );
 
   if (card) {
-    return <Card styles={{ body: { padding: 0 } }}>{content}</Card>;
+    return <div className="uc-section">{content}</div>;
   }
 
   return content;

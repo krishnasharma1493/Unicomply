@@ -1,5 +1,5 @@
 import React from 'react';
-import { Empty, Card, Typography } from 'antd';
+import { Empty, Typography } from 'antd';
 
 const { Text } = Typography;
 
@@ -40,7 +40,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         description={
           <div>
             {title && (
-              <div style={{ fontSize: '16px', fontWeight: 600, color: '#334155', marginBottom: '4px' }}>
+              <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--uc-text)', marginBottom: 4 }}>
                 {title}
               </div>
             )}
@@ -56,7 +56,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   );
 
   if (card) {
-    return <Card styles={{ body: { padding: 0 } }}>{content}</Card>;
+    return <div className="uc-section">{content}</div>;
   }
 
   return content;
