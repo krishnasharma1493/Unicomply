@@ -49,7 +49,7 @@ export const AppShell: React.FC = () => {
   // A new page starts at the top, the way a new window would. The tab title follows the page's h1,
   // and when the user navigated from the chrome (sidebar, command bar, toolbar) focus moves to that h1
   // so keyboard and screen-reader users land on the new content, not back at the top of the nav.
-  const firstRender = useRef(true);
+  const lastPath = useRef<string | null>(null);
   useEffect(() => {
     window.scrollTo?.(0, 0);
     const main = document.getElementById('main');
@@ -58,8 +58,9 @@ export const AppShell: React.FC = () => {
       const a = document.activeElement;
       return !a || a === document.body || Boolean(a.closest('.uc-sidebar-col, .uc-toolbar, .uc-command, .ant-drawer'));
     };
-    const shouldFocus = !firstRender.current && fromChrome();
-    firstRender.current = false;
+    // Only after a real navigation inside the app (StrictMode re-runs effects on the same path).
+    const shouldFocus = lastPath.current !== null && lastPath.current !== location.pathname && fromChrome();
+    lastPath.current = location.pathname;
     let focused = false;
     const sync = () => {
       const h1 = main.querySelector('h1');
