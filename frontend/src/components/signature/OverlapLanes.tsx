@@ -34,6 +34,8 @@ export const OverlapLanes: React.FC<{ cases: LaneCase[]; caption?: string }> = (
   const end = Math.max(...times) + span * 0.08;
   const pos = (iso: string) => ((t(iso) - start) / (end - start)) * 100;
   const lanes = Array.from(new Set(cases.map((c) => c.bureau_code)));
+  // The case this view is about lands first (it is the cause); the others follow in date order.
+  const currentId = cases.find((c) => c.current)?.case_id;
   const order = [...cases].sort((a, b) => t(a.received_at) - t(b.received_at)).map((c) => c.case_id);
   const startIso = new Date(start).toISOString();
   const endIso = new Date(end).toISOString();
@@ -70,7 +72,7 @@ export const OverlapLanes: React.FC<{ cases: LaneCase[]; caption?: string }> = (
                       style={{ left: `${left}%` }}
                       initial={motionPrefs.reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      transition={{ ...motionPrefs.quick, delay: motionPrefs.reduce ? 0 : order.indexOf(c.case_id) * 0.07 }}
+                      transition={{ ...motionPrefs.quick, delay: motionPrefs.reduce || c.current ? 0 : (order.filter((id) => id !== currentId).indexOf(c.case_id) + (currentId === undefined ? 0 : 1)) * 0.07 }}
                     >
                       {c.in_scope ? (
                         <Link to={`/cases/${c.case_id}`} tabIndex={-1} title={c.case_ref}>
