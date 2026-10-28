@@ -138,8 +138,8 @@ class OverlapGroupDetail(BaseModel):
     """GET /overlaps/{id} and the result of POST /overlaps/{id}/decision."""
 
     group: OverlapGroupListItem
-    # Full case records for cases in scope and reduced cards otherwise.
-    cases: List[dict]
+    # Summary cards: never the description or complainant name, whatever the viewer's scope (PRD §4.2).
+    cases: List[LinkedCaseCard]
     clusters: List[OverlapCluster]
     pairs: List[OverlapPairRead]
     reasons: List[str]

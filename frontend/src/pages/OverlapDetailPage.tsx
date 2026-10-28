@@ -5,7 +5,6 @@ import { useAuth } from '../auth/AuthProvider';
 import { QueryBoundary } from '../components/states';
 import { LinkedCaseCard, OverlapBanner, WhyFlagged } from '../components/signature';
 import { DecisionDialog, type Decision } from '../features/overlaps/detail/DecisionDialog';
-import { asCard } from '../features/overlaps/detail/normalise';
 import { useOverlapDetail } from '../features/overlaps/detail/useOverlapDetail';
 import { useMeta } from '../features/meta/useMeta';
 import { OVERLAP_GROUP_STATUS_LABELS, OVERLAP_LEVEL_LABELS } from '../lib/api/enums';
@@ -21,7 +20,7 @@ const View: React.FC<{ detail: OverlapGroupDetail; meta: Meta }> = ({ detail, me
   const { user } = useAuth();
   const [decision, setDecision] = useState<Decision | null>(null);
   const { group } = detail;
-  const cards: Card_[] = detail.cases.map((c) => asCard(c, meta));
+  const cards: Card_[] = detail.cases;
   const byId = new Map(cards.map((c) => [c.case_id, c]));
   const clustered = new Set(detail.clusters.flatMap((c) => c.case_ids));
   const loose = cards.filter((c) => !clustered.has(c.case_id));

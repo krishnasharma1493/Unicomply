@@ -205,9 +205,7 @@ def _detail(session: Session, group: OverlapGroup, user: User) -> OverlapGroupDe
     cases = _member_cases(session, group.id)
     case_ids = [case.id for case in cases if case.id is not None]
     in_scope = in_scope_callback(session, user)
-    details = [case_read_payload(session, case) if in_scope(case)
-               else linked_case_card(session, case, in_scope).model_dump(mode="json")
-               for case in cases]
+    details = [linked_case_card(session, case, in_scope) for case in cases]  # cards only, in scope or not (PRD §4.2)
     pairs = session.exec(select(OverlapPair).where(
         col(OverlapPair.case_a_id).in_(case_ids), col(OverlapPair.case_b_id).in_(case_ids)
     ).order_by(col(OverlapPair.score).desc())).all()
@@ -222,11 +220,6 @@ def _detail(session: Session, group: OverlapGroup, user: User) -> OverlapGroupDe
         clusters=[OverlapCluster(cluster_id=c.cluster_id, label=c.label, case_ids=list(c.case_ids)) for c in issue_clusters_value],
         pairs=[OverlapPairRead.model_validate(pair) for pair in pairs], reasons=list(dict.fromkeys(r for pair in pairs for r in pair.reasons)),
     )
-
-
-def case_read_payload(session: Session, case: Case) -> dict:
-    from app.modules.cases.service import case_read
-    return case_read(session, case).model_dump(mode="json")
 
 
 def _validation(field: str, message: str) -> AppError:
