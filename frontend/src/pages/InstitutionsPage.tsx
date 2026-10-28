@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Input, List, Pagination, Select, Space, Tag, Typography } from 'antd';
+import { Card, Input, List, Pagination, Select, Space, Typography } from 'antd';
+import { PageHeader } from '../components/layout/PageHeader';
 import { QueryBoundary } from '../components/states';
 import { useInstitutionSearch, SEARCH_PAGE_SIZE, type InstitutionFilters } from '../features/institutions/useInstitutions';
 import { INST_TYPES, INST_TYPE_LABELS, REGIONS, REGION_LABELS } from '../lib/api/enums';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 export const InstitutionsPage: React.FC = () => {
   const [filters, setFilters] = useState<InstitutionFilters>({ q: '', state: '', region: null, instType: null, page: 1 });
@@ -13,10 +14,9 @@ export const InstitutionsPage: React.FC = () => {
   const search = useInstitutionSearch(filters);
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-      <Title level={2} style={{ marginBottom: 0 }}>Institutions</Title>
-      <Text type="secondary">Find an institution by name, acronym or AICTE Permanent ID to see every case about it, across all bureaus.</Text>
-      <Card size="small" style={{ margin: '16px 0' }}>
+    <div className="uc-page">
+      <PageHeader title="Institutions" subtitle="Find an institution by name, acronym or AICTE Permanent ID to see every case about it, across all bureaus." />
+      <Card size="small" style={{ marginBottom: 16 }}>
         <Space wrap style={{ width: '100%' }}>
           <Input.Search
             aria-label="Name or Permanent ID"
@@ -49,10 +49,10 @@ export const InstitutionsPage: React.FC = () => {
                   }
                 >
                   <List.Item.Meta
-                    title={<Link to={`/institutions/${inst.permanent_id}`}>{inst.name}</Link>}
+                    title={<Link to={`/institutions/${inst.permanent_id}`} style={{ fontWeight: 600 }}>{inst.name}</Link>}
                     description={
                       <Space wrap size={[8, 2]}>
-                        <Tag color="blue" style={{ margin: 0 }}>{inst.permanent_id}</Tag>
+                        <span className="uc-label uc-num">{inst.permanent_id}</span>
                         <span>{inst.district}, {inst.state}</span>
                         <span>{REGION_LABELS[inst.region]}</span>
                         <span>{INST_TYPE_LABELS[inst.inst_type]}</span>
@@ -63,7 +63,7 @@ export const InstitutionsPage: React.FC = () => {
               )}
             />
             <Pagination
-              style={{ marginTop: 16, textAlign: 'right' }}
+              style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}
               current={page.pagination.page}
               pageSize={SEARCH_PAGE_SIZE}
               total={page.pagination.total}

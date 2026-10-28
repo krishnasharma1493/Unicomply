@@ -108,6 +108,6 @@ describe('Overlap detail on the mock API (Issue #28)', () => {
   it('shows the API message for a group outside the viewer\'s scope', async () => {
     renderAs('rb_head', 4);
     expect(await screen.findByText('Unable to load data')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '← Overlap Center' })).toHaveAttribute('href', '/overlaps');
+    expect(screen.getByRole('link', { name: 'Overlap Center' })).toHaveAttribute('href', '/overlaps');
   });
 });

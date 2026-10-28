@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Space, Typography, message } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, message } from 'antd';
 import { useAuth } from '../auth/AuthProvider';
 import { QueryBoundary } from '../components/states';
+import { BackLink, PageHeader, Section } from '../components/layout/PageHeader';
 import { LinkedCaseCard, OverlapBanner, WhyFlagged } from '../components/signature';
 import { BureauChip, SlaBadge, StatusChip } from '../components/ui';
 import { ActionTimeline } from '../features/cases/ActionTimeline';
@@ -14,8 +15,6 @@ import { useMeta } from '../features/meta/useMeta';
 import { ACTION_TYPE_LABELS, type ActionType } from '../lib/api/enums';
 import type { CaseDetail, Meta } from '../lib/api/types';
 
-const { Title, Text } = Typography;
-
 const CaseView: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ detail, meta }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -26,59 +25,74 @@ const CaseView: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ detail, meta }
   const ownBureau = meta.bureaus.find((b) => b.id === c.current_bureau_id);
 
   return (
-    <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-      <Card>
-        <Space orientation="vertical" size="small" style={{ width: '100%' }}>
-          <Space wrap align="center">
-            <Title level={2} style={{ margin: 0 }}>{c.case_ref}</Title>
+    <>
+      <PageHeader
+        title={<span className="uc-num">{c.case_ref}</span>}
+        titleExtra={
+          <>
             <StatusChip status={c.status} />
             <SlaBadge ageDays={c.age_days} beyondSla={c.beyond_sla} receivedAt={c.received_at} slaDueOn={c.sla_due_on} status={c.status} />
             {ownBureau && <BureauChip code={ownBureau.code} name={ownBureau.name} />}
-          </Space>
-          <Text>{c.subject}</Text>
-          <Text type="secondary">
+          </>
+        }
+        subtitle={
+          <>
+            <span style={{ color: 'var(--uc-text)' }}>{c.subject}</span>
+            <br />
             {detail.institution ? detail.institution.name : c.raw_institution_text} · Officer: {officer?.name ?? 'Not assigned'}
-          </Text>
-          <Space wrap>
-            {actions.length === 0 ? (
-              <Text type="secondary">You can view this case but not act on it.</Text>
-            ) : (
-              actions.map((a) => (
-                <Button key={a} type={a === 'dispose' ? 'default' : 'primary'} danger={a === 'dispose' || a === 'escalate'} onClick={() => setAction(a)}>
-                  {ACTION_TYPE_LABELS[a]}
-                </Button>
-              ))
-            )}
-          </Space>
-        </Space>
-      </Card>
+          </>
+        }
+        actions={
+          actions.length === 0 ? (
+            <span className="uc-meta">You can view this case but not act on it.</span>
+          ) : (
+            actions.map((a, i) => (
+              <Button key={a} type={i === 0 && a !== 'dispose' ? 'primary' : 'default'} danger={a === 'dispose'} onClick={() => setAction(a)}>
+                {ACTION_TYPE_LABELS[a]}
+              </Button>
+            ))
+          )
+        }
+      />
 
-      {detail.overlaps.map((group) => (
-        <Card key={group.group_id} size="small">
-          <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-            <OverlapBanner
-              tier={group.tier}
-              groupId={group.group_id}
-              caseCount={group.cases.length + 1}
-              bureauCodes={Array.from(new Set([...(ownBureau ? [ownBureau.code] : []), ...group.cases.map((x) => x.bureau_code)]))}
-            />
-            {group.coordinator_name && <Text strong>Coordinator: {group.coordinator_name}</Text>}
-            <WhyFlagged reasons={group.reasons} />
-            <div style={{ display: 'grid', gap: 8 }}>
-              {group.cases.map((x) => (
-                <LinkedCaseCard key={x.case_id} card={x} coordinatorName={group.coordinator_name} />
-              ))}
+      <div className="uc-stack">
+        {detail.overlaps.map((group) => (
+          <Section key={group.group_id} aria-label="Overlap">
+            <div className="uc-stack" style={{ gap: 16 }}>
+              <OverlapBanner
+                tier={group.tier}
+                groupId={group.group_id}
+                caseCount={group.cases.length + 1}
+                bureauCodes={Array.from(new Set([...(ownBureau ? [ownBureau.code] : []), ...group.cases.map((x) => x.bureau_code)]))}
+              />
+              {group.coordinator_name && <strong>Coordinator: {group.coordinator_name}</strong>}
+              <div>
+                <h3 className="uc-subhead">Why these were flagged</h3>
+                <WhyFlagged reasons={group.reasons} />
+              </div>
+              <div>
+                <h3 className="uc-subhead">Linked cases</h3>
+                <ul className="uc-rows">
+                  {group.cases.map((x) => (
+                    <li key={x.case_id}>
+                      <LinkedCaseCard card={x} coordinatorName={group.coordinator_name} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </Space>
-        </Card>
-      ))}
+          </Section>
+        ))}
 
-      <Card title="Case details">
-        <TrackingFields detail={detail} meta={meta} />
-      </Card>
-      <Card title="History">
-        <ActionTimeline actions={detail.actions} meta={meta} />
-      </Card>
+        <div className="uc-grid-split">
+          <Section title="Case details">
+            <TrackingFields detail={detail} meta={meta} />
+          </Section>
+          <Section title="History">
+            <ActionTimeline actions={detail.actions} meta={meta} />
+          </Section>
+        </div>
+      </div>
 
       {action && (
         <CaseActionDialog
@@ -93,7 +107,7 @@ const CaseView: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ detail, meta }
           }}
         />
       )}
-    </Space>
+    </>
   );
 };
 
@@ -102,9 +116,9 @@ export const CaseDetailPage: React.FC = () => {
   const detail = useCaseDetail(id);
   const meta = useMeta();
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-      <Link to="/cases">← All cases</Link>
-      <div style={{ marginTop: 12 }}>
+    <div className="uc-page">
+      <BackLink to="/cases" label="All cases" />
+      <div>
         <QueryBoundary query={meta} loadingTip="Loading">
           {(m) => (
             <QueryBoundary query={detail} loadingTip="Loading case">

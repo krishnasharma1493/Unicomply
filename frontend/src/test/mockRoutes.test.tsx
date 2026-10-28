@@ -44,7 +44,7 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 2, name: new RegExp(title, 'i') })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 1, name: new RegExp(title, 'i') })).toBeInTheDocument();
     });
     expect(tokenStore.get()).toBe(fixtures.login.senior.data.access_token);
   });

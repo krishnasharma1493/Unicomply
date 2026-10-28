@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Col, Pagination, Row, Select, Space, Tabs, Typography } from 'antd';
+import { Pagination, Segmented, Select } from 'antd';
+import { PageHeader } from '../components/layout/PageHeader';
 import { QueryBoundary } from '../components/states';
 import { OverlapGroupCard } from '../features/overlaps/list/OverlapGroupCard';
 import { DECIDED_STATUSES, PAGE_SIZE, useOverlapList, type OverlapListFilters, type OverlapTab } from '../features/overlaps/list/useOverlapList';
 import { useMeta } from '../features/meta/useMeta';
 import { OVERLAP_GROUP_STATUS_LABELS, OVERLAP_LEVELS, OVERLAP_LEVEL_LABELS } from '../lib/api/enums';
-
-const { Title, Paragraph } = Typography;
 
 const EMPTY: Record<OverlapTab, string> = {
   probable: 'No probable overlaps are waiting for a decision.',
@@ -21,21 +20,23 @@ export const OverlapCenterPage: React.FC = () => {
   const meta = useMeta();
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-      <Title level={2}>Overlap Center</Title>
-      <Paragraph type="secondary">
-        Cases about the same institution that more than one bureau is handling. Open a group to compare the cases and decide.
-      </Paragraph>
-      <Tabs
-        activeKey={filters.tab}
-        onChange={(key) => patch({ tab: key as OverlapTab })}
-        items={[
-          { key: 'probable', label: 'Probable' },
-          { key: 'possible', label: 'Possible' },
-          { key: 'decided', label: 'Decided' },
-        ]}
+    <div className="uc-page">
+      <PageHeader
+        title="Overlap Center"
+        subtitle="Cases about the same institution that more than one bureau is handling. Open a group to compare the cases and decide."
       />
-      <Space wrap style={{ marginBottom: 16 }}>
+      <div className="uc-toolbar-row">
+        <Segmented<OverlapTab>
+          aria-label="Overlap tier"
+          value={filters.tab}
+          onChange={(key) => patch({ tab: key })}
+          options={[
+            { value: 'probable', label: 'Probable' },
+            { value: 'possible', label: 'Possible' },
+            { value: 'decided', label: 'Decided' },
+          ]}
+        />
+        <div className="uc-filters">
         {filters.tab === 'decided' && (
           <Select
             aria-label="Decision"
@@ -63,19 +64,20 @@ export const OverlapCenterPage: React.FC = () => {
           onChange={(bureauId) => patch({ bureauId: bureauId ?? null })}
           options={(meta.data?.bureaus ?? []).map((b) => ({ value: b.id, label: `${b.code} — ${b.name}` }))}
         />
-      </Space>
+        </div>
+      </div>
       <QueryBoundary query={list} loadingTip="Loading overlap groups" emptyDescription={EMPTY[filters.tab]} isEmpty={(page) => page.data.length === 0}>
         {(page) => (
           <>
-            <Row gutter={[16, 16]}>
+            <ul className="uc-section uc-group-list" aria-label="Overlap groups">
               {page.data.map((group) => (
-                <Col key={group.id} xs={24} md={12} xl={8}>
+                <li key={group.id}>
                   <OverlapGroupCard group={group} today={meta.data?.today} />
-                </Col>
+                </li>
               ))}
-            </Row>
+            </ul>
             <Pagination
-              style={{ marginTop: 16, textAlign: 'right' }}
+              style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}
               current={page.pagination.page}
               pageSize={PAGE_SIZE}
               total={page.pagination.total}

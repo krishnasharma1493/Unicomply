@@ -78,10 +78,10 @@ describe('Dashboard on the mock API (Issue #30)', () => {
     expect(await screen.findByText('Institutions needing attention')).toBeInTheDocument();
     expect(await screen.findByText('Latest probable overlaps')).toBeInTheDocument();
     const hero = fixtures.overlaps.data.find((g) => g.tier === 'probable')!;
-    const overlaps = (await screen.findByText('Latest probable overlaps')).closest('.ant-card') as HTMLElement;
+    const overlaps = (await screen.findByText('Latest probable overlaps')).closest('section') as HTMLElement;
     expect(await within(overlaps).findByRole('link', { name: hero.anchor_name })).toHaveAttribute('href', `/overlaps/${hero.id}`);
     const inst = fixtures.dashboardInstitutions.data[0];
-    const table = (await screen.findByText('Institutions needing attention')).closest('.ant-card') as HTMLElement;
+    const table = (await screen.findByText('Institutions needing attention')).closest('section') as HTMLElement;
     expect(await within(table).findByRole('link', { name: inst.name })).toHaveAttribute('href', `/institutions/${inst.permanent_id}`);
   });
 
@@ -102,7 +102,7 @@ describe('Dashboard on the mock API (Issue #30)', () => {
     renderAs();
     const group = await screen.findByRole('group', { name: 'Open cases by category' });
     const pgrc = fixtures.dashboardWorkload.data.find((r) => r.bureau_code === 'PGRC')!;
-    await user.click(await within(await screen.findByText('Open cases by bureau').then((t) => t.closest('.ant-card') as HTMLElement)).findByRole('link', { name: `PGRC: ${pgrc.open}` }));
+    await user.click(await within(await screen.findByText('Open cases by bureau').then((t) => t.closest('section') as HTMLElement)).findByRole('link', { name: `PGRC: ${pgrc.open}` }));
     expect(await screen.findByTestId('where')).toHaveTextContent(`/cases?pending=true&bureau_id=${pgrc.bureau_id}`);
     expect(group).toBeDefined();
   });
@@ -110,7 +110,7 @@ describe('Dashboard on the mock API (Issue #30)', () => {
   it('opens an age bucket from the ageing chart, as a received-date range', async () => {
     const user = userEvent.setup();
     renderAs();
-    const card = (await screen.findByText('Age of open cases')).closest('.ant-card') as HTMLElement;
+    const card = (await screen.findByText('Age of open cases')).closest('section') as HTMLElement;
     const bucket = fixtures.dashboardAgeing.data.find((b) => b.bucket === '8_14')!;
     await user.click(await within(card).findByRole('link', { name: `${bucket.label}: ${bucket.count}` }));
     expect(await screen.findByTestId('where')).toHaveTextContent('/cases?pending=true&from=2026-11-06&to=2026-11-12');

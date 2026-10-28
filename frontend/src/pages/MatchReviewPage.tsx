@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Col, List, Row, Typography } from 'antd';
+import { PageHeader } from '../components/layout/PageHeader';
 import { QueryBoundary } from '../components/states';
 import { ReviewWorkbench } from '../features/reviews/ReviewWorkbench';
 import { usePendingReviews } from '../features/reviews/useReviews';
 import type { ReviewDecideResult, ReviewItem } from '../lib/api/types';
 import { formatDate } from '../lib/format';
 
-const { Title, Paragraph, Text } = Typography;
+const { Text } = Typography;
 
 interface Done {
   kind: 'success' | 'warning';
@@ -42,7 +43,7 @@ const Queue: React.FC<{ items: ReviewItem[]; done: Done | null; onDismiss: () =>
         <Alert type="success" showIcon title="The review queue is empty." description="Every uncertain match has been settled." />
       ) : (
         <Row gutter={[24, 24]}>
-          <Col xs={24} lg={8}>
+          <Col xs={24} lg={9} xl={8}>
             <section aria-label="Review queue">
             <List
               bordered
@@ -55,7 +56,7 @@ const Queue: React.FC<{ items: ReviewItem[]; done: Done | null; onDismiss: () =>
                   aria-current={item.id === selectedId}
                   onClick={() => setSelectedId(item.id)}
                   onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setSelectedId(item.id)}
-                  style={{ cursor: 'pointer', background: item.id === selectedId ? '#eff6ff' : undefined }}
+                  className={item.id === selectedId ? 'uc-queue-item uc-queue-item--selected' : 'uc-queue-item'}
                 >
                   <List.Item.Meta
                     title={item.raw_institution_text}
@@ -72,7 +73,7 @@ const Queue: React.FC<{ items: ReviewItem[]; done: Done | null; onDismiss: () =>
             />
             </section>
           </Col>
-          <Col xs={24} lg={16}>
+          <Col xs={24} lg={15} xl={16}>
             {selected && (
               <ReviewWorkbench
                 key={selected.id}
@@ -92,12 +93,11 @@ export const MatchReviewPage: React.FC = () => {
   const reviews = usePendingReviews();
   const [done, setDone] = useState<Done | null>(null);
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-      <Title level={2}>Match Review</Title>
-      <Paragraph type="secondary">
-        Complaints whose institution the system could not match with confidence. Your choice is remembered: the same spelling
-        resolves automatically next time.
-      </Paragraph>
+    <div className="uc-page">
+      <PageHeader
+        title="Match Review"
+        subtitle="Complaints whose institution the system could not match with confidence. Your choice is remembered: the same spelling resolves automatically next time."
+      />
       <QueryBoundary query={reviews} loadingTip="Loading the review queue" isEmpty={() => false}>
         {(page) => (
           <Queue

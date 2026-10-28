@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Space, Table, Tag, Tooltip, Typography } from 'antd';
+import { Table, Tag, Tooltip, Typography } from 'antd';
+import { PageHeader } from '../components/layout/PageHeader';
 import type { ColumnsType } from 'antd/es/table';
 import { WarningFilled } from '@ant-design/icons';
 import { BureauChip, SlaBadge, StatusChip } from '../components/ui';
@@ -12,28 +13,28 @@ import { useMeta } from '../features/meta/useMeta';
 import type { CaseRead, Meta } from '../lib/api/types';
 import { formatDate } from '../lib/format';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const columns = (meta: Meta): ColumnsType<CaseRead> => [
   {
     title: 'Case',
     key: 'case_ref',
-    width: 190,
+    width: 170,
     render: (_, c) => (
-      <Space orientation="vertical" size={0}>
-        <Link to={`/cases/${c.id}`} onClick={(e) => e.stopPropagation()}><Text strong>{c.case_ref}</Text></Link>
-        <Text type="secondary" style={{ fontSize: 12 }}>{formatDate(c.received_at)}</Text>
-      </Space>
+      <div className="uc-cell-stack">
+        <Link to={`/cases/${c.id}`} onClick={(e) => e.stopPropagation()} className="uc-num" style={{ fontWeight: 600 }}>{c.case_ref}</Link>
+        <span className="uc-meta">{formatDate(c.received_at)}</span>
+      </div>
     ),
   },
   {
     title: 'Institution',
     key: 'institution',
     render: (_, c) => (
-      <Space orientation="vertical" size={0}>
-        <Text>{c.institution_name ?? c.raw_institution_text}</Text>
-        {c.permanent_id ? <Tag color="blue" style={{ margin: 0 }}>{c.permanent_id}</Tag> : <Tag style={{ margin: 0 }}>Not matched yet</Tag>}
-      </Space>
+      <div className="uc-cell-stack">
+        <span>{c.institution_name ?? c.raw_institution_text}</span>
+        {c.permanent_id ? <span className="uc-meta uc-num">{c.permanent_id}</span> : <span className="uc-meta" style={{ fontStyle: 'italic' }}>Not matched yet</span>}
+      </div>
     ),
   },
   {
@@ -81,11 +82,13 @@ const CaseTable: React.FC<{ filters: CaseFilters; meta: Meta; setFilters: (f: Ca
       emptyDescription={isFiltered(filters) ? 'No case matches these filters. Widen the search or clear the filters.' : 'There are no cases in your scope yet.'}
     >
       {(page) => (
+        <div className="uc-section uc-section-flush">
         <Table<CaseRead>
           rowKey="id"
           dataSource={page.data}
           columns={columns(meta)}
           scroll={{ x: 1100 }}
+          sticky={{ offsetHeader: 52 }}
           loading={list.isFetching}
           onRow={(c) => ({ onClick: () => navigate(`/cases/${c.id}`), style: { cursor: 'pointer' } })}
           pagination={{
@@ -98,6 +101,7 @@ const CaseTable: React.FC<{ filters: CaseFilters; meta: Meta; setFilters: (f: Ca
             onChange: (p, size) => setFilters({ ...filters, page: size !== filters.limit ? 1 : p, limit: size }),
           }}
         />
+        </div>
       )}
     </QueryBoundary>
   );
@@ -109,10 +113,9 @@ export const CasesPage: React.FC = () => {
   const meta = useMeta();
   const setFilters = (next: CaseFilters) => setSearch(toSearch(next));
   return (
-    <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-      <Title level={2} style={{ marginBottom: 0 }}>Cases</Title>
-      <Text type="secondary">Search by institution, reference, bureau, region, category, status or date. Newest first.</Text>
-      <div style={{ marginTop: 16 }}>
+    <div className="uc-page uc-page--wide">
+      <PageHeader title="Cases" subtitle="Search by institution, reference, bureau, region, category, status or date. Newest first." />
+      <div>
         <QueryBoundary query={meta} loadingTip="Loading filters">
           {(m) => (
             <>

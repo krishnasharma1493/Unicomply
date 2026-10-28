@@ -65,14 +65,14 @@ describe('Overlap Center on the mock API (Issue #27)', () => {
     await screen.findAllByRole('link', { name: /Overlap group:/ });
     expect(requests(get).at(-1)).toMatchObject({ tier: 'probable', status: 'open', page: 1 });
 
-    await user.click(screen.getByRole('tab', { name: 'Possible' }));
+    await user.click(screen.getByRole('radio', { name: 'Possible' }).closest('label')!);
     await waitFor(() => expect(requests(get).at(-1)).toMatchObject({ tier: 'possible', status: 'open' }));
 
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Level' }));
     fireEvent.click((await screen.findAllByText('Same trust')).at(-1)!); // the dropdown is the last node in the body
     await waitFor(() => expect(requests(get).at(-1)).toMatchObject({ tier: 'possible', level: 'trust' }));
 
-    await user.click(screen.getByRole('tab', { name: 'Decided' }));
+    await user.click(screen.getByRole('radio', { name: 'Decided' }).closest('label')!);
     await waitFor(() => expect(requests(get).at(-1)).toMatchObject({ status: 'confirmed' }));
     expect(requests(get).at(-1)).not.toHaveProperty('tier');
   });
@@ -80,7 +80,7 @@ describe('Overlap Center on the mock API (Issue #27)', () => {
   it('shows the dismissed group on the Decided tab', async () => {
     const user = userEvent.setup();
     renderAs();
-    await user.click(await screen.findByRole('tab', { name: 'Decided' }));
+    await user.click((await screen.findByRole('radio', { name: 'Decided' })).closest('label')!);
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Decision' }));
     fireEvent.click(await screen.findByText('Dismissed'));
     const dismissed = fixtures.overlaps.data.find((g) => g.status === 'dismissed')!;
@@ -90,7 +90,7 @@ describe('Overlap Center on the mock API (Issue #27)', () => {
   it('shows an empty state for a tab with nothing in it', async () => {
     const user = userEvent.setup();
     renderAs();
-    await user.click(await screen.findByRole('tab', { name: 'Decided' }));
+    await user.click((await screen.findByRole('radio', { name: 'Decided' })).closest('label')!);
     expect(await screen.findByText('No overlap groups with this decision yet.')).toBeInTheDocument();
   });
 

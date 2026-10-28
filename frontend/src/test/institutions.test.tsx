@@ -116,7 +116,7 @@ describe('Institutions on the mock API (Issue #32)', () => {
       expect(screen.getByText(hero.trust!.name)).toBeInTheDocument();
       expect(screen.getByText(`Other institutions of ${hero.trust!.name}`)).toBeInTheDocument();
       for (const sib of hero.trust_institutions) expect(screen.getByRole('link', { name: sib.name })).toHaveAttribute('href', `/institutions/${sib.permanent_id}`);
-      expect(screen.getByText('Cases').closest('.ant-statistic')).toHaveTextContent(String(hero.case_counts.total));
+      expect(screen.getByText('Cases').closest('.uc-kpi')).toHaveTextContent(String(hero.case_counts.total));
     });
 
     it('lays the cases out one column per bureau', async () => {
@@ -159,7 +159,7 @@ describe('Institutions on the mock API (Issue #32)', () => {
       wrap('senior', '/institutions/1-0000000');
       expect(await screen.findByText('Unable to load data')).toBeInTheDocument();
       expect(screen.getByText('Institution not found')).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: '← Institutions' })).toHaveAttribute('href', '/institutions');
+      expect(screen.getByRole('link', { name: 'Institutions' })).toHaveAttribute('href', '/institutions');
     });
   });
 });

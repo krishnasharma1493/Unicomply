@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Col, Row, Typography } from 'antd';
+import { Col, Row } from 'antd';
 import { useForm, useWatch } from 'react-hook-form';
+import { PageHeader } from '../components/layout/PageHeader';
 import { QueryBoundary } from '../components/states';
 import { useMeta } from '../features/meta/useMeta';
 import { splitApiFieldErrors } from '../features/intake/fieldErrors';
@@ -15,7 +16,6 @@ import { client } from '../lib/api/client';
 import type { CaseIntakeResult, Envelope, Meta } from '../lib/api/types';
 import { apiErrorMessage } from '../lib/format';
 
-const { Title, Paragraph } = Typography;
 
 const blank = (meta: Meta): IntakeFormValues => ({
   source_channel: 'email',
@@ -81,6 +81,7 @@ const IntakeWorkspace: React.FC<{ meta: Meta }> = ({ meta }) => {
   return (
     <Row gutter={[24, 24]}>
       <Col xs={24} lg={14}>
+        <div className="uc-section uc-section-body" style={{ paddingTop: 20 }}>
         <IntakeForm
           control={control}
           errors={formState.errors}
@@ -89,8 +90,9 @@ const IntakeWorkspace: React.FC<{ meta: Meta }> = ({ meta }) => {
           formError={formError}
           onSubmit={handleSubmit((values) => create.mutate(values))}
         />
+        </div>
       </Col>
-      <Col xs={24} lg={10}>
+      <Col xs={24} lg={10} className="uc-sticky-col">
         <ResolutionPanel
           tooShort={preview.tooShort}
           loading={preview.isFetching}
@@ -109,12 +111,11 @@ const IntakeWorkspace: React.FC<{ meta: Meta }> = ({ meta }) => {
 export const CaseIntakePage: React.FC = () => {
   const meta = useMeta();
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-      <Title level={2}>Register a case</Title>
-      <Paragraph type="secondary">
-        Type the institution as the complainant wrote it. Matching institutions appear as you type; the case is checked for
-        overlaps with other bureaus the moment it is registered.
-      </Paragraph>
+    <div className="uc-page">
+      <PageHeader
+        title="Register a case"
+        subtitle="Type the institution as the complainant wrote it. Matching institutions appear as you type; the case is checked for overlaps with other bureaus the moment it is registered."
+      />
       <QueryBoundary query={meta} loadingTip="Loading form options">
         {(data) => <IntakeWorkspace meta={data} />}
       </QueryBoundary>

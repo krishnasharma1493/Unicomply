@@ -134,9 +134,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed = false, onNav
     <nav aria-label="Main navigation" className="uc-nav">
       {!hideBrand && (
         <Link to="/" className="uc-brand" aria-label="Unicomply, AICTE complaint monitoring: home">
-          <span className="uc-brand-name">
-            U<span className="uc-brand-name-rest">nicomply</span>
-          </span>
+          <span className="uc-brand-name uc-brand-full">Unicomply</span>
+          <span className="uc-brand-name uc-brand-short" aria-hidden="true">U</span>
           <span className="uc-brand-org">AICTE</span>
         </Link>
       )}

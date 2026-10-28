@@ -91,10 +91,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             <button type="button" className="uc-account-trigger uc-pressable" aria-label={`Account: ${user.name}`}>
               <Avatar size={26} className="uc-avatar">{initials}</Avatar>
               {!isMobile && (
-                <span className="uc-account-text">
-                  <span className="uc-account-name">{user.name}</span>
-                  <span className="uc-meta">{roleLabel}</span>
-                </span>
+                <span className="uc-account-name">{user.name}</span>
               )}
             </button>
           </Dropdown>

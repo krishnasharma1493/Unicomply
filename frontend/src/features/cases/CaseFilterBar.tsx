@@ -33,7 +33,7 @@ export const CaseFilterBar: React.FC<CaseFilterBarProps> = ({ filters, meta, onA
   };
 
   return (
-    <Card size="small" style={{ marginBottom: 16 }}>
+    <Card size="small" className="uc-filterbar" style={{ marginBottom: 16 }}>
       <Form layout="vertical" onFinish={search} role="search" aria-label="Search cases">
         <Row gutter={12}>
           <Col xs={24} md={8}><Form.Item label="Institution name"><Input aria-label="Institution name" allowClear value={draft.q} onChange={(e) => set({ q: e.target.value })} placeholder="Name or what was written" /></Form.Item></Col>

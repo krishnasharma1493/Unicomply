@@ -57,7 +57,7 @@ export const ReviewWorkbench: React.FC<{
       <Card size="small">
         <Space orientation="vertical" size={2}>
           <Text type="secondary">{review.case_ref} · received {formatDate(review.received_at)}</Text>
-          <Title level={3} style={{ margin: 0 }}>{review.raw_institution_text}</Title>
+          <Title level={3} style={{ margin: '2px 0' }}>{review.raw_institution_text}</Title>
           <Text type="secondary">{where || 'No state or district given'}</Text>
           <Text>{review.subject}</Text>
         </Space>

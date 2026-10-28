@@ -6,7 +6,7 @@ import { useAuth } from '../../auth/AuthProvider';
 import { LinkedCaseCard, OverlapBanner, WhyFlagged } from '../../components/signature';
 import { DECISION_LABELS } from './ResolutionPanel';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 export interface IntakeResultProps {
   result: CaseIntakeResult;
@@ -72,13 +72,18 @@ export const IntakeResult: React.FC<IntakeResultProps> = ({ result, meta, onNewC
                 bureauCodes={Array.from(new Set([...(ownBureau ? [ownBureau] : []), ...group.cases.map((c) => c.bureau_code)]))}
               />
               <div>
-                <Title level={5}>Why this was flagged</Title>
+                <h3 className="uc-subhead">Why this was flagged</h3>
                 <WhyFlagged reasons={group.reasons} />
               </div>
-              <div style={{ display: 'grid', gap: 8 }}>
-                {group.cases.map((c) => (
-                  <LinkedCaseCard key={c.case_id} card={c} />
-                ))}
+              <div>
+                <h3 className="uc-subhead">Linked cases</h3>
+                <ul className="uc-rows">
+                  {group.cases.map((c) => (
+                    <li key={c.case_id}>
+                      <LinkedCaseCard card={c} />
+                    </li>
+                  ))}
+                </ul>
               </div>
             </Space>
           </Card>

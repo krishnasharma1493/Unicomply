@@ -40,7 +40,7 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({
           </Paragraph>
 
           {Object.keys(params).length > 0 && (
-            <div style={{ background: '#f1f5f9', padding: '12px 16px', borderRadius: '6px' }}>
+            <div style={{ background: 'var(--uc-fill)', padding: '12px 16px', borderRadius: '6px' }}>
               <Text strong>Route Parameters: </Text>
               <Text code>{JSON.stringify(params)}</Text>
             </div>
@@ -51,7 +51,7 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({
               padding: '16px',
               border: '1px dashed #cbd5e1',
               borderRadius: '6px',
-              backgroundColor: '#f8fafc',
+              backgroundColor: 'var(--uc-canvas)',
             }}
           >
             <Text type="secondary">

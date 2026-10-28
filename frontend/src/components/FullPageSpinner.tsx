@@ -13,11 +13,11 @@ export function FullPageSpinner({ tip = 'Loading Unicomply...' }: { tip?: string
         minHeight: '100vh',
         width: '100%',
         gap: '16px',
-        backgroundColor: '#f8fafc',
+        backgroundColor: 'var(--uc-canvas)',
       }}
     >
       <Spin size="large" />
-      <span style={{ color: '#475569', fontSize: '14px', fontWeight: 500 }}>{tip}</span>
+      <span style={{ color: 'var(--uc-text-2)', fontSize: '14px', fontWeight: 500 }}>{tip}</span>
     </div>
   );
 }

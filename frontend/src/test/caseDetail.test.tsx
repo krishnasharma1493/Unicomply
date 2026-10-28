@@ -199,7 +199,7 @@ describe('Case Detail page on the mock API (Issue #26)', () => {
     renderAs('rb_head', 101);
     expect(await screen.findByText('Unable to load data')).toBeInTheDocument();
     expect(screen.getByText(fixtures.errors.notFound.error.message)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '← All cases' })).toHaveAttribute('href', '/cases');
+    expect(screen.getByRole('link', { name: 'All cases' })).toHaveAttribute('href', '/cases');
   });
 });
 

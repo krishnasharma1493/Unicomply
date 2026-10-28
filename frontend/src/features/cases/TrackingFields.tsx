@@ -12,7 +12,7 @@ export const TrackingFields: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ d
   const bureau = meta.bureaus.find((b) => b.id === c.current_bureau_id);
   const officer = meta.officers.find((o) => o.id === c.assigned_officer_id);
   return (
-    <Descriptions className="uc-fields" layout="vertical" size="small" colon={false} column={{ xs: 1, md: 2, xl: 3 }}>
+    <Descriptions className="uc-fields" layout="vertical" size="small" colon={false} column={{ xs: 1, md: 2 }}>
       <Descriptions.Item label="Source">{SOURCE_CHANNEL_LABELS[c.source_channel]}</Descriptions.Item>
       <Descriptions.Item label="External reference">{c.external_ref ?? '—'}</Descriptions.Item>
       <Descriptions.Item label="Received">{formatDate(c.received_at)}</Descriptions.Item>

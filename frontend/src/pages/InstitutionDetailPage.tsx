@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Card, Col, Descriptions, Row, Space, Statistic, Tag, Timeline, Typography } from 'antd';
+import { Card, Col, Descriptions, Row, Space, Timeline, Typography } from 'antd';
+import { BackLink, PageHeader, Section } from '../components/layout/PageHeader';
+import { KpiCard } from '../components/ui';
 import { LinkedCaseCard, OverlapBanner, WhyFlagged } from '../components/signature';
 import { QueryBoundary } from '../components/states';
 import { BureauChip, StatusChip } from '../components/ui';
@@ -9,7 +11,7 @@ import { INST_TYPE_LABELS, REGION_LABELS } from '../lib/api/enums';
 import type { Institution360, InstitutionLite, LinkedCaseCard as CardData } from '../lib/api/types';
 import { formatDate } from '../lib/format';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const Links: React.FC<{ rows: InstitutionLite[]; empty: string }> = ({ rows, empty }) =>
   rows.length === 0 ? (
@@ -31,52 +33,53 @@ const View: React.FC<{ data: Institution360 }> = ({ data }) => {
 
   return (
     <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-      <Card>
-        <Space orientation="vertical" size="small" style={{ width: '100%' }}>
-          <Space wrap align="center">
-            <Title level={2} style={{ margin: 0 }}>{inst.name}</Title>
-            <Tag color="blue">{inst.permanent_id}</Tag>
-          </Space>
-          <Descriptions size="small" column={{ xs: 1, md: 2 }}>
-            <Descriptions.Item label="Type">{INST_TYPE_LABELS[inst.inst_type]}</Descriptions.Item>
-            <Descriptions.Item label="Region">{REGION_LABELS[inst.region]}</Descriptions.Item>
-            <Descriptions.Item label="Address">{inst.address}, {inst.district}, {inst.state} {inst.pin}</Descriptions.Item>
-            <Descriptions.Item label="Established">{inst.year_est ?? '—'}</Descriptions.Item>
-            <Descriptions.Item label="Trust">{trust ? trust.name : '—'}</Descriptions.Item>
-            <Descriptions.Item label="Part of">{parent ? <Link to={`/institutions/${parent.permanent_id}`}>{parent.name}</Link> : '—'}</Descriptions.Item>
-          </Descriptions>
-          <Row gutter={16}>
-            <Col xs={12} md={6}><Statistic title="Cases" value={counts.total} /></Col>
-            <Col xs={12} md={6}><Statistic title="Open" value={counts.open} /></Col>
-            <Col xs={12} md={6}><Statistic title="Disposed" value={counts.disposed} /></Col>
-            <Col xs={12} md={6}><Statistic title="Beyond SLA" value={counts.beyond_sla} /></Col>
-          </Row>
-        </Space>
-      </Card>
+      <PageHeader
+        title={inst.name}
+        titleExtra={<span className="uc-label uc-num">{inst.permanent_id}</span>}
+        subtitle={`${INST_TYPE_LABELS[inst.inst_type]} · ${inst.district}, ${inst.state} · ${REGION_LABELS[inst.region]} region`}
+      />
+      <div className="uc-kpis" role="group" aria-label="Case counts" style={{ marginTop: -8 }}>
+        <KpiCard label="Cases" value={counts.total} />
+        <KpiCard label="Open" value={counts.open} />
+        <KpiCard label="Disposed" value={counts.disposed} />
+        <KpiCard label="Beyond SLA" value={counts.beyond_sla} className={counts.beyond_sla > 0 ? 'uc-kpi--alert' : undefined} />
+      </div>
+      <Section title="Profile">
+        <Descriptions className="uc-fields" layout="vertical" colon={false} size="small" column={{ xs: 1, md: 3 }}>
+          <Descriptions.Item label="Type">{INST_TYPE_LABELS[inst.inst_type]}</Descriptions.Item>
+          <Descriptions.Item label="Region">{REGION_LABELS[inst.region]}</Descriptions.Item>
+          <Descriptions.Item label="Established">{inst.year_est ?? '—'}</Descriptions.Item>
+          <Descriptions.Item label="Address">{inst.address}, {inst.district}, {inst.state} {inst.pin}</Descriptions.Item>
+          <Descriptions.Item label="Trust">{trust ? trust.name : '—'}</Descriptions.Item>
+          <Descriptions.Item label="Part of">{parent ? <Link to={`/institutions/${parent.permanent_id}`}>{parent.name}</Link> : '—'}</Descriptions.Item>
+        </Descriptions>
+      </Section>
 
       {data.overlap_groups.map((g) => (
-        <Card key={g.group_id} size="small">
-          <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
+        <Section key={g.group_id} aria-label="Overlap">
+          <div className="uc-stack" style={{ gap: 14 }}>
             <OverlapBanner tier={g.tier} groupId={g.group_id} caseCount={g.cases.length} bureauCodes={Array.from(new Set(g.cases.map((c) => c.bureau_code)))} />
             <WhyFlagged reasons={g.reasons} />
-          </Space>
-        </Card>
+          </div>
+        </Section>
       ))}
 
       <Card title="Cases by bureau">
         {columns.length === 0 ? (
           <Text type="secondary">No case has been reported about this institution.</Text>
         ) : (
-          <Row gutter={[16, 16]}>
+          <Row gutter={[32, 24]}>
             {columns.map((col) => (
               <Col key={col.bureau_id} xs={24} md={12} xl={8} role="group" aria-label={`Cases at ${col.bureau_code}`}>
-                <Space orientation="vertical" style={{ width: '100%' }}>
-                  <Space>
+                <div className="uc-bureau-col">
+                  <div className="uc-title-line" style={{ gap: 8, marginBottom: 10 }}>
                     <BureauChip code={col.bureau_code} name={col.bureau_name} />
-                    <Text type="secondary">{col.cards.length} {col.cards.length === 1 ? 'case' : 'cases'}</Text>
-                  </Space>
-                  {col.cards.map((c) => <LinkedCaseCard key={c.case_id} card={c} />)}
-                </Space>
+                    <span className="uc-meta">{col.bureau_name} · {col.cards.length} {col.cards.length === 1 ? 'case' : 'cases'}</span>
+                  </div>
+                  <ul className="uc-rows">
+                    {col.cards.map((c) => <li key={c.case_id}><LinkedCaseCard card={c} /></li>)}
+                  </ul>
+                </div>
               </Col>
             ))}
           </Row>
@@ -127,9 +130,9 @@ export const InstitutionDetailPage: React.FC = () => {
   const { pid = '' } = useParams();
   const detail = useInstitution(pid);
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-      <Link to="/institutions">← Institutions</Link>
-      <div style={{ marginTop: 12 }}>
+    <div className="uc-page">
+      <BackLink to="/institutions" label="Institutions" />
+      <div>
         <QueryBoundary query={detail} loadingTip="Loading institution">
           {(d) => <View data={d} />}
         </QueryBoundary>

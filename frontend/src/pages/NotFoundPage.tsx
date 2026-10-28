@@ -11,7 +11,7 @@ export const NotFoundPage: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
-        backgroundColor: '#f8fafc',
+        backgroundColor: 'var(--uc-canvas)',
         padding: '24px',
       }}
     >
