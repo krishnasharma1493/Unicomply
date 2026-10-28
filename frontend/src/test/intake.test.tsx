@@ -3,8 +3,10 @@ import { act, fireEvent, render, renderHook, screen, within } from '@testing-lib
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '../auth/AuthProvider';
 import { tokenStore } from '../auth/tokenStore';
 import { CaseIntakePage } from '../pages/CaseIntakePage';
+import { IntakeResult } from '../features/intake/IntakeResult';
 import { intakeSchema, toCaseCreate, type IntakeFormValues } from '../features/intake/schema';
 import { splitApiFieldErrors } from '../features/intake/fieldErrors';
 import { useDebouncedValue } from '../features/intake/useDebouncedValue';
@@ -88,14 +90,16 @@ describe('Intake page on the mock API (Issue #25)', () => {
   const renderPage = () =>
     render(
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-        <MemoryRouter>
-          <CaseIntakePage />
-        </MemoryRouter>
+        <AuthProvider>
+          <MemoryRouter>
+            <CaseIntakePage />
+          </MemoryRouter>
+        </AuthProvider>
       </QueryClientProvider>,
     );
 
-  async function fillHero(user: ReturnType<typeof userEvent.setup>) {
-    await user.type(await screen.findByLabelText(/Institution name/), 'vindya valley engg college jabalpur');
+  async function fillHero(user: ReturnType<typeof userEvent.setup>, institution = 'vindya valley engg college jabalpur') {
+    await user.type(await screen.findByLabelText(/Institution name/), institution);
     await user.type(screen.getByLabelText('State'), 'Madhya Pradesh');
     await user.type(screen.getByLabelText(/Subject/), 'Certificates not returned');
     await user.type(screen.getByLabelText(/Description/), 'The college is not returning the original mark sheets.');
@@ -154,6 +158,48 @@ describe('Intake page on the mock API (Issue #25)', () => {
     expect(screen.getByRole('link', { name: 'Open case' })).toHaveAttribute('href', '/cases/105');
     await user.click(screen.getByRole('button', { name: 'Register another' }));
     expect(await screen.findByLabelText(/Institution name/)).toHaveValue('');
+  });
+
+  it('registers an ambiguous name as pending review and links to the review queue (#42)', async () => {
+    const user = userEvent.setup();
+    renderPage();
+    await fillHero(user, 'S.I.T. Bhopal');
+    await user.click(screen.getByRole('button', { name: 'Register case' }));
+    expect(await screen.findByText(/Case registered: PGRC\/2026\//)).toBeInTheDocument();
+    expect(screen.getByText('Institution not confirmed: queued for match review')).toBeInTheDocument();
+    expect(screen.getByText(/2 possible institutions/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open review queue' })).toHaveAttribute('href', '/reviews');
+    expect(screen.queryByText(/Coordination Required/)).not.toBeInTheDocument();
+    expect(screen.queryByText('No overlapping cases found for this institution.')).not.toBeInTheDocument();
+
+    const queue = await client.get('/reviews', { params: { status: 'pending' } });
+    expect(queue.data.data).toHaveLength(fixtures.reviews.data.length + 1);
+  });
+
+  it('hides the review-queue link from a role that cannot open the queue (#42)', async () => {
+    tokenStore.set(fixtures.login.pgrc_head.data.access_token);
+    const user = userEvent.setup();
+    renderPage();
+    await fillHero(user, 'S.I.T. Bhopal');
+    await user.click(screen.getByRole('button', { name: 'Register case' }));
+    expect(await screen.findByText('Institution not confirmed: queued for match review')).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Open review queue' })).not.toBeInTheDocument();
+  });
+
+  it('describes a single candidate in the singular (#42)', async () => {
+    const result = structuredClone(fixtures.intake.data);
+    result.case.permanent_id = null;
+    result.overlaps = [];
+    result.resolution = { decision: 'pending_review', candidates: result.resolution.candidates.slice(0, 1) };
+    render(
+      <AuthProvider>
+        <MemoryRouter>
+          <IntakeResult result={result} meta={fixtures.meta.data} onNewCase={() => {}} />
+        </MemoryRouter>
+      </AuthProvider>,
+    );
+    expect(await screen.findByText(/One possible institution; a reviewer confirms whether it is the right one\./)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open review queue' })).toBeInTheDocument();
   });
 
   it('puts an API 400 on the field it names', async () => {

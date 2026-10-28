@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Button, Card, Space, Typography } from 'antd';
 import type { CaseIntakeResult, Meta } from '../../lib/api/types';
+import { useAuth } from '../../auth/AuthProvider';
 import { LinkedCaseCard, OverlapBanner, WhyFlagged } from '../../components/signature';
 import { DECISION_LABELS } from './ResolutionPanel';
 
@@ -15,8 +16,12 @@ export interface IntakeResultProps {
 
 /** What the system did with the new case: its reference, the match decision, and any overlap (demo step 4). */
 export const IntakeResult: React.FC<IntakeResultProps> = ({ result, meta, onNewCase }) => {
+  const { user } = useAuth();
   const { case: created, resolution, overlaps } = result;
   const ownBureau = meta.bureaus.find((b) => b.id === created.current_bureau_id)?.code;
+  // The roles GET /reviews allows (backend: require_roles(intake_operator, senior_mgmt)).
+  const canOpenReviews = user?.role === 'intake_operator' || user?.role === 'senior_mgmt';
+  const candidateCount = resolution.candidates.length;
   return (
     <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
       <Alert
@@ -36,8 +41,26 @@ export const IntakeResult: React.FC<IntakeResultProps> = ({ result, meta, onNewC
           </Space>
         }
       />
+      {created.permanent_id === null && (
+        <Alert
+          type="warning"
+          showIcon
+          title="Institution not confirmed: queued for match review"
+          description={
+            <Text>
+              {candidateCount === 0
+                ? 'No institution in the registry matched; a reviewer searches for it. '
+                : candidateCount === 1
+                  ? 'One possible institution; a reviewer confirms whether it is the right one. '
+                  : `${candidateCount} possible institutions; a reviewer picks the right one. `}
+              Overlap checks run once the institution is confirmed.
+            </Text>
+          }
+          action={canOpenReviews ? <Link to="/reviews">Open review queue</Link> : undefined}
+        />
+      )}
       {overlaps.length === 0 ? (
-        <Alert type="info" showIcon title="No overlapping cases found for this institution." />
+        created.permanent_id !== null && <Alert type="info" showIcon title="No overlapping cases found for this institution." />
       ) : (
         overlaps.map((group) => (
           <Card key={group.group_id} size="small">

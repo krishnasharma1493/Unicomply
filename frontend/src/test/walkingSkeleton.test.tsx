@@ -161,18 +161,18 @@ describe('Issue #11 Walking Skeleton', () => {
       });
     };
 
-    it('senior_mgmt (admin) sees all 8 navigation items', async () => {
+    it('senior_mgmt (admin) sees all 9 navigation items, Match Review included', async () => {
       await setupSidebarWithUser(fixtures.login.senior.data.access_token);
 
       expect(screen.getByText('Dashboard')).toBeInTheDocument();
       expect(screen.getByText('Cases')).toBeInTheDocument();
       expect(screen.getByText('Case Intake')).toBeInTheDocument();
+      expect(screen.getByText('Match Review')).toBeInTheDocument();
       expect(screen.getByText('Overlap Center')).toBeInTheDocument();
       expect(screen.getByText('Institutions')).toBeInTheDocument();
       expect(screen.getByText('Alerts')).toBeInTheDocument();
       expect(screen.getByText('Reports')).toBeInTheDocument();
       expect(screen.getByText('System Admin')).toBeInTheDocument();
-      expect(screen.queryByText('Match Review')).not.toBeInTheDocument();
     });
 
     it('bureau_head sees 7 navigation items (no System Admin, no Match Review)', async () => {
@@ -200,6 +200,7 @@ describe('Issue #11 Walking Skeleton', () => {
       expect(screen.queryByText('Overlap Center')).not.toBeInTheDocument();
       expect(screen.queryByText('Reports')).not.toBeInTheDocument();
       expect(screen.queryByText('System Admin')).not.toBeInTheDocument();
+      expect(screen.queryByText('Match Review')).not.toBeInTheDocument();
     });
 
     it('intake_operator sees Match Review and Case Intake', async () => {

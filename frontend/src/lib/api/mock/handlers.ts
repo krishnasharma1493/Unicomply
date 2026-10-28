@@ -7,6 +7,7 @@ import { REPORT_KINDS, type ReportKind } from '../enums';
 import type {
   ApiError,
   CaseActionIn,
+  CaseCreate,
   CaseRead,
   Envelope,
   InstitutionListItem,
@@ -179,7 +180,11 @@ const routes: Route[] = [
     handle: ({ body, viewer }) => {
       if (!role(viewer, 'intake_operator', 'bureau_head')) throw forbidden();
       validateCaseCreate(body);
-      return ok(db.intakeHeroCase(), 201);
+      const create = body as CaseCreate;
+      // A name the engine would not guess (a seeded review's text, e.g. "S.I.T. Bhopal") is queued
+      // for review; anything else replays the hero intake.
+      const seeded = create.permanent_id ? undefined : db.reviewForText(create.raw_institution_text);
+      return ok(seeded ? db.intakePendingCase(create, seeded, viewer) : db.intakeHeroCase(), 201);
     },
   },
   {
