@@ -136,7 +136,8 @@ def test_an_unknown_institution_is_queued_for_review_not_linked(full_client: Tes
         headers=login(full_client, "intake@aicte.example"),
     )
     data = res.json()["data"]
-    assert data["resolution"]["decision"] == "unresolved" and data["overlaps"] == [] and data["case"]["permanent_id"] is None
+    assert data["resolution"]["decision"] in ("pending_review", "unresolved")  # a human decides; never an automatic link
+    assert data["overlaps"] == [] and data["case"]["permanent_id"] is None and data["case"]["match_status"] != "auto"
 
 
 def test_median_intake_is_under_two_seconds_on_the_full_seed(full_client: TestClient, capsys: pytest.CaptureFixture[str]) -> None:

@@ -194,14 +194,6 @@ def test_tuning_is_refused_on_the_test_split(fast: List[Dict[str, Any]], tmp_pat
     assert exc.value.code == 2 and fast == []
 
 
-def test_tune_without_the_tuner_says_so(
-    fast: List[Dict[str, Any]], tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
-) -> None:
-    monkeypatch.setitem(sys.modules, "app.matching.tune", None)  # as if #44 had not landed
-    assert harness.main(["--tune", "--split", "dev", "--out", str(tmp_path / "r.md")]) == 2
-    assert "#44" in capsys.readouterr().err and fast == [] and not (tmp_path / "r.md").exists()
-
-
 def test_tune_delegates_to_the_tuner_on_dev_then_evaluates(
     fast: List[Dict[str, Any]], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

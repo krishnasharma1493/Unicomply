@@ -20,7 +20,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field, replace
 from datetime import date, datetime
 from pathlib import Path
-from typing import Dict, FrozenSet, Iterable, List, Optional, Sequence, Set, Tuple
+from typing import Any, Dict, FrozenSet, Iterable, List, Optional, Sequence, Set, Tuple
 
 from app.core.config import Settings
 from app.matching.embed import make_embedder
@@ -172,16 +172,17 @@ class EvalReport:
 
 @dataclass
 class World:
-    ground_truth: dict
+    ground_truth: Dict[str, Any]
     institutions: List[InstitutionLite]
     aliases: List[AliasLite]
     trust_names: Dict[int, str]
-    cases: Dict[int, dict]  # raw seed rows by case id
+    cases: Dict[int, Dict[str, Any]]  # raw seed rows by case id
     lites: Dict[int, CaseLite]
 
 
-def _load(seed_dir: Path, name: str) -> dict:
-    return json.loads((seed_dir / f"{name}.json").read_text(encoding="utf-8"))
+def _load(seed_dir: Path, name: str) -> Dict[str, Any]:
+    data: Dict[str, Any] = json.loads((seed_dir / f"{name}.json").read_text(encoding="utf-8"))
+    return data
 
 
 def _day(value: Optional[str]) -> Optional[date]:
@@ -498,25 +499,24 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--engine", choices=("real", "stub"), default="real")
     parser.add_argument("--tune", action="store_true", help="tune weights and thresholds on the dev split first (#44)")
     parser.add_argument("--seed-dir", type=Path, default=SEED_DIR, help=argparse.SUPPRESS)
-    parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help="where to write the markdown table")
+    parser.add_argument("--out", type=Path, default=None, help="where to write the markdown table (default: docs/pitch/eval_results.md for the test split; a dev report is only printed)")
     args = parser.parse_args(argv)
 
     if args.tune:
         if args.split != "dev":
             parser.error("--tune only runs on the dev split; test is for reporting (PRD §9)")
-        try:
-            from app.matching import tune  # type: ignore[attr-defined]
-        except ImportError:
-            print("--tune needs app.matching.tune (issue #44), which is not in this build yet.", file=sys.stderr)
-            return 2
+        from app.matching import tune
+
         tune.run(split="dev")
 
     report = evaluate(args.seed_dir, args.split, args.mode, args.engine)
     text = render(report)
     print(text)
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(text, encoding="utf-8")
-    print(f"Wrote {args.out}", file=sys.stderr)
+    out = args.out or (DEFAULT_OUT if args.split == "test" else None)  # the committed file is the test-split report
+    if out is not None:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(text, encoding="utf-8")
+        print(f"Wrote {out}", file=sys.stderr)
     return 0
 
 

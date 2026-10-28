@@ -48,9 +48,16 @@ def detect_overlaps(
         score = pair_score(new, other, level, idx, th)
         cross_bureau = new.bureau_id != other.bureau_id
         institutional_cross = level == "institution" and cross_bureau and new.is_open and other.is_open
-        if not institutional_cross and score < th.t_possible:
-            continue
-        if level in ("parent", "trust") and score < th.t_probable:
+        # PRD §4.5: open cases of one institution handled by different bureaus are always compared; a recently
+        # disposed one needs T_possible; same bureau, a sibling department or a sibling institution of the trust
+        # need T_probable (a "possible duplicate" or a "possible" link).
+        if institutional_cross:
+            required = 0.0
+        elif level == "institution" and cross_bureau:
+            required = th.t_possible
+        else:
+            required = th.t_probable
+        if score < required:
             continue
         reasons = _reasons(new, other, level, score, idx)
         evidence.append(PairEvidence.of(new.id, other.id, level, score, tuple(reasons)))

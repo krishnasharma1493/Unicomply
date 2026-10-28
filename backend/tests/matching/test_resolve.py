@@ -85,3 +85,43 @@ def test_misspelt_words_are_corrected_against_the_registry_vocabulary():
     assert _correct_spelling("XYZZY", idx) == "XYZZY"  # nothing close enough: left alone
     assert _correct_spelling("OF", idx) == "OF"  # too short to correct safely
     assert _correct_spelling("12345", idx) == "12345"
+
+
+# ── Acronym-only complaints and localities (#44) ─────────────────────────
+
+
+def test_a_complaint_that_is_just_the_acronym_resolves_with_the_district():
+    result = resolve_institution("VVIET Jabalpur", "Madhya Pradesh", None, hero_index(), load_thresholds(), top_k=3)
+    assert result.decision == "auto" and result.top.permanent_id == "1-4812730561"
+    assert any("Acronym VVIET matches" in reason for reason in result.top.reasons)
+
+
+def test_an_acronym_shared_by_two_institutions_in_one_district_is_not_guessed():
+    """SIT is the acronym of two Bhopal institutions in the hand-written world: that has to be a human's call."""
+    import json
+
+    tiny = json.loads((Path(__file__).resolve().parents[2] / "seed_data" / "tiny" / "institutions.json").read_text())
+    insts = [InstitutionLite(r["permanent_id"], r["name"], r["name_norm"], r.get("acronym"), r["district"], r["state"], r["region"], r.get("trust_id"), r.get("parent_id")) for r in tiny["institutions"]]
+    idx = build_index(insts, [], [], [], make_embedder("tfidf", "unused"))
+    result = resolve_institution("SIT Bhopal", "Madhya Pradesh", None, idx, load_thresholds(), top_k=3)
+    assert result.decision != "auto"
+    assert {c.permanent_id for c in result.candidates} >= {"1-4870215534", "1-4870219908"}
+
+
+def test_a_locality_given_instead_of_the_district_is_read_as_its_district():
+    """'Adhartal' is a locality of Jabalpur: it must not veto the Jabalpur institution."""
+    result = resolve_institution("Vindhya Valley Institute of Engineering & Technology", "Madhya Pradesh", "Adhartal",
+                                 hero_index(), load_thresholds(), top_k=3)
+    assert result.decision == "auto" and result.top.permanent_id == "1-4812730561"
+    wrong = resolve_institution("Vindhya Valley Institute of Engineering & Technology", "Madhya Pradesh", "Pune",
+                                hero_index(), load_thresholds(), top_k=3)
+    assert "1-4812730561" not in {c.permanent_id for c in wrong.candidates}  # a different district still vetoes
+
+
+def test_locality_aliases_come_from_the_seed_file_and_cover_every_generator_locality():
+    from app.matching.normalize import load_district_aliases
+    from seed_data.generator.vocab import LOCALITIES
+
+    aliases = load_district_aliases()
+    for district, locality in LOCALITIES.items():
+        assert aliases[locality.upper()] == district.upper()
