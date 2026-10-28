@@ -1,80 +1,84 @@
-# Unicomply visual direction
+# Unicomply visual and interaction direction (v2)
 
-Unicomply is an operating tool. AICTE officers keep it open all day to register complaints, watch SLAs and decide overlaps. The design aims for the calm, exact feel of a good Mac app, where the interface stays out of the way of the case.
+Unicomply is the tool an AICTE officer keeps open all day. v1 (PR #131) made it clean and accessible, but it looked like any well-made admin. v2 builds the identity out of the product itself: the Cross-Bureau Overlap Engine, the SLA clock and the institution record. It also reorganises the app around the work instead of the data types.
 
-## What was wrong (critique of the previous UI, 1440×900, all personas)
+## What the audits found (v1)
 
-- **Default Ant Design with navy paint.** It had a dark slate sidebar, a white header, white cards on grey, 8 px radii everywhere and blue/cyan/purple/volcano tags. Any admin template looks the same, so nothing in it was specific to Unicomply.
-- **Card soup.** Each page stacked a white card per section, then put more bordered cards inside it (linked cases, candidates, alert groups). Case Detail and Institution 360 went three boxes deep. The borders, not the content, set the rhythm.
-- **Rainbow tags.** Status, bureau, role and persona each had their own hue, so a table row could hold four colours. Red meant both "Probable overlap" and "low match score", so the one colour that should stop an officer had lost its meaning.
-- **Broken chrome.** The brand subtitle overflowed the 60 px header. The "AICTE" pill was clipped. The dark sidebar ended at 900 px on long pages, leaving a white strip. Case Intake highlighted "Cases" in the nav instead of "Case Intake".
-- **Cramped tables, airy forms.** The Cases table wrapped institution names onto 3–4 lines next to mostly empty columns, while Intake laid every field at full width with large gaps.
-- **No hierarchy on the hero pages.** The overlap banner, a list of nine reasons with duplicates, and the linked cases had equal weight, so the coordination message did not stand out.
-- **Dashboard KPIs** were eight separate boxes. The things that need attention (probable overlaps, institutions beyond SLA) sat below two charts.
+Four independent reviews: UX flows, visual design (Impeccable critique and detector), WCAG 2.2 accessibility (axe, keyboard, 200% zoom, Devanagari), and frontend architecture.
 
-## Layout model
+- **No identity.** The palette was apple.com's own (`#f5f5f7`, `#1d1d1f`, `#0071e3`) on the system font. With the wordmark covered, it was a generic admin.
+- **Organised by data, not by work.**
+  - Every role landed on the same KPI dashboard. The PGRC head saw "288 beyond SLA" but no queue.
+  - Things needing a decision were spread over Alerts, Overlap Center, Match Review and the dashboard.
+  - The case list could not be sorted by SLA, and returning from a case lost the filters.
+- **The signature moment was a chip pile.**
+  - Overlap evidence was an unordered cloud of reasons. Pairs were mixed, so one case showed another pair's "similarity 1.00".
+  - The misspelt-to-registry resolution was never shown.
+  - The SLA was a grey chip on every row.
+- **Feedback gaps.**
+  - Confirming an overlap closed silently. Errors offered "Try again" for 403/404.
+  - There was no way to jump to a case by reference without the filter form.
+- **Accessibility gaps.**
+  - No skip link, a static page title, and focus left on `body` after navigation or dialogs.
+  - Faint focus rings, some tag colours below 4.5:1, focusable chart internals hidden from assistive tech, and silent toasts.
 
-- **A sidebar and a toolbar float over one canvas.** A 248 px sidebar holds the wordmark and navigation. A 52 px toolbar holds the persona, alerts and account controls. Content scrolls underneath both.
-- Each page has one **page header**: an optional back link, the title, a one-line purpose capped at 72ch, and its actions aligned right. The pages read in a single column at most 1,200 px wide. Two-column layouts are used only where a page compares two things: Intake (form beside candidates) and Match Review (queue beside workbench).
-- **Grouping comes from space first.** A section is a white rounded surface, one level deep only. Inside a section, rows are separated by hairlines and never boxed again.
+## Decisions
 
-## Colour (Restrained: neutrals and one accent)
+### Organised by job
+- **Navigation.** Grouped as Work (Today, Cases, New case, Match Review), Decide (Overlaps, Alerts), Look up (Institutions) and Report (Overview, Reports, Admin). Every old route still works; the KPI dashboard moved to `/overview`.
+- **Today (`/`).** Each role's queue:
+  - overlaps needing a decision;
+  - pending match reviews (intake, senior);
+  - cases past SLA and due soon, soonest first (the one backend change: an optional `sort=sla_due_asc` on `GET /cases`);
+  - unread alerts.
+- **Command bar (⌘K / Ctrl K, or the toolbar field).** Jumps to a case by reference, an institution by name or Permanent ID, or any page the role may open. It uses the same scoped endpoints.
+- **Cases split view.** At 1280 px and wider, the list stays beside the open case, so working through a queue never loses its place. A filter sentence says what the list holds.
 
-| Role | Value | Contrast |
-|---|---|---|
-| Canvas | `#f5f5f7` | — |
-| Surface | `#ffffff` | — |
-| Text | `#1d1d1f` | 16.8 (white), 15.5 (canvas) |
-| Secondary text | `#636366` | 5.9 (white), 5.4 (canvas) |
-| Accent: actions, selection, focus | `#0071e3` fill, `#0066cc` text | white on fill 4.7; link 5.6 (white) |
-| Probable / breach (red) | `#d70015`, tint `#fff2f2`, text on tint `#b3000c` | 5.4 / 6.6 |
-| Possible / warning (amber) | `#9a5300` text, tint `#fff7e8`, text on tint `#8a4b00` | 5.8 / 6.4 |
-| Success (green) | `#1d7a34` | 5.4 |
+### The Evidence Line (the signature)
+One drawn element, a hairline with ticks and dots, is used for every claim the system makes. Three words: *precise, causal, quiet.*
 
-Red is reserved for Probable overlaps, SLA breaches and destructive actions. A match or pair score is drawn in neutral and accent, never red. Every semantic colour comes with a word or icon. Bureaus and statuses are neutral labels with no hue.
+- **SLA track.** One tick per day of the SLA, with the elapsed days filled: neutral, amber from four days before the due date, red past it. The words ("Day 19 of 21", "Beyond SLA +3") always sit beside it.
+- **Resolution line.** The complainant's words, then a drawn arrow, then the registry name with the words they account for set in ink.
+- **Overlap lanes.** One lane per bureau on a shared date axis, with each case a dot where it was received and the current case marked. The picture says what the reasons say in words: the same matter is open in several units at once.
+- **Evidence ledger and pair grid.** Reasons are read into fixed rows (institution, issue, bureaus, received, complaint text) in the same order everywhere. Pairs are never mixed, and similarity is always given in words as well as a number.
 
-## Type
+### Voice, colour, shape
+- **Palette.** Unicomply's own:
+  - Cool paper canvas `#f2f3f1`, white surfaces, ink `#1b1f1d`, secondary `#5b625e` (6.3:1).
+  - One accent, a deep registry ink `#0b5e6b` (7.4:1), for actions, selection, focus and resolution only.
+  - Red `#b42318` only for Probable overlaps, breaches and destructive actions. Amber text `#8a4b00`. Green `#1d7a34`.
+  - No new hues, gradients, glow or tinted containers.
+- **Type.**
+  - The system stack (SF Pro on Macs, with Noto Sans Devanagari in the fallback list for Hindi), with size-specific tracking and tabular figures.
+  - Case references and IDs are set like a register: monospace, tabular, outlined, never filled.
+- **Shape.** 6–8 px corners and square-ended rules. No pills. Sections are one level deep; rows inside them are separated by hairlines.
+- **Overlap banner.** Untinted, sitting on a 2 px tier rule. The red lives only in the icon, the title and the rule. The exact PRD strings are kept.
 
-- **Font.** The system stack (`-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Noto Sans", "Noto Sans Devanagari", sans-serif`) gives SF Pro on Macs and a native face elsewhere, with no downloads.
-- **Scale (rem, 14 px base).**
+### Motion
+- **Springs.** Critically damped (`lib/motion.ts`: bounce 0, about 0.35 s). Interruptible, transform and opacity only.
+- **Each motion explains a change:**
+  - Candidates re-rank in place.
+  - Lanes draw their cases in date order, the current one first.
+  - A new timeline entry pushes the history down.
+  - Resolved queue items leave.
+  - Popovers and the command bar grow from where they were opened.
+- **No entrance cascades** on data pages.
+- **Reduced motion.** Under `prefers-reduced-motion` everything becomes a 150 ms cross-fade, and Ant Design's motion is off.
 
-  | Step | Size (rem) | Weight | Line height | Tracking |
-  |---|---|---|---|---|
-  | Caption | 0.786 | 500 | 1.35 | +0.01em |
-  | Footnote | 0.857 | 400 | 1.4 | — |
-  | Body | 1 | 400 | 1.5 | −0.005em |
-  | Headline | 1.071 | 600 | 1.35 | −0.01em |
-  | Title 3 | 1.286 | 600 | 1.25 | −0.015em |
-  | Title 2 | 1.571 | 700 | 1.18 | −0.02em |
-  | Large title | 2 | 700 | 1.1 | −0.025em |
+### Materials
+Glass only on the floating chrome (sidebar, toolbar, command bar, popovers, dialogs). Content is always solid. `prefers-reduced-transparency` and `prefers-contrast: more` make the chrome solid, with defined borders.
 
-- **Emphasis** comes from weight, not size. Numbers in tables, KPIs and references use tabular figures.
+### Accessibility
+- Skip link, and page titles that follow the h1.
+- Focus moves to the new heading after in-app navigation and returns to the trigger when dialogs and popovers close.
+- 2 px solid ink focus rings (7.4:1).
+- Toasts are mirrored into a live region.
+- Errors a retry cannot fix (401/403/404) explain why instead.
+- Charts are inert, with keyboard links carrying the drill-down.
+- 24 px targets, AA contrast for every text pair, and layouts tested at 200% zoom and with long Devanagari text.
 
-## Spacing
-
-A 4 px base, written in rem: 0.25 / 0.5 / 0.75 / 1 / 1.5 / 2 / 3 / 4. Sections sit 1.5rem apart, page headers have 2rem above them, and section bodies have 1.25rem padding. Table rows are 44 px tall, which keeps them comfortable without hiding data.
-
-## Materials
-
-- **Glass, only on the control layer.** That means the sidebar, toolbar, sticky table headers, popovers, menus, selects, the persona switcher, the alert popover, drawers and dialogs. The material is a translucent white fill with `backdrop-filter: blur(24–40px) saturate(180%)` and a bright 1 px inner top edge. Bigger surfaces get a heavier blur and a deeper, neutral shadow.
-- Content (tables, forms, case text, charts, KPIs) sits on **solid white**. Glass is never stacked on glass, and body text never sits on thin glass. Dialogs use the thickest material (around 92% opacity).
-- **Scroll edge.** The toolbar shows a soft hairline only once content has scrolled under it.
-- **Modals.** A 22% black scrim, and the shell scales to 0.985 behind it. Popovers have no scrim.
-- **Accessibility settings.** `prefers-reduced-transparency` switches every glass surface to solid fills with no blur. `prefers-contrast: more` uses solid fills, defined 1 px borders and darker secondary text.
-
-## Motion
-
-- **Library.** `motion` for springs. The default is critically damped (bounce 0) with about 0.35 s response. There is no bounce anywhere, because the app has no momentum gestures.
-- **Press feedback.** Buttons, rows and nav items react on pointer-down (scale 0.97 / opacity) within 90 ms. Nothing on the input path waits for an animation.
-- **Page change.** A cross-fade plus 6 px of rise on the content only. The chrome never moves, and there is no exit animation to wait for.
-- **Popovers, menus and selects** materialize from their trigger: blur, scale 0.96 → 1 and opacity together. Ant Design's placement-aware transform origin is kept. Dialogs materialize the same way, and drawers slide in and out along the same edge.
-- **Animated properties.** Only transform, opacity and filter. There are no entrance cascades on data pages and no looping motion.
-- **Reduced motion.** Movement becomes a 150 ms cross-fade, and Ant Design's own motion is switched off.
-
-## Rejected, and why
-
-- **Dark mode.** Officers work in daylit offices on shared monitors. A dark theme at the same standard would need every chart and tint re-derived, so a polished light theme beats a half-finished pair.
-- **Coloured role and persona avatars.** Identity was carried by five hues. It is now carried by initials and text on neutral grey.
-- **Icon tiles, gradients, illustrations and empty-state art.** These are decoration. Empty states teach the next step in words instead.
-- **Card grids for lists** (overlap groups, institutions). Scanning a list is faster than scanning a grid, so these are now rows with right-aligned meta.
-- **A custom component library.** Everything is Ant Design 6, restyled through `theme.ts` tokens and CSS variables in `index.css`.
+## Rejected
+- **A display or brand typeface.** The audience reads data all day. The system face is the most legible, ships offline, and covers Devanagari.
+- **Dark mode.** Daylit offices on shared monitors; a half-finished dark theme is worse than none.
+- **A KPI hero on the home page.** Numbers that ask nothing of the officer are on Overview. Today shows only what needs doing.
+- **Decorative motion, illustration and empty-state art.** Empty states say what is clear and what to do next.
