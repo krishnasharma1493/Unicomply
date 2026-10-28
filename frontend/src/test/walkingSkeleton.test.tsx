@@ -234,7 +234,7 @@ describe('Issue #11 Walking Skeleton', () => {
 
       // Wait for table to load
       await waitFor(() => {
-        expect(screen.getByText(/Cases Repository/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Cases' })).toBeInTheDocument();
         expect(screen.getByText('PGRC/2026/00431')).toBeInTheDocument();
       });
 
