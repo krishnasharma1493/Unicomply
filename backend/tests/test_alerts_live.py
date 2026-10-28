@@ -104,3 +104,15 @@ def test_one_institution_one_day_has_the_same_grouping_key_across_alert_types(fu
     about_hero = [a for a in mine if a["permanent_id"] == VVIET]
     assert {a["type"] for a in about_hero} >= {"overlap", "sla_warning"}
     assert len({(a["permanent_id"], a["created_at"][:10]) for a in about_hero}) == 1
+
+
+def test_confirming_the_hero_group_shows_the_coordinator_on_every_linked_case(full_client: TestClient) -> None:
+    """PRD §4.5: 'coordinator's name on each case'. Every member sees it, whichever bureau it is in."""
+    created = full_client.post(f"{API}/cases", json=load_fixture("requests/post_cases"), headers=login(full_client, "intake@aicte.example")).json()["data"]
+    group = created["overlaps"][0]["group_id"]
+    assert created["overlaps"][0]["coordinator_name"] is None  # not confirmed yet
+    assert full_client.post(f"{API}/overlaps/{group}/decision", json={"decision": "confirm", "coordinator_id": 6, "remark": "PGRC leads"}, headers=login(full_client, "pgrc.head@aicte.example")).status_code == 200
+    for email, case_id in (("pgrc.head@aicte.example", created["case"]["id"]), ("rb.head@aicte.example", 102), ("ro.central@aicte.example", 103)):
+        detail = full_client.get(f"{API}/cases/{case_id}", headers=login(full_client, email)).json()["data"]
+        [summary] = [o for o in detail["overlaps"] if o["group_id"] == group]
+        assert (summary["status"], summary["coordinator_name"]) == ("confirmed", "Sunita Mishra"), email

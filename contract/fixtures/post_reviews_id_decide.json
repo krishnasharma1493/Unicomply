@@ -118,7 +118,8 @@
           "Same institution 1-4812744105",
           "Handled by PGRC and RB",
           "Received 5 days apart"
-        ]
+        ],
+        "coordinator_name": null
       }
     ]
   }

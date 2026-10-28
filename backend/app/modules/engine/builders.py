@@ -15,6 +15,7 @@ from app.modules.cases.models import Case
 from app.modules.institutions.models import Institution
 from app.modules.institutions.schemas import Candidate, Resolution
 from app.modules.meta.models import Bureau, Category
+from app.modules.overlaps.models import OverlapGroup
 from app.modules.overlaps.schemas import LinkedCaseCard
 from app.modules.users.models import User
 
@@ -25,6 +26,12 @@ InScope = Callable[[Case], bool]
 def everyone(_: Case) -> bool:
     """Default scope check until #12: every case is in scope."""
     return True
+
+
+def coordinator_name(session: Session, group: OverlapGroup) -> Optional[str]:
+    """Who coordinates a confirmed group (PRD §4.5: the coordinator's name is shown on each case)."""
+    user = session.get(User, group.coordinator_id) if group.coordinator_id else None
+    return user.name if user else None
 
 
 def institution_lite(row: Institution) -> InstitutionLite:

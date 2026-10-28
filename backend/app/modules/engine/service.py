@@ -60,6 +60,7 @@ from app.modules.cases.models import Case
 from app.modules.engine.builders import (
     InScope,
     case_lite,
+    coordinator_name,
     everyone,
     institution_lite,
     linked_case_card,
@@ -531,4 +532,5 @@ def _summary(
         banner=BANNERS[plan.tier],
         cases=cards,
         reasons=list(plan.reasons),
+        coordinator_name=coordinator_name(session, group),
     )

@@ -106,6 +106,7 @@ class OverlapSummary(BaseModel):
     banner: str
     cases: List[LinkedCaseCard]
     reasons: List[str]
+    coordinator_name: Optional[str]  # set once a head has confirmed the group; shown on every linked case
 
 
 class OverlapGroupListItem(OverlapGroupRead):

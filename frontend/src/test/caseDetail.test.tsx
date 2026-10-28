@@ -202,3 +202,33 @@ describe('Case Detail page on the mock API (Issue #26)', () => {
     expect(screen.getByRole('link', { name: '← All cases' })).toHaveAttribute('href', '/cases');
   });
 });
+
+describe('Coordinator on a confirmed group (Issue #51)', () => {
+  it('Case Detail names the coordinator once the group is confirmed, and not before', async () => {
+    attachMockAdapter(client, { latencyMs: [0, 0] });
+    resetWorld();
+    const render_ = (persona: Persona, id: number) => {
+      tokenStore.set(fixtures.login[persona].data.access_token);
+      return render(
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <AuthProvider>
+            <MemoryRouter initialEntries={[`/cases/${id}`]}>
+              <Routes><Route path="/cases/:id" element={<CaseDetailPage />} /></Routes>
+            </MemoryRouter>
+          </AuthProvider>
+        </QueryClientProvider>,
+      );
+    };
+    const before = render_('pgrc_head', 101);
+    await screen.findByRole('heading', { name: 'PGRC/2026/00412' });
+    expect(screen.queryByText(/Coordinator:/)).toBeNull();
+    before.unmount();
+    await client.post('/overlaps/1/decision', { decision: 'confirm', coordinator_id: 2, remark: 'PGRC leads' }, {
+      headers: { Authorization: `Bearer ${fixtures.login.pgrc_head.data.access_token}` },
+    });
+    render_('pgrc_head', 101);
+    await screen.findByRole('heading', { name: 'PGRC/2026/00412' });
+    expect((await screen.findAllByText(/Coordinator: Anil Deshmukh/)).length).toBeGreaterThan(1); // the group, and each linked card
+    tokenStore.clear();
+  });
+});

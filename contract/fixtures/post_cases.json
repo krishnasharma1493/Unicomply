@@ -149,7 +149,8 @@
           "Both about original certificates being withheld (PGRC/2026/00519, RO-CRO/2026/00133)",
           "Description similarity 0.84 with RO-CRO/2026/00133",
           "Received 5 days apart"
-        ]
+        ],
+        "coordinator_name": null
       }
     ]
   }
