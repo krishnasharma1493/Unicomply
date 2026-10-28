@@ -68,3 +68,19 @@ def test_ineligible_actor_cannot_decide(seeded_client, auth_headers):
     response = seeded_client.post("/api/v1/overlaps/1/decision", headers=auth_headers(INTAKE),
                                   json={"decision": "confirm", "coordinator_id": 6})
     assert response.status_code == 403
+
+
+def test_a_head_of_an_involved_bureau_can_coordinate_but_other_users_cannot(seeded_client, auth_headers):
+    """The contract's own example confirms with the PGRC head (user 2) as coordinator."""
+    for coordinator, ok in ((2, True),):
+        res = seeded_client.post("/api/v1/overlaps/1/decision", headers=auth_headers(PGRC),
+                                 json={"decision": "confirm", "coordinator_id": coordinator, "remark": "PGRC leads"})
+        assert (res.status_code == 200) is ok, res.text
+        assert res.json()["data"]["group"]["coordinator_name"] == "Anil Deshmukh"
+
+
+def test_the_coordinator_must_work_in_an_involved_bureau(seeded_client, auth_headers):
+    for coordinator in (5, 1, 9, 999):  # intake operator, senior officer, an Approval Bureau officer, nobody
+        res = seeded_client.post("/api/v1/overlaps/1/decision", headers=auth_headers(PGRC),
+                                 json={"decision": "confirm", "coordinator_id": coordinator})
+        assert res.status_code == 400 and "coordinator_id" in res.json()["error"]["fields"], coordinator
