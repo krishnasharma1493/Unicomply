@@ -49,6 +49,8 @@ Configured in `src/lib/env.ts` with strict Zod validation on boot:
 
 ## Scripts
 
+Requires Node.js 22.22+ or 24.15+. Install with `npm ci` and copy `.env.example` to `.env` first (full setup in the [root README](../README.md)).
+
 ```bash
 # Run local development server
 npm run dev
@@ -58,6 +60,9 @@ npm run typecheck
 
 # Run unit and integration tests
 npm run test
+
+# Same, one test file at a time (use on slower laptops if tests time out at 5 s)
+npm test -- --maxWorkers=1
 
 # Build production bundle
 npm run build
