@@ -1,0 +1,361 @@
+/*
+ * Cases: the list (table below 1280 px, split view at and above), its filter sentence, and the case view.
+ * Tokens come from index.css; nothing here introduces a hue.
+ */
+
+/* ---------- The list's sentence, order and filters ---------- */
+
+.uc-list-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--uc-s2) var(--uc-s4);
+  margin-bottom: var(--uc-s3);
+  min-height: 2rem;
+}
+.uc-sentence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--uc-s2);
+  min-width: 0;
+}
+.uc-sentence-text {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--uc-text);
+  font-variant-numeric: tabular-nums;
+}
+.uc-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--uc-s2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.uc-token {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 1.75rem;
+  padding: 0 0.5rem 0 0.625rem;
+  border: 0;
+  border-radius: var(--uc-radius-sm);
+  background: var(--uc-surface);
+  box-shadow: inset 0 0 0 1px var(--uc-border);
+  color: var(--uc-text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.uc-token .anticon {
+  font-size: 0.625rem;
+  color: var(--uc-text-2);
+}
+.uc-token:hover {
+  box-shadow: inset 0 0 0 1px var(--uc-text-2);
+}
+.uc-token:hover .anticon {
+  color: var(--uc-text);
+}
+.uc-list-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--uc-s3);
+}
+.uc-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+body .uc-sort .ant-select-selection-item,
+body .uc-sort .ant-select-content {
+  font-weight: 500;
+}
+.uc-chevron {
+  transition: transform 0.2s var(--uc-ease-out);
+}
+.uc-chevron.is-open {
+  transform: rotate(180deg);
+}
+.uc-filterbar {
+  padding: var(--uc-s4) var(--uc-s5) var(--uc-s1);
+  margin-bottom: var(--uc-s4);
+}
+
+.uc-overlap-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--uc-red-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- Split view (>= 1280 px) ---------- */
+
+.uc-split-page {
+  max-width: 100rem;
+  margin: 0 auto;
+}
+.uc-split-title {
+  margin: 0 0 var(--uc-s3);
+  font-size: 1.75rem;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+.uc-split {
+  display: grid;
+  grid-template-columns: minmax(22rem, 26rem) minmax(0, 1fr);
+  gap: var(--uc-s6);
+  align-items: start;
+}
+.uc-split-list {
+  position: sticky;
+  top: calc(var(--uc-toolbar-h) + var(--uc-s4));
+  max-height: calc(100dvh - var(--uc-toolbar-h) - var(--uc-s8));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--uc-surface);
+  border-radius: var(--uc-radius);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  scrollbar-gutter: stable;
+}
+.uc-split-rows {
+  list-style: none;
+  margin: 0;
+  padding: var(--uc-s1) 0;
+}
+.uc-split-rows > li + li {
+  border-top: 0.5px solid var(--uc-hairline);
+}
+.uc-split-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+  padding: 0.625rem var(--uc-s4);
+  color: var(--uc-text);
+  text-decoration: none;
+  position: relative;
+}
+.uc-split-row:hover {
+  text-decoration: none;
+  background: rgba(0, 0, 0, 0.025);
+}
+.uc-split-row:focus-visible {
+  outline-offset: -3px;
+}
+.uc-split-row.is-selected {
+  background: var(--uc-accent-tint);
+}
+.uc-split-row.is-selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--uc-accent);
+}
+.uc-split-row.is-selected .uc-ref {
+  color: var(--uc-accent-text);
+}
+.uc-split-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--uc-s2);
+}
+.uc-split-row-top .uc-ref {
+  font-size: 0.8125rem;
+}
+.uc-split-row-top .ant-tag {
+  margin-inline-end: 0;
+}
+.uc-split-row-inst {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+.uc-split-row-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--uc-s3);
+}
+.uc-split-pager {
+  display: flex;
+  justify-content: center;
+  padding: var(--uc-s2) var(--uc-s3) var(--uc-s3);
+  border-top: 0.5px solid var(--uc-hairline);
+  position: sticky;
+  bottom: 0;
+  background: var(--uc-surface);
+}
+.uc-split-detail {
+  min-width: 0;
+}
+.uc-split-empty {
+  padding: var(--uc-s12) var(--uc-s6);
+  text-align: center;
+  color: var(--uc-text);
+}
+.uc-split-empty p {
+  margin: 0 0 var(--uc-s2);
+}
+.uc-split-empty kbd,
+.uc-today kbd {
+  display: inline-block;
+  min-width: 1.25rem;
+  padding: 0 0.3125rem;
+  border-radius: 0.25rem;
+  box-shadow: inset 0 0 0 1px var(--uc-border);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--uc-text);
+}
+
+/* ---------- Case view ---------- */
+
+.uc-caseview {
+  container-type: inline-size;
+  container-name: caseview;
+}
+.uc-case-facts {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--uc-s3);
+}
+.uc-case-facts .ant-tag {
+  margin-inline-end: 0;
+}
+.uc-case-subject {
+  color: var(--uc-text);
+}
+.uc-caseview.is-embedded .uc-page-header {
+  margin-bottom: var(--uc-s5);
+}
+.uc-settled {
+  margin: 0;
+  font-weight: 600;
+}
+.uc-overlap-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--uc-s6);
+}
+.uc-case-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--uc-s6);
+  align-items: start;
+}
+@container caseview (min-width: 52rem) {
+  .uc-overlap-cols {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+  .uc-case-body {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+}
+
+/* The way back and through the list on the full-page view */
+.uc-case-nav {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--uc-s2) var(--uc-s4);
+}
+.uc-case-steps {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uc-s4);
+  margin-bottom: var(--uc-s3);
+}
+.uc-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 1.5rem;
+  font-weight: 500;
+}
+.uc-step .anticon {
+  font-size: 0.6875rem;
+}
+.uc-step.is-off {
+  color: var(--uc-text-2);
+  opacity: 0.6;
+}
+
+/* History, newest first: a hairline spine, a dot per action, filled for the ones that move the case */
+.uc-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.uc-timeline-item {
+  position: relative;
+  padding: 0 0 var(--uc-s4) 1.375rem;
+}
+.uc-timeline-item:last-child {
+  padding-bottom: 0;
+}
+.uc-timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 0.25rem;
+  top: 0.4375rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--uc-surface);
+  box-shadow: inset 0 0 0 1.5px var(--uc-text-2);
+}
+.uc-timeline-item.is-marked::before {
+  background: var(--uc-text-2);
+}
+.uc-timeline-item.is-escalated::before {
+  background: var(--uc-amber);
+  box-shadow: inset 0 0 0 1.5px var(--uc-amber);
+}
+.uc-timeline-item::after {
+  content: '';
+  position: absolute;
+  left: calc(0.5rem - 0.5px);
+  top: 1.125rem;
+  bottom: 0.125rem;
+  width: 1px;
+  background: var(--uc-hairline);
+}
+.uc-timeline-item:last-child::after {
+  display: none;
+}
+.uc-timeline-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--uc-s2);
+}
+.uc-label--escalated {
+  color: var(--uc-amber-text);
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+.uc-label--outcome {
+  color: var(--uc-green);
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+.uc-timeline-remark {
+  margin: var(--uc-s1) 0 0;
+  white-space: pre-wrap;
+  max-width: 72ch;
+}
