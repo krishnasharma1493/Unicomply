@@ -1,0 +1,192 @@
+/* Institutions search and Institution 360. Tokens come from index.css. */
+
+/* ---------- Search ---------- */
+
+.ins-search {
+  margin-bottom: var(--uc-s4);
+}
+.ins-search-q {
+  width: min(22rem, 100%);
+}
+.ins-total {
+  margin: 0 0 var(--uc-s2);
+}
+.ins-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--uc-s1) 0;
+}
+.ins-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--uc-s2) var(--uc-s5);
+  padding: var(--uc-s3) var(--uc-s5);
+}
+.ins-row + .ins-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--uc-s5);
+  right: var(--uc-s5);
+  height: 0.5px;
+  background: var(--uc-hairline);
+}
+.ins-row-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.ins-row-title a {
+  color: var(--uc-text);
+}
+.ins-row-title a:hover {
+  color: var(--uc-accent-text);
+}
+.ins-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.25rem;
+}
+.ins-row-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 0.125rem;
+}
+.ins-open {
+  font-size: 0.875rem;
+  color: var(--uc-text-2);
+}
+.ins-open.has-open {
+  color: var(--uc-text);
+  font-weight: 600;
+}
+@media (max-width: 640px) {
+  .ins-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ins-row-side {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* ---------- Institution 360 ---------- */
+
+.ins-kpis {
+  margin-bottom: var(--uc-s6);
+}
+.ins-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+  gap: var(--uc-s6);
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .ins-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.ins-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s4);
+  min-width: 0;
+}
+.ins-empty {
+  margin: 0;
+}
+
+.ins-cases-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s6);
+}
+.ins-overlaps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s5);
+}
+.ins-overlap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s2);
+}
+.ins-overlap-meta {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.ins-overlap .uc-evidence {
+  margin-top: var(--uc-s2);
+}
+
+.ins-bureaus {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s5);
+  padding-top: var(--uc-s5);
+  border-top: 1px solid var(--uc-hairline);
+}
+.ins-bureau-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--uc-s2);
+  margin: 0 0 var(--uc-s3);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ins-fields {
+  margin: 0;
+}
+.ins-fields > div {
+  padding: var(--uc-s2) 0;
+}
+.ins-fields > div + div {
+  border-top: 1px solid var(--uc-hairline);
+}
+.ins-fields dt {
+  font-size: 0.75rem;
+  color: var(--uc-text-2);
+}
+.ins-fields dd {
+  margin: 0.125rem 0 0;
+  overflow-wrap: anywhere;
+}
+.ins-fields > div:first-child {
+  padding-top: 0;
+}
+.ins-links > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 var(--uc-s3);
+}
+
+/* The whole row opens the institution; the h2 link stays the one focus stop */
+.ins-row-title a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--uc-radius);
+}
+.ins-row:hover {
+  background: #f6f7f5;
+}
+.ins-row-title a:focus-visible {
+  outline: none;
+}
+.ins-row-title a:focus-visible::after {
+  outline: 3px solid var(--uc-focus);
+  outline-offset: -3px;
+}
