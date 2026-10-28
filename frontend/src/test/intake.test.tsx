@@ -150,7 +150,7 @@ describe('Intake page on the mock API (Issue #25)', () => {
     renderPage();
     await fillHero(user);
     await user.click(screen.getByRole('button', { name: 'Register case' }));
-    expect(await screen.findByText(/Case registered: PGRC\/2026\/00519/)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Case registered: PGRC\/2026\/00519/ })).toBeInTheDocument();
     expect(screen.getByText('Potential Overlapping Cases – Coordination Required')).toBeInTheDocument();
     for (const ref of ['PGRC/2026/00412', 'RB/2026/00087', 'RO-CRO/2026/00133']) {
       expect(screen.getAllByText(ref).length).toBeGreaterThan(0);
@@ -165,7 +165,7 @@ describe('Intake page on the mock API (Issue #25)', () => {
     renderPage();
     await fillHero(user, 'S.I.T. Bhopal');
     await user.click(screen.getByRole('button', { name: 'Register case' }));
-    expect(await screen.findByText(/Case registered: PGRC\/2026\//)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Case registered: PGRC\/2026\// })).toBeInTheDocument();
     expect(screen.getByText('Institution not confirmed: queued for match review')).toBeInTheDocument();
     expect(screen.getByText(/2 possible institutions/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Open review queue' })).toHaveAttribute('href', '/reviews');
@@ -240,7 +240,8 @@ describe('Intake page on the mock API (Issue #25)', () => {
       data: { success: true, data: { decision: 'unresolved', candidates: [{ permanent_id: '1-1234567', name: '<b>bold</b>', district: 'D', state: 'S', score: 0.5, reasons: ['<i>x</i>'] }] } },
     });
     await user.type(await screen.findByLabelText(/Institution name/), 'something');
-    expect(await screen.findByText('<b>bold</b>')).toBeInTheDocument();
+    // The name appears twice now: in the resolution line and in the candidate list.
+    expect(await screen.findAllByText('<b>bold</b>')).not.toHaveLength(0);
     expect(document.querySelector('b')).toBeNull();
   });
 });

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { client } from '../../lib/api/client';
 import type { Envelope, ResolvePreviewIn, Resolution } from '../../lib/api/types';
 import { useDebouncedValue } from './useDebouncedValue';
@@ -25,6 +25,8 @@ export function useResolvePreview(input: PreviewInput) {
     queryKey: ['resolve-preview', text, debounced.state.trim(), debounced.district.trim()],
     enabled: text.length >= PREVIEW_MIN_CHARS,
     retry: false,
+    // Keep the last answer on screen while the next one loads, so candidates re-rank in place.
+    placeholderData: keepPreviousData,
     queryFn: async ({ signal }) => {
       const body: ResolvePreviewIn = {
         raw_text: text,
@@ -35,5 +37,5 @@ export function useResolvePreview(input: PreviewInput) {
       return { ...res.data.data, candidates: res.data.data.candidates.slice(0, TOP_K) };
     },
   });
-  return { ...query, tooShort: text.length < PREVIEW_MIN_CHARS };
+  return { ...query, text, tooShort: text.length < PREVIEW_MIN_CHARS };
 }
