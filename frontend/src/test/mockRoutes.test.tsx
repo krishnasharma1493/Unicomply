@@ -20,7 +20,7 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
   });
 
   it.each([
-    ['/', 'Overview'],
+    ['/', 'Today'],
     ['/overview', 'Overview'],
     ['/cases', 'Cases'],
     ['/cases/new', 'Register a case'],

@@ -1,0 +1,281 @@
+/*
+ * Today: the officer's work queue. Two calm columns at 1200 px and up (decide and the SLA queue on the
+ * left, read and match on the right), one column below. Sections are one surface; rows are hairlines.
+ */
+
+.uc-today-date {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--uc-text-2);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.uc-today-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--uc-s6);
+  align-items: start;
+}
+@media (min-width: 1200px) {
+  .uc-today-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+}
+.uc-today-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s6);
+  min-width: 0;
+}
+
+/* A queue: heading with its count, "See all" at the end */
+.uc-queue-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--uc-s4);
+  padding: var(--uc-s4) var(--uc-s5) var(--uc-s2);
+}
+.uc-queue-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--uc-s2);
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.uc-queue-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--uc-text-2);
+}
+.uc-queue--breach .uc-queue-count {
+  color: var(--uc-red-text);
+}
+.uc-queue-note {
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+.uc-queue-all {
+  font-weight: 500;
+  white-space: nowrap;
+  min-height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+}
+.uc-queue-body {
+  padding: 0 var(--uc-s5) var(--uc-s3);
+}
+.uc-queue-empty {
+  margin: 0;
+  padding: var(--uc-s2) 0 var(--uc-s3);
+  color: var(--uc-text-2);
+}
+.uc-queue-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s4);
+  padding: var(--uc-s2) 0 var(--uc-s3);
+}
+.uc-queue-skeleton .ant-skeleton-paragraph {
+  margin: 0;
+}
+
+/* Rows */
+.uc-today-rows {
+  list-style: none;
+  margin: 0 calc(-1 * var(--uc-s5));
+  padding: 0;
+}
+.uc-today-rows > li {
+  position: relative;
+}
+.uc-today-rows > li + li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--uc-s5);
+  right: var(--uc-s5);
+  height: 0.5px;
+  background: var(--uc-hairline);
+}
+.uc-today-row {
+  display: grid;
+  align-items: center;
+  gap: var(--uc-s1) var(--uc-s4);
+  padding: 0.6875rem var(--uc-s5);
+  color: var(--uc-text);
+  text-decoration: none;
+}
+a.uc-today-row:hover {
+  text-decoration: none;
+  background: rgba(0, 0, 0, 0.025);
+}
+a.uc-today-row:focus-visible {
+  outline-offset: -3px;
+}
+.uc-today-strong {
+  color: var(--uc-text);
+  font-weight: 500;
+}
+
+/* A case: ref, institution, then status and SLA at the end */
+.uc-today-case {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.uc-today-case-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  min-width: 0;
+}
+.uc-today-case .uc-ref {
+  font-size: 0.8125rem;
+}
+.uc-today-inst {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.uc-today-case-facts {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uc-s4);
+}
+.uc-today-case-facts .uc-status {
+  min-width: 6.5rem;
+}
+.uc-today-case-facts .ant-tag {
+  margin-inline-end: 0;
+}
+
+/* An overlap group */
+.uc-today-group {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+.uc-today-group .ant-tag {
+  margin-inline-end: 0;
+}
+.uc-today-group-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.uc-today-group-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.uc-today-group-codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.uc-today-group-when {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem;
+  white-space: nowrap;
+}
+
+/* A match review: what was written, set apart as a quotation */
+.uc-today-review {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.uc-today-review-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+.uc-today-review .uc-ref {
+  font-size: 0.8125rem;
+}
+.uc-asw {
+  padding-left: var(--uc-s2);
+  box-shadow: inset 2px 0 0 var(--uc-border);
+  color: var(--uc-text);
+  overflow-wrap: anywhere;
+}
+.uc-today-action {
+  font-weight: 600;
+  min-height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* An alert */
+.uc-today-alert {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  background: var(--uc-surface);
+}
+.uc-today-alert-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--uc-s3);
+}
+.uc-today-alert-title {
+  font-weight: 600;
+}
+.uc-today-alert-body {
+  color: var(--uc-text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.uc-today-alert-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--uc-s4);
+}
+body .uc-today-alert-actions .ant-btn-link {
+  padding: 0;
+  min-height: 1.5rem;
+}
+.uc-today-error {
+  margin: 0 0 var(--uc-s2);
+  color: var(--uc-red-text);
+}
+
+/* Narrow: a case row wraps to ref + facts, then the institution */
+@media (max-width: 767px) {
+  .uc-today-case .uc-today-inst {
+    white-space: normal;
+  }
+  .uc-today-case-facts .uc-status {
+    min-width: 0;
+  }
+  .uc-today-case-facts {
+    gap: var(--uc-s2);
+  }
+  .uc-today-group {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .uc-today-group-name {
+    white-space: normal;
+  }
+  .uc-today-group-when {
+    grid-column: 2;
+    flex-direction: row;
+    gap: var(--uc-s2);
+  }
+}
+@media (max-width: 479px) {
+  .uc-today-case {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .uc-today-case-facts {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+}
