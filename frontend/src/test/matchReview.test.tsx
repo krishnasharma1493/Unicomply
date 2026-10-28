@@ -69,6 +69,45 @@ describe('Match Review on the mock API (Issue #29)', () => {
     expect(screen.getByRole('button', { name: `Review ${items[0].case_ref}` })).toBeInTheDocument();
   });
 
+  it('makes each queue row a real button, marks the open one current, and moves with the arrow keys', async () => {
+    const user = userEvent.setup();
+    renderAs();
+    await queue();
+    const first = screen.getByRole('button', { name: `Review ${items[0].case_ref}` });
+    expect(first.tagName).toBe('BUTTON');
+    expect(first.closest('li')).not.toHaveAttribute('role');
+    expect(first).toHaveAttribute('aria-current', 'true');
+    expect(screen.getByRole('button', { name: `Review ${items[1].case_ref}` })).not.toHaveAttribute('aria-current');
+    first.focus();
+    await user.keyboard('{ArrowDown}');
+    const second = screen.getByRole('button', { name: `Review ${items[1].case_ref}` });
+    expect(second).toHaveFocus();
+    expect(second).toHaveAttribute('aria-current', 'true');
+    expect(await screen.findByRole('heading', { level: 3, name: items[1].raw_institution_text })).toBeInTheDocument();
+  });
+
+  it('keeps headings in order: the panes are h2, the complaint text an h3 under them', async () => {
+    renderAs();
+    await queue();
+    const levels = screen.getAllByRole('heading').map((h) => Number(h.tagName.slice(1)));
+    expect(levels[0]).toBe(1);
+    levels.slice(1).forEach((level, i) => expect(level - levels[i]).toBeLessThanOrEqual(1));
+    expect(screen.getByRole('heading', { level: 2, name: 'Review queue' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: `Review ${items[0].case_ref}` })).toBeInTheDocument();
+  });
+
+  it('draws the resolution line once a candidate is picked', async () => {
+    const user = userEvent.setup();
+    renderAs();
+    await queue();
+    expect(screen.getByText(/Not linked yet/)).toBeInTheDocument();
+    const best = items[0].candidates[0];
+    await user.click(await screen.findByRole('button', { name: `Select ${best.name}` }));
+    const line = screen.getByText(/Written as/).closest('.uc-resline');
+    expect(line).toHaveTextContent(items[0].raw_institution_text);
+    expect(line).toHaveTextContent(best.name);
+  });
+
   it('needs a choice before linking', async () => {
     renderAs();
     await queue();
