@@ -7,7 +7,7 @@ from app.matching.resolve import resolve_institution
 from app.matching.thresholds import load_thresholds
 from app.matching.types import AliasLite, InstitutionLite
 
-SEED = Path(__file__).resolve().parents[2] / "seed_data" / "tiny"  # the hand-written hero world
+SEED = Path(__file__).resolve().parents[2] / "seed_data"  # the full generated registry: rare-word weighting needs a real one
 
 
 def hero_index(mode="tfidf"):
@@ -56,3 +56,32 @@ def test_permanent_id_exact_tier_and_unknown_id():
     found = resolve_institution("complaint against 1-4812730561", None, None, idx, load_thresholds())
     assert found.decision == "auto" and found.top.score == 1.0
     assert resolve_institution("complaint against 1-9999999999", None, None, idx, load_thresholds()).decision == "unresolved"
+
+
+# ── Sibling institutions and misspelt words (#38) ────────────────────────
+
+
+def test_a_trust_sibling_that_differs_by_one_word_does_not_tie_with_the_right_institution():
+    """VVIET and VVIM share 'Vindhya Valley Institute'; only ENGINEERING separates them for this complaint."""
+    result = resolve_institution("vindya valley engg college jabalpur", "Madhya Pradesh", None, hero_index(), load_thresholds(), top_k=3)
+    by_id = {c.permanent_id: c.score for c in result.candidates}
+    assert result.top.permanent_id == "1-4812730561"
+    assert by_id["1-4812730561"] - by_id["1-4812730987"] >= 0.05  # the auto-link margin
+
+
+def test_a_rare_shared_word_outweighs_common_shared_words():
+    """'Narmada Valley College of Engineering' shares VALLEY, COLLEGE, ENGINEERING with the query; VINDHYA is what counts."""
+    result = resolve_institution("vindya valley engg college jabalpur", "Madhya Pradesh", None, hero_index(), load_thresholds(), top_k=5)
+    by_id = {c.permanent_id: c.score for c in result.candidates}
+    assert by_id["1-4812730561"] > by_id["1-4812744105"]
+
+
+def test_misspelt_words_are_corrected_against_the_registry_vocabulary():
+    from app.matching.resolve import _correct_spelling
+
+    idx = hero_index()
+    assert _correct_spelling("VINDYA", idx) == "VINDHYA"
+    assert _correct_spelling("VINDHYA", idx) == "VINDHYA"  # already a registered word
+    assert _correct_spelling("XYZZY", idx) == "XYZZY"  # nothing close enough: left alone
+    assert _correct_spelling("OF", idx) == "OF"  # too short to correct safely
+    assert _correct_spelling("12345", idx) == "12345"

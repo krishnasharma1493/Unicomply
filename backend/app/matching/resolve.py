@@ -4,14 +4,16 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Sequence, Tuple
 
-from rapidfuzz import fuzz
-from rapidfuzz.distance import Levenshtein
+from rapidfuzz import fuzz, process
 
 from app.matching.index import MatchIndex
 from app.matching.normalize import (
     extract_district_hint, extract_permanent_id, load_abbreviations, load_district_aliases, normalize_name, tokens,
 )
 from app.matching.types import Candidate, Decision, InstitutionLite, ResolutionResult, Thresholds
+
+SPELLING_MIN_LENGTH = 4  # shorter words are too easy to "correct" into the wrong word
+SPELLING_CUTOFF = 84  # rapidfuzz ratio (0-100): one letter wrong in a six-letter word
 
 
 def resolve_institution(
@@ -59,21 +61,15 @@ def resolve_institution(
 
     ids = [inst.permanent_id for inst in pool]
     district_tokens = set(tokens(district_hint or ""))
-    name_query = " ".join(token for token in tokens(query) if token not in district_tokens)
+    name_query = " ".join(_correct_spelling(token, idx) for token in tokens(query) if token not in district_tokens)
     semantic = idx.name_similarity(" ".join(filter(None, [name_query, district_hint])), ids)
     query_tokens = set(tokens(query))
     scored: List[Tuple[float, InstitutionLite, Tuple[str, ...]]] = []
     weights = th.resolution
     for inst in pool:
-        fuzzy_score = _fuzzy_score(name_query, inst.name_norm)
+        fuzzy_score = _fuzzy_score(name_query, inst.name_norm, idx)
         semantic_score = float(semantic.get(inst.permanent_id, 0.0))
         acronym_score = 1.0 if (inst.acronym and inst.acronym.upper() in query_tokens) else 0.0
-        prefix_typo = False
-        name_tokens = tokens(inst.name_norm)
-        query_words = tokens(name_query)
-        if not acronym_score and name_tokens and query_words and len(query_words[0]) >= 4:
-            prefix_typo = Levenshtein.distance(query_words[0], name_tokens[0]) == 1
-            acronym_score = 1.0 if prefix_typo else 0.0
         location_score = _location_score(inst, raw_state, district_hint)
         score = min(1.0, max(0.0,
             weights.fuzzy * fuzzy_score + weights.semantic * semantic_score
@@ -81,10 +77,7 @@ def resolve_institution(
         ))
         reasons = [f"Name {round(fuzzy_score * 100)}% similar"]
         if acronym_score:
-            if prefix_typo:
-                reasons.append(f"Leading name token {query_words[0]} has a one-character typo of {name_tokens[0]}")
-            else:
-                reasons.append(f"Acronym {inst.acronym} matches")
+            reasons.append(f"Acronym {inst.acronym} matches")
         if district_hint:
             reasons.append(f"District {inst.district} matches")
         if raw_state:
@@ -115,12 +108,31 @@ def _candidate(inst: InstitutionLite, score: float, reasons: Sequence[str]) -> C
     return Candidate(inst.permanent_id, inst.name, inst.district, inst.state, score, tuple(reasons))
 
 
-def _fuzzy_score(query: str, name: str) -> float:
-    if not query or not name:
+def _correct_spelling(token: str, idx: MatchIndex) -> str:
+    """A word that is not in any registered name, but is one slip away from one that is (VINDYA -> VINDHYA)."""
+    if token in idx.vocabulary or len(token) < SPELLING_MIN_LENGTH or token.isdigit():
+        return token
+    hit = process.extractOne(token, idx.vocabulary, scorer=fuzz.ratio, score_cutoff=SPELLING_CUTOFF)
+    return str(hit[0]) if hit else token
+
+
+def _fuzzy_score(query: str, name: str, idx: MatchIndex) -> float:
+    """
+    Weighted overlap (Dice) of the words of the (spelling-corrected) query and a registered name, 0..1, each word
+    weighted by how rare it is in the registry. Sharing VINDHYA says far more than sharing COLLEGE, so a sibling that
+    differs only in one word no longer ties with the right one; and a word the complainant left out of a long
+    official name ("Institute of ... Technology") costs less than a word that contradicts it.
+    """
+    query_words, name_words = set(query.split()), set(name.split())
+    if not query_words or not name_words:
         return 0.0
-    query_tokens, name_tokens = tokens(query), tokens(name)
-    leading_name = fuzz.ratio(query_tokens[0], name_tokens[0]) / 100.0 if query_tokens and name_tokens else 0.0
-    return max(fuzz.token_set_ratio(query, name), fuzz.partial_ratio(query, name), leading_name * 100.0) / 100.0
+
+    def weight(word: str) -> float:
+        return idx.token_idf.get(word, idx.default_idf)
+
+    shared = sum(weight(w) for w in query_words & name_words)
+    total = sum(weight(w) for w in query_words) + sum(weight(w) for w in name_words)
+    return 2 * shared / total if total else 0.0
 
 
 def _state_matches(inst: InstitutionLite, state: Optional[str]) -> bool:

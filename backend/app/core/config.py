@@ -60,7 +60,7 @@ class Settings(BaseSettings):
 
     # ── Matching & overlap engine (PRD §3) ──────────────────────────────
     MATCHING_ENGINE: Literal["stub", "real"] = Field(
-        default="stub", description="'stub' = canned hero results until the real engine is wired (#38)"
+        default="real", description="'real' = the matching engine; 'stub' = canned hero results, a fallback for demos"
     )
     EMBEDDINGS_MODE: Literal["model", "tfidf"] = Field(
         default="model", description="'model' = sentence-transformers, 'tfidf' = offline fallback"

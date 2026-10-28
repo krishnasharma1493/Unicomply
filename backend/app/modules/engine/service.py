@@ -25,6 +25,8 @@ from sqlmodel import Session, col, or_, select
 
 from app.core.config import get_settings
 from app.core.enums import (
+    AlertSeverity,
+    AlertType,
     AliasSource,
     CaseStatus,
     MatchStatus,
@@ -53,6 +55,7 @@ from app.matching.types import (
     Thresholds,
     Tier,
 )
+from app.modules.alerts import service as alert_service
 from app.modules.cases.models import Case
 from app.modules.engine.builders import (
     InScope,
@@ -63,6 +66,7 @@ from app.modules.engine.builders import (
     resolution_schema,
 )
 from app.modules.institutions.models import Institution, InstitutionAlias, Trust
+from app.modules.meta.models import Bureau
 from app.modules.institutions.schemas import Resolution
 from app.modules.overlaps.models import OverlapGroup, OverlapLink, OverlapPair
 from app.modules.overlaps.schemas import OverlapSummary
@@ -244,12 +248,36 @@ def apply_overlaps(session: Session, case: Case, in_scope: InScope = everyone) -
 
 def notify_overlap(session: Session, group: OverlapGroup, case: Case) -> None:
     """
-    Hook for overlap alerts (PRD §4.6): probable → critical to the heads of every involved
-    bureau / RO and senior management; possible → warning to the involved heads.
-    No-op until #13 adds `create_alert()`; #38 wires it here.
+    Overlap alerts (PRD §4.6): a probable group is critical, to the heads of every involved bureau / Regional
+    Office and to senior management; a possible group is a warning to the involved heads. Deduplicated per
+    recipient per group per day, so a case joining a group the same day does not alert twice.
 
-    Writes: alert (once #13 lands). Runs in the caller's transaction; never commits.
+    Writes: alert. Runs in the caller's transaction; never commits.
     """
+    assert group.id is not None
+    members = session.exec(
+        select(Case).join(OverlapLink, col(OverlapLink.case_id) == col(Case.id)).where(OverlapLink.group_id == group.id)
+    ).all()
+    bureau_ids = {m.current_bureau_id for m in members}
+    codes = sorted({b.code for b in session.exec(select(Bureau).where(col(Bureau.id).in_(bureau_ids))).all()})
+    probable = group.tier == OverlapTier.probable
+    recipients = alert_service.heads_of_bureaus(session, bureau_ids)
+    if probable:
+        recipients += alert_service.senior_mgmt(session)
+    institution = session.get(Institution, case.permanent_id) if case.permanent_id else None
+    where = institution.name if institution else group.anchor_key
+    others = len(members) - 1
+    alert_service.create_alert(
+        session,
+        AlertType.overlap,
+        AlertSeverity.critical if probable else AlertSeverity.warning,
+        recipients,
+        title="Potential overlapping cases: coordination required" if probable else "Possible overlapping cases",
+        body=f"{case.case_ref} and {others} other {'case' if others == 1 else 'cases'} about {where} are being handled by {', '.join(codes)}.",
+        case_id=case.id,
+        group_id=group.id,
+        permanent_id=case.permanent_id,
+    )
 
 
 def on_review_decided(
