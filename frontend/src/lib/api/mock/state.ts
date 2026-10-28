@@ -11,8 +11,10 @@ import type {
   CaseAction,
   CaseActionIn,
   CaseActionResult,
+  CaseCreate,
   CaseDetail,
   CaseInstitution,
+  CaseIntakeResult,
   CaseRead,
   Institution360,
   InstitutionAlias,
@@ -400,6 +402,84 @@ export function intakeHeroCase() {
   return result;
 }
 
+const normalizeText = (raw: string) => raw.toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim();
+
+/** A seeded review whose raw text the intake repeats (e.g. the ambiguous "S.I.T. Bhopal"). */
+export const reviewForText = (raw: string) =>
+  fixtures.reviews.data.find((r) => normalizeText(r.raw_institution_text) === normalizeText(raw));
+
+const addDays = (isoDate: string, days: number) =>
+  new Date(Date.parse(`${isoDate}T00:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
+
+/**
+ * POST /cases for a name the engine will not guess (#42): the case is registered unresolved and
+ * queued for match review with the same candidates as the seeded review it repeats.
+ */
+export function intakePendingCase(body: CaseCreate, seeded: ReviewItem, viewer: UserMe): CaseIntakeResult {
+  const category = categoryOf(body.category_id);
+  const bureauId =
+    body.route_to_bureau_id ?? meta.bureaus.find((b) => b.code === category?.default_bureau_code)?.id ?? 2;
+  const id = Math.max(...world.cases.map((c) => c.id), fixtures.intake.data.case.id) + 1;
+  const now = nowUtc();
+  const created: CaseRead = {
+    id,
+    case_ref: `${bureauOf(bureauId)?.code ?? 'PGRC'}/2026/${String(600 + id).padStart(5, '0')}`,
+    source_channel: body.source_channel,
+    external_ref: body.external_ref ?? null,
+    received_at: body.received_at,
+    complainant_type: body.complainant_type,
+    complainant_name: body.complainant_name ?? null,
+    raw_institution_text: body.raw_institution_text,
+    raw_state: body.raw_state ?? null,
+    raw_district: body.raw_district ?? null,
+    permanent_id: null,
+    match_score: seeded.candidates[0]?.score ?? null,
+    match_status: 'pending_review',
+    category_id: body.category_id,
+    category_suggested_id: null,
+    subject: body.subject,
+    description: body.description,
+    status: 'received',
+    current_bureau_id: bureauId,
+    assigned_officer_id: null,
+    last_action_type: null,
+    last_action_at: null,
+    next_action: null,
+    expected_disposal_date: null,
+    sla_due_on: addDays(body.received_at, category?.default_sla_days ?? 21),
+    disposed_at: null,
+    reopen_count: 0,
+    escalation_level: 0,
+    delay_risk: null,
+    created_by: viewer.id,
+    created_at: now,
+    updated_at: now,
+    institution_name: null,
+    region: null,
+    age_days: Math.max(0, Math.round((Date.parse(DEMO_TODAY) - Date.parse(body.received_at)) / 86_400_000)),
+    beyond_sla: false,
+    in_overlap: false,
+  };
+  world.cases.unshift(created);
+  world.reviews.push({
+    id: Math.max(...world.reviews.map((r) => r.id)) + 1,
+    case_id: id,
+    candidates: structuredClone(seeded.candidates),
+    status: 'pending',
+    decided_permanent_id: null,
+    decided_by: null,
+    decided_at: null,
+    case_ref: created.case_ref,
+    raw_institution_text: created.raw_institution_text,
+    raw_state: created.raw_state,
+    raw_district: created.raw_district,
+    subject: created.subject,
+    received_at: created.received_at,
+    created_at: now,
+  });
+  return { case: created, resolution: { decision: 'pending_review', candidates: structuredClone(seeded.candidates) }, overlaps: [] };
+}
+
 const OPEN = OPEN_CASE_STATUSES;
 /** §4.3 `ALLOWED`: action → (from statuses, to status). */
 const ALLOWED: Record<ActionType, [from: readonly CaseStatus[], to: CaseStatus | null]> = {
@@ -434,9 +514,6 @@ function canAct(viewer: UserMe, c: CaseRead, action: ActionType): boolean {
       return false;
   }
 }
-
-const addDays = (isoDate: string, days: number) =>
-  new Date(Date.parse(`${isoDate}T00:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
 
 export function applyAction(c: CaseRead, body: Partial<CaseActionIn>, viewer: UserMe): CaseActionResult {
   const type = body.action_type;
@@ -538,9 +615,6 @@ export function applyAction(c: CaseRead, body: Partial<CaseActionIn>, viewer: Us
 
 // ── Match review ─────────────────────────────────────────────────────────
 
-const normalize = (raw: string) =>
-  raw.toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim();
-
 /** POST /reviews/{id}/decide: the hero decision replays its fixture; any other is applied generically. */
 export function decideReview(review: ReviewItem, body: { permanent_id?: unknown; none?: unknown }, viewer: UserMe): ReviewDecideResult {
   if (!(viewer.role === 'intake_operator' || viewer.is_admin)) throw forbidden();
@@ -618,7 +692,7 @@ export function decideReview(review: ReviewItem, body: { permanent_id?: unknown;
     alias = {
       id: world.nextAliasId++,
       permanent_id: inst.permanent_id,
-      alias_norm: normalize(c.raw_institution_text),
+      alias_norm: normalizeText(c.raw_institution_text),
       source: 'review',
       created_by: viewer.id,
       created_at: now,
