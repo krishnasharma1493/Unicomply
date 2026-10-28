@@ -34,7 +34,7 @@ describe('case filters <-> URL', () => {
     });
   });
   it('understands every link the dashboard produces', () => {
-    for (const query of Object.values(KPI_QUERY)) {
+    for (const query of Object.values(KPI_QUERY).filter((q) => !q.startsWith('@'))) {  // '@…' is a link to another page
       const url = casesUrl(query);
       expect(Object.fromEntries(toSearch(parse(url.split('?')[1] ?? '')))).toEqual(Object.fromEntries(new URLSearchParams(query)));
     }

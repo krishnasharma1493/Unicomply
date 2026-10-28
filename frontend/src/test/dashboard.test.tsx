@@ -18,7 +18,7 @@ describe('drill-down URLs', () => {
     expect(casesUrl(KPI_QUERY.total)).toBe('/cases');
     expect(casesUrl(KPI_QUERY.under_process)).toBe('/cases?status=under_process,interim_reply');
     expect(casesUrl(KPI_QUERY.beyond_sla)).toBe('/cases?beyond_sla=true');
-    expect(casesUrl(KPI_QUERY.open_overlaps)).toBe('/cases?in_overlap=true');
+    expect(casesUrl(KPI_QUERY.open_overlaps)).toBe('/overlaps');
   });
   it('opens a bureau, and an age bucket as a received-date range', () => {
     expect(workloadUrl(2)).toBe('/cases?pending=true&bureau_id=2');
@@ -88,7 +88,7 @@ describe('Dashboard on the mock API (Issue #30)', () => {
   it.each([
     ['Total cases', '/cases'], ['Pending', '/cases?pending=true'], ['Under process', '/cases?status=under_process,interim_reply'],
     ['Disposed', '/cases?status=disposed'], ['Transferred', '/cases?status=transferred'], ['Escalated', '/cases?status=escalated'],
-    ['Beyond SLA', '/cases?beyond_sla=true'], ['Open overlaps', '/cases?in_overlap=true'],
+    ['Beyond SLA', '/cases?beyond_sla=true'], ['Open overlaps', '/overlaps'],
   ])('clicking %s opens %s', async (label, url) => {
     const user = userEvent.setup();
     renderAs();
