@@ -25,8 +25,10 @@ export const CaseRows: React.FC<{ cases: CaseRead[]; from: string }> = ({ cases,
       {cases.map((c) => (
         <li key={c.id}>
           <Link to={`/cases/${c.id}`} state={state} className="uc-today-row uc-today-case uc-pressable">
-            <span className="uc-ref">{c.case_ref}</span>
-            <span className="uc-today-inst">{c.institution_name ?? c.raw_institution_text}</span>
+            <span className="uc-today-case-main">
+              <span className="uc-ref">{c.case_ref}</span>
+              <span className="uc-today-inst">{c.institution_name ?? c.raw_institution_text}</span>
+            </span>
             <span className="uc-today-case-facts">
               <StatusChip status={c.status} />
               <SlaBadge ageDays={c.age_days} beyondSla={c.beyond_sla} receivedAt={c.received_at} slaDueOn={c.sla_due_on} status={c.status} />

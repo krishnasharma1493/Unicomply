@@ -256,6 +256,7 @@ const CaseRows: React.FC<ListProps & { selectedId: number | null; listRef: React
                 <Pagination
                   size="small"
                   simple
+                  showSizeChanger={false}
                   current={page.pagination.page}
                   pageSize={page.pagination.limit}
                   total={page.pagination.total}

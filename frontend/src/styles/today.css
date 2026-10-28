@@ -123,7 +123,13 @@ a.uc-today-row:focus-visible {
 
 /* A case: ref, institution, then status and SLA at the end */
 .uc-today-case {
-  grid-template-columns: 9.5rem minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.uc-today-case-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  min-width: 0;
 }
 .uc-today-case .uc-ref {
   font-size: 0.8125rem;
@@ -243,12 +249,7 @@ body .uc-today-alert-actions .ant-btn-link {
 
 /* Narrow: a case row wraps to ref + facts, then the institution */
 @media (max-width: 767px) {
-  .uc-today-case {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
   .uc-today-case .uc-today-inst {
-    grid-column: 1 / -1;
-    grid-row: 2;
     white-space: normal;
   }
   .uc-today-case-facts .uc-status {
@@ -260,6 +261,9 @@ body .uc-today-alert-actions .ant-btn-link {
   .uc-today-group {
     grid-template-columns: auto minmax(0, 1fr);
   }
+  .uc-today-group-name {
+    white-space: normal;
+  }
   .uc-today-group-when {
     grid-column: 2;
     flex-direction: row;
@@ -269,9 +273,6 @@ body .uc-today-alert-actions .ant-btn-link {
 @media (max-width: 479px) {
   .uc-today-case {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .uc-today-case .uc-today-inst {
-    grid-row: auto;
   }
   .uc-today-case-facts {
     flex-wrap: wrap;
