@@ -77,6 +77,10 @@ Glass only on the floating chrome (sidebar, toolbar, command bar, popovers, dial
 - Charts are inert, with keyboard links carrying the drill-down.
 - 24 px targets, AA contrast for every text pair, and layouts tested at 200% zoom and with long Devanagari text.
 
+## Process note
+
+This was a code-led build: the brief pinned the quality bar (Apple-grade craft, a serious government tool) and the identity source (the product's own mechanism), so no concept roll or comp round ran. This document is the contract the build and its finish review were held to.
+
 ## Rejected
 - **A display or brand typeface.** The audience reads data all day. The system face is the most legible, ships offline, and covers Devanagari.
 - **Dark mode.** Daylit offices on shared monitors; a half-finished dark theme is worse than none.

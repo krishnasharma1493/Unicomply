@@ -77,6 +77,14 @@ export const ReviewWorkbench: React.FC<{
                 permanentId={choice.permanent_id}
                 note={fromSuggestions ? 'Your choice from the suggestions' : 'Your choice from the registry search'}
               />
+            ) : review.candidates[0] ? (
+              // Before a choice, show what the engine's best guess would mean, labelled as not yet linked.
+              <ResolutionLine
+                raw={review.raw_institution_text}
+                name={review.candidates[0].name}
+                permanentId={review.candidates[0].permanent_id}
+                note="Best suggestion, not linked yet. Pick it below, choose another, or search the registry."
+              />
             ) : (
               <p className="uc-meta" style={{ margin: 0 }}>Not linked yet. Pick a suggested institution or search the registry.</p>
             )}

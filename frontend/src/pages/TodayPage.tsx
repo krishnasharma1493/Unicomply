@@ -194,12 +194,16 @@ export const TodayPage: React.FC = () => {
 
   const left: React.ReactNode[] = [];
   const right: React.ReactNode[] = [];
+  // Left: what needs a decision or a match. Right: the SLA clock and what to read. When a role has
+  // nothing to decide, the SLA queues take the left so neither column stands empty.
+  const decides = plan.decisions || plan.reviews || plan.recent;
   if (plan.decisions) left.push(<Decisions key="decisions" today={today} />);
-  if (plan.sla) left.push(<PastSla key="past" />, <DueSoon key="due" />);
-  if (plan.unassigned) left.push(<Unassigned key="unassigned" />);
-  if (plan.reviews) (plan.recent ? left : right).push(<Reviews key="reviews" />);
+  if (plan.reviews) left.push(<Reviews key="reviews" />);
   if (plan.recent) left.push(<RecentCases key="recent" />);
-  right.push(<Alerts key="alerts" />);
+  const slaColumn = decides ? right : left;
+  if (plan.sla) slaColumn.push(<PastSla key="past" />, <DueSoon key="due" />);
+  if (plan.unassigned) slaColumn.push(<Unassigned key="unassigned" />);
+  right.unshift(<Alerts key="alerts" />);
 
   return (
     <div className="uc-page uc-today">

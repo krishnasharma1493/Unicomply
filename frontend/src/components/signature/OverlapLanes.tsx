@@ -46,7 +46,13 @@ export const OverlapLanes: React.FC<{ cases: LaneCase[]; caption?: string }> = (
   const start = Math.min(...times) - span * 0.08;
   const end = Math.max(...times) + span * 0.08;
   const pos = (iso: string) => ((t(iso) - start) / (end - start)) * 100;
-  const lanes = Array.from(new Set(cases.map((c) => c.bureau_code)));
+  // Same order on every page: the bureau of the case in view first, then by each bureau's first case.
+  const firstSeen = new Map<string, number>();
+  for (const c of cases) firstSeen.set(c.bureau_code, Math.min(firstSeen.get(c.bureau_code) ?? Infinity, t(c.received_at)));
+  const currentBureau = cases.find((c) => c.current)?.bureau_code;
+  const lanes = Array.from(firstSeen.keys()).sort(
+    (a, b) => Number(b === currentBureau) - Number(a === currentBureau) || firstSeen.get(a)! - firstSeen.get(b)! || a.localeCompare(b),
+  );
   // The case this view is about lands first (it is the cause); the others follow in date order.
   const currentId = cases.find((c) => c.current)?.case_id;
   const order = [...cases].sort((a, b) => t(a.received_at) - t(b.received_at)).map((c) => c.case_id);
@@ -69,7 +75,7 @@ export const OverlapLanes: React.FC<{ cases: LaneCase[]; caption?: string }> = (
             <div className="uc-lane-track">
               {clusters(cases.filter((c) => c.bureau_code === code), pos).map((group) => {
                 const left = group.left;
-                const flip = left > 72;
+                const flip = left > 62;
                 const lead = group.cases.find((c) => c.current) ?? group.cases[0];
                 const first = Math.min(...group.cases.map((c) => order.indexOf(c.case_id)));
                 return (

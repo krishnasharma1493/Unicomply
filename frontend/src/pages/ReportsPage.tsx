@@ -23,7 +23,7 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
       <Text type="secondary">
         {REPORT_KIND_LABELS[report.kind]}, cases received {formatDate(report.from)} to {formatDate(report.to)}. Generated {formatDateTime(report.generated_at)}.
       </Text>
-      <Card size="small" title="Chart">
+      <Card size="small" title="Chart" className="uc-report-chart">
         <div style={{ width: '100%', height: 280 }} aria-hidden="true" inert>
           <ResponsiveContainer>
             <BarChart data={spec.data} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
@@ -43,6 +43,7 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
         <Text type="secondary" style={{ fontSize: 12 }}>The table below holds the same numbers.</Text>
       </Card>
       <Card size="small" title="Data">
+        <div className="uc-grid-scroll">
         <Table
           size="small"
           pagination={rows.length > 15 ? { pageSize: 15, showSizeChanger: false } : false}
@@ -62,6 +63,7 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
             )
           }
         />
+        </div>
       </Card>
     </Space>
   );

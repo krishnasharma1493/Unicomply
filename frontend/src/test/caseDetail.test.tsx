@@ -107,7 +107,9 @@ describe('Case Detail page on the mock API (Issue #26)', () => {
     expect(screen.getByText('Potential Overlapping Cases – Coordination Required')).toBeInTheDocument();
     expect(screen.getByText('RB/2026/00087')).toBeInTheDocument();
     expect(screen.getByText('RO-CRO/2026/00133')).toBeInTheDocument();
-    expect(screen.getByText('Institution (resolved)')).toBeInTheDocument();
+    // The resolution line: the complainant's words, then the registry institution it resolved to.
+    expect(screen.getByText(/VVIET Jabalpur/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open the institution record' })).toHaveAttribute('href', '/institutions/1-4812730561');
     expect(screen.getByText('History')).toBeInTheDocument();
     expect(screen.getAllByText(/Anil Deshmukh/).length).toBeGreaterThan(0);
   });

@@ -81,8 +81,17 @@
 
 /* ---------- Institution 360 ---------- */
 
-.ins-kpis {
-  margin-bottom: var(--uc-s6);
+.ins-counts {
+  margin: calc(-1 * var(--uc-s3)) 0 var(--uc-s6);
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--uc-text-2);
+}
+.ins-counts a {
+  font-weight: 600;
+}
+.ins-counts-alert {
+  color: var(--uc-red-text);
 }
 .ins-layout {
   display: grid;

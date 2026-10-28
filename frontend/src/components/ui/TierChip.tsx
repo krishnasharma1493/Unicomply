@@ -17,7 +17,7 @@ export const TierChip: React.FC<TierChipProps> = ({ tier, className, style }) =>
   return (
     <Tag
       color={color}
-      className={className}
+      className={['uc-tier', className].filter(Boolean).join(' ')}
       style={{
         fontWeight: 600,
         textTransform: 'capitalize',

@@ -118,7 +118,13 @@ describe('Institutions on the mock API (Issue #32)', () => {
       expect(screen.getByText(hero.trust!.name)).toBeInTheDocument();
       expect(screen.getByText(`Other institutions of ${hero.trust!.name}`)).toBeInTheDocument();
       for (const sib of hero.trust_institutions) expect(screen.getByRole('link', { name: sib.name })).toHaveAttribute('href', `/institutions/${sib.permanent_id}`);
-      expect(screen.getByText('Cases').closest('.uc-kpi')).toHaveTextContent(String(hero.case_counts.total));
+      const total = hero.case_counts.total;
+      expect(screen.getByRole('link', { name: `${total} ${total === 1 ? 'case' : 'cases'}` })).toHaveAttribute(
+        'href',
+        `/cases?permanent_id=${hero.institution.permanent_id}`,
+      );
+      expect(screen.getByRole('link', { name: `${hero.case_counts.open} open` })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: `${hero.case_counts.beyond_sla} beyond SLA` })).toBeInTheDocument();
     });
 
     it('lays the cases out one column per bureau', async () => {

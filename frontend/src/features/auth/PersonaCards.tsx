@@ -37,7 +37,7 @@ export const PersonaCards: React.FC<PersonaCardsProps> = ({ activeEmail, loading
               <span className="uc-persona-line">
                 <span className="uc-persona-name">{persona.name}</span>
                 <span className="uc-meta">{persona.title}</span>
-                {persona.isAdmin && <span className="uc-label">Admin</span>}
+                {persona.isAdmin && <span className="uc-meta" style={{ fontWeight: 600 }}>· Administrator</span>}
               </span>
               <span className="uc-meta">{persona.bureau}</span>
               <span className="uc-persona-desc">{persona.description}</span>

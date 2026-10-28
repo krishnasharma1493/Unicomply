@@ -153,16 +153,6 @@ body .uc-sort .ant-select-content {
 .uc-split-row.is-selected {
   background: var(--uc-accent-tint);
 }
-.uc-split-row.is-selected::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.5rem;
-  bottom: 0.5rem;
-  width: 3px;
-  border-radius: 0 2px 2px 0;
-  background: var(--uc-accent);
-}
 .uc-split-row.is-selected .uc-ref {
   color: var(--uc-accent-text);
 }

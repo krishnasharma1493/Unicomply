@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { BackLink, PageHeader, Section } from '../components/layout/PageHeader';
-import { BureauChip, KpiCard } from '../components/ui';
+import { BureauChip } from '../components/ui';
 import { EvidenceSummary, LinkedCaseCard, OverlapBanner, OverlapLanes } from '../components/signature';
 import { QueryBoundary } from '../components/states';
 import { useInstitution } from '../features/institutions/useInstitutions';
@@ -39,12 +39,22 @@ const View: React.FC<{ data: Institution360 }> = ({ data }) => {
         titleExtra={<span className="uc-label">{inst.permanent_id}</span>}
         subtitle={`${INST_TYPE_LABELS[inst.inst_type]} · ${inst.district}, ${inst.state} · ${REGION_LABELS[inst.region]} region`}
       />
-      <div className="uc-kpis ins-kpis" role="group" aria-label="Case counts">
-        <KpiCard label="Cases" value={counts.total} />
-        <KpiCard label="Open" value={counts.open} />
-        <KpiCard label="Disposed" value={counts.disposed} />
-        <KpiCard label="Beyond SLA" value={counts.beyond_sla} className={counts.beyond_sla > 0 ? 'uc-kpi--alert' : undefined} />
-      </div>
+      <p className="ins-counts">
+        <Link to={`/cases?permanent_id=${inst.permanent_id}`}>
+          {counts.total} {counts.total === 1 ? 'case' : 'cases'}
+        </Link>
+        {' · '}
+        <Link to={`/cases?permanent_id=${inst.permanent_id}&pending=true`}>{counts.open} open</Link>
+        {' · '}
+        <Link to={`/cases?permanent_id=${inst.permanent_id}&pending=false`}>{counts.disposed} disposed</Link>
+        {' · '}
+        <Link
+          to={`/cases?permanent_id=${inst.permanent_id}&beyond_sla=true`}
+          className={counts.beyond_sla > 0 ? 'ins-counts-alert' : undefined}
+        >
+          {counts.beyond_sla} beyond SLA
+        </Link>
+      </p>
 
       <div className="ins-layout">
         <Section title="Cases at this institution" className="ins-cases">

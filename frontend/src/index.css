@@ -301,7 +301,7 @@ body h5.ant-typography {
   max-width: 75rem;
   margin: 0 auto;
 }
-.uc-page--narrow {
+.uc-page--narrow > * {
   max-width: 56rem;
 }
 .uc-page--wide {
@@ -1494,10 +1494,6 @@ code {
   text-align: center;
   margin-bottom: var(--uc-s8);
 }
-.uc-login-head .uc-brand-name {
-  color: var(--uc-text-2);
-  font-size: 0.9375rem;
-}
 .uc-login-head h1 {
   margin: var(--uc-s1) 0 0;
   font-size: 2rem;
@@ -1926,4 +1922,59 @@ body .uc-command .ant-input-affix-wrapper {
   color: #fff;
   text-decoration: none;
   background: #084a54;
+}
+
+
+/* ---------- Review fixes: words beside the SLA track are plain, tier chips are outlined ---------- */
+
+/* The SLA words sit beside the track as text, not in a tinted chip (the Tag keeps its status classes) */
+body .uc-sla .ant-tag.ant-tag-filled:not(.ant-tag-disabled) {
+  background: transparent;
+  padding-inline: 0;
+  font-variant-numeric: tabular-nums;
+}
+body .uc-sla .ant-tag.ant-tag-warning.ant-tag-filled:not(.ant-tag-disabled) {
+  color: var(--uc-amber-text);
+}
+body .uc-sla .ant-tag.ant-tag-error.ant-tag-filled:not(.ant-tag-disabled) {
+  color: var(--uc-red-text);
+}
+/* Tier: outlined in its colour, no fill */
+body .ant-tag.uc-tier.ant-tag-filled:not(.ant-tag-disabled) {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px currentColor;
+  font-weight: 600;
+}
+
+/* Pair-score meters keep their length inside narrow grid cells */
+.uc-evidence-grid .uc-score {
+  grid-template-columns: minmax(4rem, 8rem) auto;
+  gap: var(--uc-s2);
+}
+.uc-evidence-grid .ant-progress {
+  min-width: 4rem;
+}
+@media (max-width: 600px) {
+  /* The pair grid scrolls inside its own edge rather than being cut off */
+  .uc-grid-scroll {
+    margin-inline: calc(-1 * var(--uc-s5));
+    padding-inline: var(--uc-s5);
+  }
+  .uc-evidence-grid {
+    min-width: 34rem;
+    table-layout: auto !important;
+  }
+  .uc-lane-track {
+    margin-right: 2.5rem;
+  }
+  body .uc-persona .ant-select {
+    max-width: 7rem;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Thirteen bureau codes cannot share 360 px; the table below carries the same numbers */
+  .uc-report-chart {
+    display: none;
+  }
 }

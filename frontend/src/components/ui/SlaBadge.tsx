@@ -32,13 +32,13 @@ const SlaTrack: React.FC<{ age: number; total: number; tone: 'normal' | 'warning
   const w = 56;
   const days = Math.max(total, 1);
   const filled = tone === 'error' ? w : Math.min(Math.max(age, 0) / days, 1) * w;
-  const notches = Array.from({ length: Math.floor((days - 1) / 7) }, (_, i) => ((i + 1) * 7 * w) / days);
+  const notches = Array.from({ length: Math.floor((days - 1) / 7) }, (_, i) => Math.round(((i + 1) * 7 * w) / days));
   return (
     <svg className={`uc-sla-track uc-sla-track--${tone}`} width={w} height="6" viewBox={`0 0 ${w} 6`} aria-hidden="true">
-      <rect x="0" y="1" width={w} height="4" rx="2" className="off" />
-      {filled > 0 && <rect x="0" y="1" width={Math.max(filled, 4)} height="4" rx="2" className="on" />}
+      <rect x="0" y="1" width={w} height="4" className="off" />
+      {filled > 0 && <rect x="0" y="1" width={Math.round(Math.max(filled, 2))} height="4" className="on" />}
       {notches.map((x) => (
-        <rect key={x} x={x - 0.5} y="0" width="1" height="6" className="notch" />
+        <rect key={x} x={x} y="0" width="1" height="6" className="notch" />
       ))}
     </svg>
   );
