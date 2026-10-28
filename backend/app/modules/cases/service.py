@@ -8,6 +8,7 @@ Logs here carry case ids only, never descriptions or complainant names (PRD §6)
 
 import logging
 from datetime import date, datetime, time, timedelta, timezone
+from time import perf_counter
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from sqlalchemy import and_, func, not_, or_
@@ -236,6 +237,7 @@ def create_case(session: Session, body: CaseCreate, user: User) -> CaseIntakeRes
     Writes: case, audit_log, plus match_review / overlap_* / alert via the engine façade.
     Never commits.
     """
+    started = perf_counter()
     category = session.get(Category, body.category_id)
     if category is None:
         raise validation_error("category_id", "Unknown category")
@@ -270,5 +272,5 @@ def create_case(session: Session, body: CaseCreate, user: User) -> CaseIntakeRes
         raise validation_error("permanent_id", "Permanent ID is not in the registry") from None
     overlaps = engine.apply_overlaps(session, case, in_scope_callback(session, user))
     session.flush()
-    logger.info("case %s created (resolution=%s, overlap_groups=%d)", case.id, resolution.decision.value, len(overlaps))
+    logger.info("case %s created (resolution=%s, overlap_groups=%d, %.0f ms)", case.id, resolution.decision.value, len(overlaps), (perf_counter() - started) * 1000)
     return CaseIntakeResult(case=case_read(session, case), resolution=resolution, overlaps=overlaps)

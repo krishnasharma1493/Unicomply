@@ -222,7 +222,7 @@ def load_world(seed_dir: Path) -> World:
 def build_world_index(world: World, mode: str) -> MatchIndex:
     """The index the app would build, but without the human decisions: no dismissed pairs."""
     return build_index(
-        world.institutions, world.aliases, world.lites.values(), [], make_embedder(mode, MODEL_NAME), world.trust_names  # type: ignore[arg-type]
+        world.institutions, world.aliases, world.lites.values(), [], make_embedder(mode, MODEL_NAME, fallback=False), world.trust_names  # type: ignore[arg-type]
     )
 
 
