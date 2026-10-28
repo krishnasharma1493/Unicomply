@@ -68,6 +68,8 @@ describe('Cases list on the mock API (Issue #31)', () => {
       </QueryClientProvider>,
     );
   };
+  // The full filter form sits behind the "Filters" disclosure; the sentence above the list shows what is applied.
+  const openFilters = () => fireEvent.click(screen.getByRole('button', { name: /^Filters/ }));
   const requests = (spy: { mock: { calls: unknown[][] } }) =>
     spy.mock.calls.filter(([url]) => url === '/cases').map(([, config]) => (config as { params: Record<string, unknown> }).params);
 
@@ -86,6 +88,7 @@ describe('Cases list on the mock API (Issue #31)', () => {
     const get = vi.spyOn(client, 'get');
     renderAt('/cases?q=vindhya&bureau_id=2&category=fee_refund&status=under_process,interim_reply&from=2026-09-01&to=2026-11-20&beyond_sla=false&in_overlap=true&pending=true&region=central&permanent_id=1-4812730561&case_ref=PGRC%2F2026%2F00412');
     await screen.findByRole('link', { name: 'PGRC/2026/00412' });
+    openFilters();
     expect(requests(get).at(-1)).toEqual({
       q: 'vindhya', bureau_id: 2, category: 'fee_refund', status: 'under_process,interim_reply', from: '2026-09-01', to: '2026-11-20',
       beyond_sla: false, in_overlap: true, pending: true, region: 'central', permanent_id: '1-4812730561', case_ref: 'PGRC/2026/00412', page: 1, limit: 20,
@@ -99,6 +102,7 @@ describe('Cases list on the mock API (Issue #31)', () => {
     const user = userEvent.setup();
     renderAt('/cases');
     await screen.findByRole('link', { name: 'PGRC/2026/00412' });
+    openFilters();
     await user.type(screen.getByLabelText('Institution name'), 'Narmada');
     await user.click(screen.getByRole('button', { name: 'Search' }));
     await waitFor(() => expect(screen.getByTestId('where')).toHaveTextContent('/cases?q=Narmada'));
@@ -114,6 +118,7 @@ describe('Cases list on the mock API (Issue #31)', () => {
     const user = userEvent.setup();
     renderAt('/cases');
     await screen.findByRole('link', { name: 'PGRC/2026/00412' });
+    openFilters();
     const before = requests(get).length;
     await user.type(screen.getByLabelText('Case reference'), 'RB/2026');
     expect(requests(get).length).toBe(before);
@@ -124,6 +129,7 @@ describe('Cases list on the mock API (Issue #31)', () => {
     const user = userEvent.setup();
     renderAt('/cases');
     await screen.findByRole('link', { name: 'PGRC/2026/00412' });
+    openFilters();
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Bureau' }));
     fireEvent.click((await screen.findAllByText('RB — Regulation Bureau')).at(-1)!);
     await user.click(screen.getByRole('button', { name: 'Search' }));
