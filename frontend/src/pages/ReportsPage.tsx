@@ -24,7 +24,7 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
         {REPORT_KIND_LABELS[report.kind]}, cases received {formatDate(report.from)} to {formatDate(report.to)}. Generated {formatDateTime(report.generated_at)}.
       </Text>
       <Card size="small" title="Chart">
-        <div style={{ width: '100%', height: 280 }} aria-hidden="true">
+        <div style={{ width: '100%', height: 280 }} aria-hidden="true" inert>
           <ResponsiveContainer>
             <BarChart data={spec.data} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
               <CartesianGrid vertical={false} stroke="rgba(0, 0, 0, 0.07)" />

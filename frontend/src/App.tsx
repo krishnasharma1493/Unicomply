@@ -8,6 +8,7 @@ import { RequireAuth } from './components/RequireAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppShell } from './components/layout';
 import { buildTheme } from './theme';
+import { ANNOUNCER_ID } from './lib/announce';
 
 // Pages
 import { LoginPage } from './pages/LoginPage';
@@ -91,6 +92,7 @@ export const App: React.FC = () => {
             <BrowserRouter>
               <AppRoutes />
             </BrowserRouter>
+            <div id={ANNOUNCER_ID} className="uc-sr" role="status" aria-live="polite" aria-atomic="true" />
           </AuthProvider>
         </QueryClientProvider>
       </ConfigProvider>

@@ -54,7 +54,7 @@ const ClickableBars: React.FC<{
   const navigate = useNavigate();
   return (
     <>
-      <div style={{ width: '100%', height: 240 }} aria-hidden="true">
+      <div style={{ width: '100%', height: 240 }} aria-hidden="true" inert>
         <ResponsiveContainer>
           <BarChart data={data} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
             <CartesianGrid vertical={false} stroke="rgba(0, 0, 0, 0.07)" />
@@ -143,6 +143,7 @@ export const TopInstitutions: React.FC = () => {
     <Section title="Institutions needing attention" flush>
       <QueryBoundary query={rows} loadingTip="Loading institutions" emptyDescription="No institutions with cases yet.">
         {(data) => (
+          <div className="uc-grid-scroll">
           <Table<InstitutionStatusRow>
             size="small"
             rowKey="permanent_id"
@@ -164,6 +165,7 @@ export const TopInstitutions: React.FC = () => {
               },
             ]}
           />
+          </div>
         )}
       </QueryBoundary>
     </Section>

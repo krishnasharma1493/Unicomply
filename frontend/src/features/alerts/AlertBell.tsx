@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge, Button, Popover, Typography } from 'antd';
 import { BellOutlined } from '@ant-design/icons';
@@ -12,12 +12,18 @@ const { Text } = Typography;
 /** The shell's bell (PRD §7): unread count, the latest five, a link to the page. Polls every 30 s. */
 export const AlertBell: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const setOpenAndReturn = (next: boolean) => {
+    setOpen(next);
+    // Closing returns focus to the bell, so keyboard users are not dropped at the top of the page.
+    if (!next) window.setTimeout(() => trigger.current?.focus(), 0);
+  };
   const { latest, unreadCount } = useBell();
   const markRead = useMarkRead();
   const alerts = latest.data?.data ?? [];
 
   const content = (
-    <div className="uc-bell">
+    <div className="uc-bell" role="dialog" aria-label="Latest alerts">
       {latest.isError ? (
         <Text type="danger">{apiErrorMessage(latest.error)}</Text>
       ) : latest.isLoading ? (
@@ -55,9 +61,12 @@ export const AlertBell: React.FC = () => {
   );
 
   return (
-    <Popover trigger="click" placement="bottomRight" open={open} onOpenChange={setOpen} content={content} title="Alerts">
+    <Popover trigger="click" placement="bottomRight" open={open} onOpenChange={setOpenAndReturn} content={content} title="Alerts">
       <Badge count={unreadCount} overflowCount={99} offset={[-4, 6]} size="small">
         <Button
+          ref={trigger}
+          aria-expanded={open}
+          aria-haspopup="dialog"
           type="text"
           shape="circle"
           icon={<BellOutlined style={{ fontSize: 16, color: 'var(--uc-text-2)' }} />}

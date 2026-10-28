@@ -16,7 +16,7 @@
   --uc-accent: #0b5e6b;
   --uc-accent-text: #0b5e6b;
   --uc-accent-tint: rgba(11, 94, 107, 0.1);
-  --uc-focus: rgba(11, 94, 107, 0.5);
+  --uc-focus: #0b5e6b;
   --uc-red: #b42318;
   --uc-red-text: #b42318;
   --uc-red-tint: #fdf1ef;
@@ -94,8 +94,34 @@ body {
 }
 
 :focus-visible {
-  outline: 3px solid var(--uc-focus);
+  outline: 2px solid var(--uc-focus);
   outline-offset: 2px;
+}
+
+/* Keyboard users can jump past the sidebar and toolbar */
+.uc-skip {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1000;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.375rem;
+  background: var(--uc-text);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+.uc-skip:focus {
+  transform: none;
+  color: #fff;
+}
+main h1:focus {
+  outline: none;
+}
+main h1:focus-visible {
+  outline: 2px solid var(--uc-focus);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 a {
@@ -481,23 +507,23 @@ body .ant-tag {
   font-weight: 500;
   margin-inline-end: 0;
 }
-body .ant-tag.ant-tag-warning,
-body .ant-tag.ant-tag-gold {
+body .ant-tag.ant-tag.ant-tag-warning,
+body .ant-tag.ant-tag.ant-tag-gold {
   background: var(--uc-amber-tint);
   color: var(--uc-amber-text);
 }
-body .ant-tag.ant-tag-error,
-body .ant-tag.ant-tag-red {
+body .ant-tag.ant-tag.ant-tag-error,
+body .ant-tag.ant-tag.ant-tag-red {
   background: var(--uc-red-tint);
   color: var(--uc-red-text);
 }
-body .ant-tag.ant-tag-success,
-body .ant-tag.ant-tag-green {
+body .ant-tag.ant-tag.ant-tag-success,
+body .ant-tag.ant-tag.ant-tag-green {
   background: #eef8f0;
   color: var(--uc-green);
 }
-body .ant-tag.ant-tag-blue,
-body .ant-tag.ant-tag-processing {
+body .ant-tag.ant-tag.ant-tag-blue,
+body .ant-tag.ant-tag.ant-tag-processing {
   background: var(--uc-accent-tint);
   color: var(--uc-accent-text);
 }
@@ -650,8 +676,34 @@ body .ant-btn:focus-visible,
 body .ant-menu-item:focus-visible,
 body .ant-tabs-tab-btn:focus-visible,
 body .ant-pagination-item:focus-visible {
-  outline: 3px solid var(--uc-focus);
+  outline: 2px solid var(--uc-focus);
   outline-offset: 2px;
+}
+
+/* Keyboard users can jump past the sidebar and toolbar */
+.uc-skip {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1000;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.375rem;
+  background: var(--uc-text);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+.uc-skip:focus {
+  transform: none;
+  color: #fff;
+}
+main h1:focus {
+  outline: none;
+}
+main h1:focus-visible {
+  outline: 2px solid var(--uc-focus);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 /* ---------- Floating control layer: glass ---------- */
@@ -1846,4 +1898,19 @@ body .uc-command .ant-input-affix-wrapper {
   padding: var(--uc-s2) var(--uc-s3) var(--uc-s1);
   border-top: 1px solid var(--uc-hairline);
   margin-top: var(--uc-s1);
+}
+.uc-link-button {
+  display: inline-flex;
+  align-items: center;
+  height: 2.125rem;
+  padding: 0 1rem;
+  border-radius: 0.375rem;
+  background: var(--uc-accent);
+  color: #fff;
+  font-weight: 500;
+}
+.uc-link-button:hover {
+  color: #fff;
+  text-decoration: none;
+  background: #084a54;
 }

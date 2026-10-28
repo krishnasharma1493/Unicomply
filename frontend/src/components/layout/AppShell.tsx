@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Drawer } from 'antd';
 import { motion } from 'motion/react';
@@ -46,9 +46,35 @@ export const AppShell: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // A new page starts at the top, the way a new window would.
+  // A new page starts at the top, the way a new window would. The tab title follows the page's h1,
+  // and when the user navigated from the chrome (sidebar, command bar, toolbar) focus moves to that h1
+  // so keyboard and screen-reader users land on the new content, not back at the top of the nav.
+  const firstRender = useRef(true);
   useEffect(() => {
     window.scrollTo?.(0, 0);
+    const main = document.getElementById('main');
+    if (!main) return;
+    const fromChrome = () => {
+      const a = document.activeElement;
+      return !a || a === document.body || Boolean(a.closest('.uc-sidebar-col, .uc-toolbar, .uc-command, .ant-drawer'));
+    };
+    const shouldFocus = !firstRender.current && fromChrome();
+    firstRender.current = false;
+    let focused = false;
+    const sync = () => {
+      const h1 = main.querySelector('h1');
+      if (!h1) return;
+      document.title = `${h1.textContent?.trim() || 'Unicomply'} · Unicomply`;
+      if (shouldFocus && !focused) {
+        focused = true;
+        h1.setAttribute('tabindex', '-1');
+        h1.focus({ preventScroll: true });
+      }
+    };
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(main, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
   }, [location.pathname]);
 
   return (
@@ -57,6 +83,9 @@ export const AppShell: React.FC = () => {
       data-collapsed={!isMobile && collapsed ? 'true' : 'false'}
       data-mobile={isMobile ? 'true' : 'false'}
     >
+      <a className="uc-skip" href="#main">
+        Skip to content
+      </a>
       {!isMobile && (
         <aside className="uc-sidebar-col" aria-label="Primary">
           <div className="uc-sidebar">
@@ -87,7 +116,7 @@ export const AppShell: React.FC = () => {
           scrolled={scrolled}
           onOpenCommand={openCommand}
         />
-        <main className="uc-content" id="main">
+        <main className="uc-content" id="main" tabIndex={-1}>
           <motion.div
             key={location.pathname}
             initial={motionPrefs.enter()}
