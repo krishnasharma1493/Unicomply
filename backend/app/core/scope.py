@@ -11,7 +11,7 @@ from sqlalchemy import Select, false
 from sqlmodel import Session, col, select
 
 from app.core.deps import CurrentUser
-from app.core.enums import OverlapGroupStatus, Role
+from app.core.enums import ActionType, OverlapGroupStatus, Role
 from app.core.errors import ForbiddenError, NotFoundError
 from app.modules.cases.models import Case
 from app.modules.institutions.models import Institution
@@ -67,21 +67,22 @@ def require_roles(*roles: Role) -> Any:
     return Depends(dep)
 
 
-def can_act_on_case(user: User, case: Case) -> bool:
+def can_act_on_case(user: User, case: Case, action: ActionType) -> bool:
     """
     The "Can do" column of PRD §4.2. Call it on a case already loaded through
-    `get_case_in_scope_or_404`: seeing a case is not enough to act on it. Intake operators only
-    create cases and decide match reviews; they never act on one.
+    `get_case_in_scope_or_404`: seeing a case is not enough to act on it. A bureau head or RO officer
+    takes any action on a case at their own bureau / RO; the senior officer may escalate or remark on
+    any case (and decides overlaps elsewhere); intake operators only create cases and decide reviews.
     """
     if user.role == Role.senior_mgmt:
-        return True
+        return action in (ActionType.escalate, ActionType.remark)
     if user.role in (Role.bureau_head, Role.ro_officer):
         return user.bureau_id is not None and case.current_bureau_id == user.bureau_id
     return False
 
 
-def require_can_act(user: User, case: Case) -> None:
-    if not can_act_on_case(user, case):
+def require_can_act(user: User, case: Case, action: ActionType) -> None:
+    if not can_act_on_case(user, case, action):
         raise ForbiddenError()
 
 

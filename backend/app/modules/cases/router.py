@@ -82,7 +82,7 @@ def apply_case_action(
     Applies the validated workflow state machine and appends action/audit history atomically.
     """
     case = get_case_in_scope_or_404(session, case_id, user)
-    require_can_act(user, case)
+    require_can_act(user, case, body.action_type)
     try:
         result = workflow.apply_action(session, case, body, user)
         session.commit()
