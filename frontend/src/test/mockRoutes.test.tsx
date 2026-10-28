@@ -23,7 +23,7 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
     ['/', 'Dashboard'],
     ['/cases', 'Cases'],
     ['/cases/new', 'Register a case'],
-    ['/cases/101', 'Case Detail'],
+    ['/cases/101', 'PGRC/2026/00412'],
     ['/reviews', 'Match Review'],
     ['/overlaps', 'Overlap Center'],
     ['/overlaps/1', 'Overlap'],
