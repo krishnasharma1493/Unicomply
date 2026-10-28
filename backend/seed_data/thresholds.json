@@ -1,7 +1,7 @@
 {
-  "t_auto": 0.68,
-  "t_review": 0.46,
-  "t_probable": 0.68,
+  "t_auto": 0.5,
+  "t_review": 0.45,
+  "t_probable": 0.5,
   "t_possible": 0.45,
   "margin": 0.05,
   "resolution": {

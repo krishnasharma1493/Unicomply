@@ -70,6 +70,8 @@ def resolve_institution(
         fuzzy_score = _fuzzy_score(name_query, inst.name_norm, idx)
         semantic_score = float(semantic.get(inst.permanent_id, 0.0))
         acronym_score = 1.0 if (inst.acronym and inst.acronym.upper() in query_tokens) else 0.0
+        if acronym_score and set(name_query.split()) <= {(inst.acronym or "").upper()}:
+            fuzzy_score = 1.0  # the complaint IS the acronym (VVIET Jabalpur): that is the whole name, not a missing one
         location_score = _location_score(inst, raw_state, district_hint)
         score = min(1.0, max(0.0,
             weights.fuzzy * fuzzy_score + weights.semantic * semantic_score
