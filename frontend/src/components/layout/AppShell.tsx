@@ -119,7 +119,8 @@ export const AppShell: React.FC = () => {
         />
         <main className="uc-content" id="main" tabIndex={-1}>
           <motion.div
-            key={location.pathname}
+            // Moving between cases in the split view is a selection, not a new page: keep it mounted.
+            key={/^\/cases\/\d+/.test(location.pathname) ? '/cases' : location.pathname}
             initial={motionPrefs.enter()}
             animate={{ opacity: 1, y: 0 }}
             transition={motionPrefs.spring}

@@ -16,6 +16,19 @@ export interface LaneCase {
 }
 
 const DAY = 86_400_000;
+/** Cases closer than this share one marker, so labels never overprint each other. */
+const CLUSTER_GAP = 7;
+function clusters(lane: LaneCase[], pos: (iso: string) => number): { left: number; cases: LaneCase[] }[] {
+  const sorted = [...lane].sort((a, b) => pos(a.received_at) - pos(b.received_at));
+  const out: { left: number; cases: LaneCase[] }[] = [];
+  for (const c of sorted) {
+    const p = pos(c.received_at);
+    const last = out[out.length - 1];
+    if (last && p - last.left < CLUSTER_GAP) last.cases.push(c);
+    else out.push({ left: p, cases: [c] });
+  }
+  return out;
+}
 /** The lane already names the bureau, so the dot carries only the serial: PGRC/2026/00412 → 00412. */
 const shortRef = (ref: string) => ref.split('/').pop() ?? ref;
 const t = (iso: string) => Date.parse(`${iso.slice(0, 10)}T00:00:00Z`);
@@ -54,36 +67,41 @@ export const OverlapLanes: React.FC<{ cases: LaneCase[]; caption?: string }> = (
           <div key={code} className="uc-lane">
             <span className="uc-lane-code">{code}</span>
             <div className="uc-lane-track">
-              {cases
-                .filter((c) => c.bureau_code === code)
-                .map((c) => {
-                  const left = pos(c.received_at);
-                  const flip = left > 72;
-                  const dot = (
-                    <>
-                      <span className="uc-lane-dot" />
-                      <span className="uc-lane-label uc-ref">{shortRef(c.case_ref)}</span>
-                    </>
-                  );
-                  return (
-                    <motion.span
-                      key={c.case_id}
-                      className={['uc-lane-case', c.current ? 'is-current' : '', flip ? 'is-flipped' : ''].join(' ')}
-                      style={{ left: `${left}%` }}
-                      initial={motionPrefs.reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ ...motionPrefs.quick, delay: motionPrefs.reduce || c.current ? 0 : (order.filter((id) => id !== currentId).indexOf(c.case_id) + (currentId === undefined ? 0 : 1)) * 0.07 }}
-                    >
-                      {c.in_scope ? (
-                        <Link to={`/cases/${c.case_id}`} tabIndex={-1} title={c.case_ref}>
-                          {dot}
-                        </Link>
-                      ) : (
-                        dot
-                      )}
-                    </motion.span>
-                  );
-                })}
+              {clusters(cases.filter((c) => c.bureau_code === code), pos).map((group) => {
+                const left = group.left;
+                const flip = left > 72;
+                const lead = group.cases.find((c) => c.current) ?? group.cases[0];
+                const first = Math.min(...group.cases.map((c) => order.indexOf(c.case_id)));
+                return (
+                  <motion.span
+                    key={group.cases.map((c) => c.case_id).join('-')}
+                    className={['uc-lane-case', group.cases.some((c) => c.current) ? 'is-current' : '', flip ? 'is-flipped' : ''].join(' ')}
+                    style={{ left: `${left}%` }}
+                    initial={motionPrefs.reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      ...motionPrefs.quick,
+                      delay: motionPrefs.reduce || lead.current ? 0 : (first + (currentId === undefined ? 0 : 1)) * 0.07,
+                    }}
+                  >
+                    <span className="uc-lane-dot" />
+                    <span className="uc-lane-label uc-ref">
+                      {group.cases.map((c, i) => (
+                        <React.Fragment key={c.case_id}>
+                          {i > 0 && <span className="uc-lane-sep"> · </span>}
+                          {c.in_scope ? (
+                            <Link to={`/cases/${c.case_id}`} tabIndex={-1} title={c.case_ref} className={c.current ? 'is-current' : undefined}>
+                              {shortRef(c.case_ref)}
+                            </Link>
+                          ) : (
+                            <span title={c.case_ref}>{shortRef(c.case_ref)}</span>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </span>
+                  </motion.span>
+                );
+              })}
             </div>
           </div>
         ))}

@@ -1580,6 +1580,12 @@ code {
 }
 
 @media (max-width: 600px) {
+  .uc-account-name {
+    display: none;
+  }
+  .uc-account-trigger {
+    padding-right: 0.1875rem;
+  }
   .uc-persona-label {
     display: none;
   }
@@ -1727,8 +1733,12 @@ body .ant-tag.uc-sla-plain {
   font-size: 0.75rem;
   color: var(--uc-text);
 }
-.uc-lane-case.is-current .uc-lane-label {
+.uc-lane-label a.is-current,
+.uc-lane-case.is-current .uc-lane-label > a.is-current {
   color: var(--uc-accent-text);
+}
+.uc-lane-sep {
+  color: var(--uc-text-2);
 }
 .uc-lane-axis {
   display: flex;
