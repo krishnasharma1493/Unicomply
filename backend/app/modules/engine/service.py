@@ -212,7 +212,8 @@ def apply_overlaps(session: Session, case: Case, in_scope: InScope = everyone) -
     sibling departments, same trust; open or disposed within OVERLAP_WINDOW_DAYS) and
     upsert the overlap groups the engine plans (PRD §4.5): create a group, extend an open or
     confirmed one, or reopen a dismissed one with only the new pairs. A pair an official
-    dismissed is never re-added or updated. Overlap alerts go through `notify_overlap()`.
+    dismissed is never re-added or updated. Overlap alerts go through `notify_overlap()`, only when a group is
+    created, reopened or gains a case: re-scanning a group that has nothing new never alerts.
     Returns one OverlapSummary per touched group; `cases` excludes `case` itself and
     `in_scope` (#12's scope check) sets each card's `in_scope`.
 
@@ -238,9 +239,12 @@ def apply_overlaps(session: Session, case: Case, in_scope: InScope = everyone) -
     for plan in plans:
         group = _upsert_group(session, plan)
         assert group.id is not None
-        _ensure_links(session, group.id, plan.case_ids)
+        joined = _ensure_links(session, group.id, plan.case_ids)
         _upsert_pairs(session, plan.pairs)
-        notify_overlap(session, group, case)
+        # Alert when something is new: a group created or reopened, or a case that joined it. A re-scan that
+        # merely re-confirms a group must not alert again (the job loop runs every tick).
+        if plan.action in ("create", "reopen") or joined:
+            notify_overlap(session, group, case)
         summaries.append(_summary(session, group, plan, exclude_case_id=case.id, in_scope=in_scope))
     session.flush()
     return summaries
@@ -480,11 +484,13 @@ def _upsert_group(session: Session, plan: GroupPlan) -> OverlapGroup:
     return group
 
 
-def _ensure_links(session: Session, group_id: int, case_ids: Sequence[int]) -> None:
+def _ensure_links(session: Session, group_id: int, case_ids: Sequence[int]) -> int:
+    """Link the cases that are not in the group yet; returns how many joined."""
     present = set(session.exec(select(OverlapLink.case_id).where(OverlapLink.group_id == group_id)).all())
-    for case_id in case_ids:
-        if case_id not in present:
-            session.add(OverlapLink(group_id=group_id, case_id=case_id))
+    joined = [case_id for case_id in case_ids if case_id not in present]
+    for case_id in joined:
+        session.add(OverlapLink(group_id=group_id, case_id=case_id))
+    return len(joined)
 
 
 def _upsert_pairs(session: Session, pairs: Sequence[PairEvidence]) -> None:
