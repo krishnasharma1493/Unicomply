@@ -25,19 +25,20 @@ export interface SlaBadgeProps {
 }
 
 /**
- * The SLA clock: one tick per day of the SLA, elapsed days filled. It reads as proportion at a glance;
- * the words beside it carry the meaning, so colour is never alone.
+ * The SLA clock: one rule the length of the SLA, the elapsed share filled, with a notch at each week.
+ * It reads as proportion at a glance; the words beside it carry the meaning, so colour is never alone.
  */
 const SlaTrack: React.FC<{ age: number; total: number; tone: 'normal' | 'warning' | 'error' }> = ({ age, total, tone }) => {
-  const n = Math.min(Math.max(total, 1), 30);
-  const filled = Math.min(age, total) * (n / Math.max(total, 1));
-  const w = 64;
-  const gap = n > 15 ? 1 : 2;
-  const seg = (w - gap * (n - 1)) / n;
+  const w = 56;
+  const days = Math.max(total, 1);
+  const filled = tone === 'error' ? w : Math.min(Math.max(age, 0) / days, 1) * w;
+  const notches = Array.from({ length: Math.floor((days - 1) / 7) }, (_, i) => ((i + 1) * 7 * w) / days);
   return (
-    <svg className={`uc-sla-track uc-sla-track--${tone}`} width={w} height="8" viewBox={`0 0 ${w} 8`} aria-hidden="true">
-      {Array.from({ length: n }, (_, i) => (
-        <rect key={i} x={i * (seg + gap)} y="1" width={seg} height="6" rx="0.75" className={i < Math.round(filled) ? 'on' : 'off'} />
+    <svg className={`uc-sla-track uc-sla-track--${tone}`} width={w} height="6" viewBox={`0 0 ${w} 6`} aria-hidden="true">
+      <rect x="0" y="1" width={w} height="4" rx="2" className="off" />
+      {filled > 0 && <rect x="0" y="1" width={Math.max(filled, 4)} height="4" rx="2" className="on" />}
+      {notches.map((x) => (
+        <rect key={x} x={x - 0.5} y="0" width="1" height="6" className="notch" />
       ))}
     </svg>
   );

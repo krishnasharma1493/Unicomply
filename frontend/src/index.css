@@ -507,23 +507,23 @@ body .ant-tag {
   font-weight: 500;
   margin-inline-end: 0;
 }
-body .ant-tag.ant-tag.ant-tag-warning,
-body .ant-tag.ant-tag.ant-tag-gold {
+body .ant-tag.ant-tag-warning.ant-tag-filled:not(.ant-tag-disabled),
+body .ant-tag.ant-tag-gold.ant-tag-filled:not(.ant-tag-disabled) {
   background: var(--uc-amber-tint);
   color: var(--uc-amber-text);
 }
-body .ant-tag.ant-tag.ant-tag-error,
-body .ant-tag.ant-tag.ant-tag-red {
+body .ant-tag.ant-tag-error.ant-tag-filled:not(.ant-tag-disabled),
+body .ant-tag.ant-tag-red.ant-tag-filled:not(.ant-tag-disabled) {
   background: var(--uc-red-tint);
   color: var(--uc-red-text);
 }
-body .ant-tag.ant-tag.ant-tag-success,
-body .ant-tag.ant-tag.ant-tag-green {
+body .ant-tag.ant-tag-success.ant-tag-filled:not(.ant-tag-disabled),
+body .ant-tag.ant-tag-green.ant-tag-filled:not(.ant-tag-disabled) {
   background: #eef8f0;
   color: var(--uc-green);
 }
-body .ant-tag.ant-tag.ant-tag-blue,
-body .ant-tag.ant-tag.ant-tag-processing {
+body .ant-tag.ant-tag-blue.ant-tag-filled:not(.ant-tag-disabled),
+body .ant-tag.ant-tag-processing.ant-tag-filled:not(.ant-tag-disabled) {
   background: var(--uc-accent-tint);
   color: var(--uc-accent-text);
 }
@@ -1622,6 +1622,9 @@ body .ant-table-wrapper .ant-table-sticky-scroll {
 }
 .uc-sla-track .off {
   fill: #e3e6e3;
+}
+.uc-sla-track .notch {
+  fill: var(--uc-surface);
 }
 .uc-sla-track .on {
   fill: #8a918d;

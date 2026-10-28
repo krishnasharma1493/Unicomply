@@ -45,6 +45,11 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
       colorSuccess: palette.green,
       colorWarning: palette.amber,
       colorError: palette.red,
+      // Semantic tints: the same pairs everywhere (tags, alerts), each text-on-tint pair at AA or better.
+      colorErrorBg: palette.redTint,
+      colorWarningBg: palette.amberTint,
+      colorSuccessBg: '#eef6f0',
+      colorInfoBg: '#e7f0f1',
       colorTextBase: palette.text,
       colorText: palette.text,
       colorTextSecondary: palette.textSecondary,
