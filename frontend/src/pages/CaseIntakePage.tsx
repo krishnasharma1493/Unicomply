@@ -100,6 +100,9 @@ const IntakeWorkspace: React.FC<{ meta: Meta }> = ({ meta }) => {
       return;
     }
     create.mutate(values);
+  }, () => {
+    // Take the operator to the first field that needs fixing (fields mark themselves aria-invalid).
+    window.setTimeout(() => (document.querySelector('.uc-intake-form [aria-invalid="true"]') as HTMLElement | null)?.focus(), 0);
   });
   // The form is memoised; it gets one stable submit handler that always runs the latest `register`.
   const latestRegister = useRef(register);

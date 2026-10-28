@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Tag } from 'antd';
 import type { CaseStatus } from '../../lib/api/enums';
 import { diffCalendarDays } from '../../lib/format';
@@ -32,11 +33,23 @@ const SlaTrack: React.FC<{ age: number; total: number; tone: 'normal' | 'warning
   const w = 56;
   const days = Math.max(total, 1);
   const filled = tone === 'error' ? w : Math.min(Math.max(age, 0) / days, 1) * w;
+  const reduce = useReducedMotion();
   const notches = Array.from({ length: Math.floor((days - 1) / 7) }, (_, i) => Math.round(((i + 1) * 7 * w) / days));
   return (
     <svg className={`uc-sla-track uc-sla-track--${tone}`} width={w} height="6" viewBox={`0 0 ${w} 6`} aria-hidden="true">
       <rect x="0" y="1" width={w} height="4" className="off" />
-      {filled > 0 && <rect x="0" y="1" width={Math.round(Math.max(filled, 2))} height="4" className="on" />}
+      {filled > 0 && (
+        // The clock fills to today's position as it appears, so the elapsed share is read as motion.
+        <motion.rect
+          x="0"
+          y="1"
+          height="4"
+          className="on"
+          initial={{ width: reduce ? Math.round(Math.max(filled, 2)) : 0 }}
+          animate={{ width: Math.round(Math.max(filled, 2)) }}
+          transition={{ type: 'spring', bounce: 0, duration: 0.6, delay: 0.1 }}
+        />
+      )}
       {notches.map((x) => (
         <rect key={x} x={x} y="0" width="1" height="6" className="notch" />
       ))}

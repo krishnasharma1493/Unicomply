@@ -51,7 +51,7 @@ export const AppShell: React.FC = () => {
   // so keyboard and screen-reader users land on the new content, not back at the top of the nav.
   const lastPath = useRef<string | null>(null);
   useEffect(() => {
-    window.scrollTo?.(0, 0);
+    window.scrollTo?.({ top: 0, behavior: 'instant' as ScrollBehavior });
     const main = document.getElementById('main');
     if (!main) return;
     const fromChrome = () => {

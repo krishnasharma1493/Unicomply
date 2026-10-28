@@ -124,6 +124,7 @@ describe('Today page on the mock API', () => {
     await user.click(button);
     await waitFor(() => expect(within(alerts).queryByRole('button', { name: 'Mark read: Beyond SLA: RB/2026/00079' })).toBeNull());
     expect(within(alerts).getByRole('button', { name: 'Mark read: Beyond SLA: RO-CRO/2026/00121' })).toHaveFocus();
-    await waitFor(() => expect(within(alerts).getByText('4')).toBeInTheDocument()); // the count follows the server
+    // The count follows the server; the heading's accessible name carries the real number.
+    await waitFor(() => expect(within(alerts).getByRole('heading', { name: /Unread alerts\s*4\b/ })).toBeInTheDocument());
   });
 });

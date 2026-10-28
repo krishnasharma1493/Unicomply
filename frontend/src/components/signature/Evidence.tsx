@@ -53,7 +53,7 @@ export const EvidenceGrid: React.FC<{ pairs: EvidencePair[]; scoreLabel?: string
   const read = pairs.map((p) => ({ ...p, evidence: p.reasons.map(readReason) }));
   const kinds: EvidenceKind[] = EVIDENCE_ORDER.filter((k) => read.some((p) => p.evidence.some((e) => e.kind === k)));
   return (
-    <div className="uc-grid-scroll">
+    <div className="uc-grid-scroll" role="region" aria-label="Evidence for each pair of cases" tabIndex={0}>
       <table className="uc-evidence-grid">
         <caption className="uc-sr">Evidence for each pair of cases</caption>
         <thead>

@@ -65,6 +65,7 @@ def test_sort_keeps_scope_and_rejects_unknown_values(seeded_client: TestClient, 
     [
         ("q=vindhya", {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133", "RB/2026/00079"}),  # name, via Permanent ID
         ("q=VVIET", {"PGRC/2026/00412"}),  # raw text
+        ("q=00412", {"PGRC/2026/00412"}),  # a reference's serial
         (f"permanent_id={VINDHYA}", {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"}),
         ("case_ref=rb/2026/00087", {"RB/2026/00087"}),
         ("bureau_id=3", {"AB/2026/00056"}),

@@ -14,9 +14,23 @@ import { apiErrorMessage, formatDate, formatDateTime } from '../lib/format';
 
 const { Text } = Typography;
 
+/** Phone width: the chart turns on its side rather than disappearing. */
+function useNarrow(query = '(max-width: 600px)'): boolean {
+  const [narrow, setNarrow] = React.useState(() => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia(query).matches);
+  React.useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const mql = window.matchMedia(query);
+    const on = () => setNarrow(mql.matches);
+    mql.addEventListener('change', on);
+    return () => mql.removeEventListener('change', on);
+  }, [query]);
+  return narrow;
+}
+
 const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
   const spec = chartSpec(report);
   const rows = report.rows as unknown as Record<string, unknown>[];
+  const narrow = useNarrow();
   const totals = report.totals as unknown as Record<string, unknown>;
   return (
     <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
@@ -24,8 +38,18 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
         {REPORT_KIND_LABELS[report.kind]}, cases received {formatDate(report.from)} to {formatDate(report.to)}. Generated {formatDateTime(report.generated_at)}.
       </Text>
       <Card size="small" title="Chart" className="uc-report-chart">
-        <div style={{ width: '100%', height: 280 }} aria-hidden="true" inert>
+        <div style={{ width: '100%', height: narrow ? Math.max(260, spec.data.length * spec.series.length * 12 + 80) : 280 }} aria-hidden="true" inert>
           <ResponsiveContainer>
+            {narrow ? (
+              // On a phone the categories run down the side, so thirteen bureau codes stay legible.
+              <BarChart data={spec.data} layout="vertical" margin={{ top: 4, right: 12, bottom: 0, left: 0 }}>
+                <CartesianGrid horizontal={false} stroke="rgba(0, 0, 0, 0.07)" />
+                <YAxis type="category" dataKey={spec.categoryKey} width={70} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={{ stroke: 'rgba(0, 0, 0, 0.15)' }} interval={0} />
+                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={false} tickFormatter={(v: number) => (spec.percent ? `${Math.round(v * 100)}%` : String(v))} domain={spec.percent ? [0, 1] : undefined} />
+                <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 13 }} formatter={(value: string) => <span style={{ color: 'var(--uc-text)' }}>{value}</span>} />
+                {spec.series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.colour} radius={[0, 3, 3, 0]} maxBarSize={10} animationDuration={700} animationEasing="ease-out" />)}
+              </BarChart>
+            ) : (
             <BarChart data={spec.data} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
               <CartesianGrid vertical={false} stroke="rgba(0, 0, 0, 0.07)" />
               <XAxis dataKey={spec.categoryKey} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={{ stroke: 'rgba(0, 0, 0, 0.15)' }} interval={0} />
@@ -36,8 +60,9 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
                 formatter={(v) => (spec.percent && typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : String(v))}
               />
               <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 13 }} formatter={(value: string) => <span style={{ color: 'var(--uc-text)' }}>{value}</span>} />
-              {spec.series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.colour} radius={[3, 3, 0, 0]} maxBarSize={28} />)}
+              {spec.series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.colour} radius={[3, 3, 0, 0]} maxBarSize={28} animationDuration={700} animationEasing="ease-out" />)}
             </BarChart>
+            )}
           </ResponsiveContainer>
         </div>
         <Text type="secondary" style={{ fontSize: 12 }}>The table below holds the same numbers.</Text>

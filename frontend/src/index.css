@@ -1972,9 +1972,193 @@ body .ant-tag.uc-tier.ant-tag-filled:not(.ant-tag-disabled) {
   }
 }
 
-@media (max-width: 600px) {
-  /* Thirteen bureau codes cannot share 360 px; the table below carries the same numbers */
-  .uc-report-chart {
+
+/* ---------- Choreography: content arrives in reading order, fast, never blocking ---------- */
+/*
+ * Entrances run once when content mounts (a page, a refreshed list, a changed filter), finish in
+ * under half a second, and never gate input: everything is clickable from the first frame.
+ */
+@keyframes uc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes uc-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes uc-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Sections of a page settle top to bottom */
+  .uc-stack > *,
+  .uc-today-col > *,
+  .uc-grid-2 > *,
+  .uc-grid-split > *,
+  .uc-kpis,
+  .ins-layout > *,
+  .uc-page-header {
+    animation: uc-rise 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .uc-today-col:nth-child(2) > *,
+  .uc-grid-2 > :nth-child(2),
+  .uc-grid-split > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+  .uc-stack > :nth-child(2),
+  .uc-today-col > :nth-child(2) {
+    animation-delay: 70ms;
+  }
+  .uc-stack > :nth-child(3),
+  .uc-today-col > :nth-child(3) {
+    animation-delay: 140ms;
+  }
+  .uc-stack > :nth-child(n + 4),
+  .uc-today-col > :nth-child(n + 4) {
+    animation-delay: 200ms;
+  }
+
+  /* Rows inside a list follow, a beat apart, for the first screenful only */
+  .uc-rows > li,
+  .uc-today-rows > li,
+  .uc-group-list > li,
+  .uc-split-rows > li,
+  .uc-candidates > li,
+  .uc-ledger-row,
+  .uc-evidence-grid tbody tr,
+  .uc-command-item {
+    animation: uc-rise 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .uc-rows > li:nth-child(2), .uc-today-rows > li:nth-child(2), .uc-group-list > li:nth-child(2), .uc-split-rows > li:nth-child(2), .uc-candidates > li:nth-child(2), .uc-ledger-row:nth-child(2), .uc-evidence-grid tbody tr:nth-child(2) { animation-delay: 35ms; }
+  .uc-rows > li:nth-child(3), .uc-today-rows > li:nth-child(3), .uc-group-list > li:nth-child(3), .uc-split-rows > li:nth-child(3), .uc-candidates > li:nth-child(3), .uc-ledger-row:nth-child(3), .uc-evidence-grid tbody tr:nth-child(3) { animation-delay: 70ms; }
+  .uc-rows > li:nth-child(4), .uc-today-rows > li:nth-child(4), .uc-group-list > li:nth-child(4), .uc-split-rows > li:nth-child(4), .uc-ledger-row:nth-child(4), .uc-evidence-grid tbody tr:nth-child(4) { animation-delay: 105ms; }
+  .uc-rows > li:nth-child(5), .uc-today-rows > li:nth-child(5), .uc-group-list > li:nth-child(5), .uc-split-rows > li:nth-child(5), .uc-ledger-row:nth-child(5), .uc-evidence-grid tbody tr:nth-child(5) { animation-delay: 140ms; }
+  .uc-rows > li:nth-child(6), .uc-today-rows > li:nth-child(6), .uc-group-list > li:nth-child(6), .uc-split-rows > li:nth-child(6), .uc-evidence-grid tbody tr:nth-child(6) { animation-delay: 170ms; }
+  .uc-rows > li:nth-child(7), .uc-today-rows > li:nth-child(7), .uc-group-list > li:nth-child(7), .uc-split-rows > li:nth-child(7) { animation-delay: 200ms; }
+  .uc-rows > li:nth-child(n + 8), .uc-today-rows > li:nth-child(n + 8), .uc-group-list > li:nth-child(n + 8), .uc-split-rows > li:nth-child(n + 8) { animation-delay: 230ms; }
+
+  /* Table rows on the Cases and report tables arrive the same way */
+  body .ant-table-tbody > tr.ant-table-row {
+    animation: uc-fade 0.36s ease-out both;
+  }
+
+  /* The overlap lanes draw themselves left to right, lane by lane, before the cases land on them */
+  .uc-lane-track::before {
+    transform-origin: left center;
+    animation: uc-draw 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .uc-lane:nth-child(2) .uc-lane-track::before { animation-delay: 70ms; }
+  .uc-lane:nth-child(3) .uc-lane-track::before { animation-delay: 140ms; }
+  .uc-lane:nth-child(n + 4) .uc-lane-track::before { animation-delay: 200ms; }
+  .uc-lane-axis {
+    animation: uc-fade 0.4s ease-out 0.25s both;
+  }
+  /* The tier rule over an overlap banner draws in from where the eye starts reading */
+  .uc-banner {
+    position: relative;
+  }
+
+  /* Hover is felt, not announced: rows lift their trailing detail a few pixels */
+  .uc-today-row,
+  .uc-group-row,
+  .uc-split-row {
+    transition: background-color 0.18s ease, transform 0.09s ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uc-stack > *,
+  .uc-today-col > *,
+  .uc-kpis,
+  .uc-rows > li,
+  .uc-today-rows > li,
+  .uc-group-list > li,
+  .uc-split-rows > li {
+    animation: uc-fade 0.15s ease-out both;
+  }
+}
+
+/* ---------- Accessibility re-audit fixes ---------- */
+
+/* Our ink focus ring wins over Ant Design's tinted one on every control */
+body .ant-btn:focus-visible,
+body .ant-menu-item:focus-visible,
+body .ant-segmented-item:focus-within,
+body .ant-pagination-item:focus-visible,
+body a:focus-visible {
+  outline: 2px solid var(--uc-focus) !important;
+  outline-offset: 2px !important;
+}
+/* The command bar's field shows where typing goes */
+body .uc-command .ant-input-affix-wrapper-focused {
+  box-shadow: inset 0 -2px 0 var(--uc-focus) !important;
+}
+
+/* 2.5.8 targets: the password toggle and chart drill-down links */
+body .ant-input-password .ant-input-suffix {
+  margin-inline-start: 0.25rem;
+}
+body .ant-input-password-icon.anticon {
+  padding: 0.25rem;
+  margin: -0.25rem;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  cursor: pointer;
+}
+body .uc-chart-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding-block: 0.125rem;
+}
+
+/* 1.4.10 reflow at 320 px: the toolbar never pushes the account off-screen */
+.uc-toolbar-group {
+  min-width: 0;
+}
+.uc-toolbar .ant-btn-icon-only {
+  flex-shrink: 0;
+  min-width: 1.75rem;
+}
+.uc-account-trigger {
+  flex-shrink: 0;
+}
+@media (max-width: 380px) {
+  .uc-persona {
     display: none;
   }
+  .uc-toolbar {
+    padding-inline: var(--uc-s2);
+  }
+}
+/* Long meta on Today rows wraps instead of spilling at narrow widths */
+@media (max-width: 420px) {
+  .uc-today-row,
+  .uc-today-row * {
+    white-space: normal;
+  }
+}
+
+.uc-countup::after {
+  content: attr(data-v);
 }

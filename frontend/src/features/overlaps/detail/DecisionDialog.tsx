@@ -225,6 +225,8 @@ export const ConfirmPopover: React.FC<Shared & { open: boolean; onOpenChange: (o
       trigger="click"
       placement="bottomRight"
       destroyOnHidden
+      // Render beside the trigger so Tab moves from the button into the popover and on, in reading order.
+      getPopupContainer={(node) => node.parentElement ?? document.body}
       content={
         <div
           role="dialog"

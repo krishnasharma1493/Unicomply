@@ -237,11 +237,20 @@ const CaseRows: React.FC<ListProps & { selectedId: number | null; listRef: React
                         memory.refocus = true;
                       }}
                     >
+                      {selected && (
+                        // The selection is one object that slides from row to row, so the eye follows it.
+                        <motion.span
+                          layoutId="uc-split-selection"
+                          className="uc-split-highlight"
+                          aria-hidden="true"
+                          transition={{ type: 'spring', bounce: 0, duration: 0.32 }}
+                        />
+                      )}
                       <span className="uc-split-row-top">
                         <span className="uc-ref">{c.case_ref}</span>
                         <SlaBadge ageDays={c.age_days} beyondSla={c.beyond_sla} receivedAt={c.received_at} slaDueOn={c.sla_due_on} status={c.status} />
                       </span>
-                      <span className="uc-split-row-inst">{c.institution_name ?? c.raw_institution_text}</span>
+                      <span className="uc-split-row-inst" title={c.institution_name ?? c.raw_institution_text}>{c.institution_name ?? c.raw_institution_text}</span>
                       <span className="uc-split-row-meta">
                         <StatusChip status={c.status} />
                         {c.in_overlap && <OverlapMark />}

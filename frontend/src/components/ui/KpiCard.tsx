@@ -1,5 +1,6 @@
 import React from 'react';
 import { Skeleton } from 'antd';
+import { CountUp } from './CountUp';
 
 export interface KpiCardProps {
   label: string;
@@ -57,7 +58,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
       {loading ? (
         <Skeleton.Input active size="small" style={{ width: 64, minWidth: 64, marginTop: 6 }} />
       ) : (
-        <div className="uc-kpi-value uc-num">{value}</div>
+        <div className="uc-kpi-value uc-num">{typeof value === 'number' ? <CountUp value={value} /> : value}</div>
       )}
       {delta && (
         <div className="uc-kpi-delta">

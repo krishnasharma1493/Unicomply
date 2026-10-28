@@ -34,8 +34,28 @@ function Field<K extends keyof IntakeFormValues>(props: {
   const { name, label, control, required, render } = props;
   const { errors } = useFormState({ control, name });
   const message = errors[name]?.message as string | undefined;
+  const id = `intake-${name}`;
+  // antd does not pass ARIA through every control, so state the field's validity on the element itself.
+  React.useEffect(() => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (message) {
+      el.setAttribute('aria-invalid', 'true');
+      el.setAttribute('aria-describedby', `${id}-err`);
+    } else {
+      el.removeAttribute('aria-invalid');
+      el.removeAttribute('aria-describedby');
+    }
+    if (required) el.setAttribute('aria-required', 'true');
+  }, [id, message, required]);
   return (
-    <Form.Item label={label} required={required} validateStatus={message ? 'error' : undefined} help={message} htmlFor={`intake-${name}`}>
+    <Form.Item
+      label={label}
+      required={required}
+      validateStatus={message ? 'error' : undefined}
+      help={message ? <span id={`${id}-err`} role="alert">{message}</span> : undefined}
+      htmlFor={id}
+    >
       <Controller control={control} name={name} render={({ field }) => <>{render(field.value, field.onChange, `intake-${name}`)}</>} />
     </Form.Item>
   );

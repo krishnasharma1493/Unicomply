@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { BackLink, PageHeader, Section } from '../components/layout/PageHeader';
-import { BureauChip } from '../components/ui';
+import { BureauChip, CountUp } from '../components/ui';
 import { EvidenceSummary, LinkedCaseCard, OverlapBanner, OverlapLanes } from '../components/signature';
 import { QueryBoundary } from '../components/states';
 import { useInstitution } from '../features/institutions/useInstitutions';
@@ -41,18 +41,18 @@ const View: React.FC<{ data: Institution360 }> = ({ data }) => {
       />
       <p className="ins-counts">
         <Link to={`/cases?permanent_id=${inst.permanent_id}`}>
-          {counts.total} {counts.total === 1 ? 'case' : 'cases'}
+          <CountUp value={counts.total} /> {counts.total === 1 ? 'case' : 'cases'}
         </Link>
         {' · '}
-        <Link to={`/cases?permanent_id=${inst.permanent_id}&pending=true`}>{counts.open} open</Link>
+        <Link to={`/cases?permanent_id=${inst.permanent_id}&pending=true`}><CountUp value={counts.open} /> open</Link>
         {' · '}
-        <Link to={`/cases?permanent_id=${inst.permanent_id}&pending=false`}>{counts.disposed} disposed</Link>
+        <Link to={`/cases?permanent_id=${inst.permanent_id}&pending=false`}><CountUp value={counts.disposed} /> disposed</Link>
         {' · '}
         <Link
           to={`/cases?permanent_id=${inst.permanent_id}&beyond_sla=true`}
           className={counts.beyond_sla > 0 ? 'ins-counts-alert' : undefined}
         >
-          {counts.beyond_sla} beyond SLA
+          <CountUp value={counts.beyond_sla} /> beyond SLA
         </Link>
       </p>
 

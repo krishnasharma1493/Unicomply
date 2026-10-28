@@ -3,3 +3,4 @@ export * from './BureauChip';
 export * from './TierChip';
 export * from './SlaBadge';
 export * from './KpiCard';
+export * from './CountUp';

@@ -2,7 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 /** Any unknown address: say so plainly and offer the way home. */
-export const NotFoundPage: React.FC = () => (
+export const NotFoundPage: React.FC = () => {
+  React.useEffect(() => {
+    document.title = 'Page not found · Unicomply';
+  }, []);
+  return (
   <main className="uc-login" style={{ alignItems: 'center' }}>
     <div className="uc-login-col" style={{ maxWidth: '28rem', textAlign: 'center' }}>
       <p className="uc-label" style={{ margin: '0 auto 12px' }}>404</p>
@@ -15,6 +19,7 @@ export const NotFoundPage: React.FC = () => (
       </Link>
     </div>
   </main>
-);
+  );
+};
 
 export default NotFoundPage;

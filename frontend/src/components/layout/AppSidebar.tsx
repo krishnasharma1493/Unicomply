@@ -107,7 +107,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed = false, onNav
   const menuItems: ItemType[] = GROUPS.map((group) => {
     const children = visible
       .filter((item) => group.keys.includes(item.path))
-      .map((item) => ({ key: item.path, icon: item.icon, label: item.label, title: item.label }));
+      .map((item) => ({
+        key: item.path,
+        icon: item.icon,
+        label: item.label,
+        title: item.label,
+        // Screen readers hear which page is current, not only see the tint.
+        'aria-current': item.path === selectedKey ? ('page' as const) : undefined,
+      }));
     return children.length ? { type: 'group' as const, key: group.label, label: collapsed ? null : group.label, children } : null;
   }).filter((g): g is NonNullable<typeof g> => g !== null);
 

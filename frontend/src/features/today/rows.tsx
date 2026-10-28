@@ -50,7 +50,7 @@ export const OverlapRows: React.FC<{ groups: OverlapGroupListItem[]; today?: str
           <Link to={`/overlaps/${g.id}`} className="uc-today-row uc-today-group uc-pressable" aria-label={`${g.tier === 'probable' ? 'Probable' : 'Possible'} overlap: ${g.anchor_name}, ${g.case_count} cases`}>
             <TierChip tier={g.tier} />
             <span className="uc-today-group-main">
-              <span className="uc-today-group-name">{g.anchor_name}</span>
+              <span className="uc-today-group-name" title={g.anchor_name}>{g.anchor_name}</span>
               <span className="uc-today-group-codes">
                 {g.bureau_codes.map((code) => <BureauChip key={code} code={code} />)}
               </span>

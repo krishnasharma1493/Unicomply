@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { formatDate } from '../../lib/format';
 import { useMotionPrefs } from '../../lib/motion';
@@ -95,13 +94,9 @@ export const OverlapLanes: React.FC<{ cases: LaneCase[]; caption?: string }> = (
                       {group.cases.map((c, i) => (
                         <React.Fragment key={c.case_id}>
                           {i > 0 && <span className="uc-lane-sep"> · </span>}
-                          {c.in_scope ? (
-                            <Link to={`/cases/${c.case_id}`} tabIndex={-1} title={c.case_ref} className={c.current ? 'is-current' : undefined}>
-                              {shortRef(c.case_ref)}
-                            </Link>
-                          ) : (
-                            <span title={c.case_ref}>{shortRef(c.case_ref)}</span>
-                          )}
+                          <span title={c.case_ref} className={c.current ? 'is-current' : undefined}>
+                            {shortRef(c.case_ref)}
+                          </span>
                         </React.Fragment>
                       ))}
                     </span>

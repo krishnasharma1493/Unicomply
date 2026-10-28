@@ -2,6 +2,7 @@ import React, { useId } from 'react';
 import { Link } from 'react-router-dom';
 import { Skeleton } from 'antd';
 import { ErrorState } from '../../components/states';
+import { CountUp } from '../../components/ui/CountUp';
 
 export interface QueueProps {
   title: string;
@@ -38,7 +39,7 @@ export const Queue: React.FC<QueueProps> = ({
           {title}
           {!isLoading && !isError && count !== undefined && count > 0 && (
             <span className="uc-queue-count">
-              {count}
+              <CountUp value={count} />
               {countNote && <span className="uc-queue-note"> {countNote}</span>}
             </span>
           )}

@@ -8,6 +8,7 @@ import { client } from '../../lib/api/client';
 import type { CaseRead, InstitutionListItem, Page } from '../../lib/api/types';
 import { useDebouncedValue } from '../../features/intake/useDebouncedValue';
 import { NAV_ITEMS } from './AppSidebar';
+import { announce } from '../../lib/announce';
 
 interface Result {
   key: string;
@@ -78,6 +79,11 @@ export const CommandBar: React.FC<{ open: boolean; onClose: () => void }> = ({ o
   }, [term, q, cases.data, institutions.data, user]);
 
   useEffect(() => setActive(0), [term]);
+  // Say how many results there are once a search settles, so a screen-reader user knows what is below.
+  useEffect(() => {
+    if (!open || q.length < 2 || cases.isFetching || institutions.isFetching) return;
+    announce(results.length ? `${results.length} results` : 'Nothing matches');
+  }, [open, q, cases.isFetching, institutions.isFetching, results.length]);
   useEffect(() => {
     if (!open) setTerm('');
   }, [open]);
@@ -102,7 +108,7 @@ export const CommandBar: React.FC<{ open: boolean; onClose: () => void }> = ({ o
       style={{ top: '12vh' }}
       afterOpenChange={(o) => o && input.current?.focus()}
       destroyOnHidden
-      aria-label="Search and jump"
+      title={<span className="uc-sr">Search and jump</span>}
     >
       <Input
         ref={input}
@@ -111,6 +117,9 @@ export const CommandBar: React.FC<{ open: boolean; onClose: () => void }> = ({ o
         prefix={<SearchOutlined aria-hidden="true" />}
         placeholder="Case reference, institution, Permanent ID or page"
         aria-label="Search cases, institutions and pages"
+        role="combobox"
+        aria-expanded={results.length > 0}
+        aria-autocomplete="list"
         aria-controls="uc-command-results"
         aria-activedescendant={results[active] ? `uc-cmd-${active}` : undefined}
         value={term}
