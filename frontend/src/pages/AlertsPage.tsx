@@ -15,6 +15,7 @@ export const AlertsPage: React.FC = () => {
   const markRead = useMarkRead();
   const markAll = useMarkAllRead();
   const unread = list.data?.data.filter((a) => !a.is_read).length ?? 0;
+  const hidden = list.data ? list.data.pagination.total - list.data.data.length : 0;
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
@@ -27,6 +28,11 @@ export const AlertsPage: React.FC = () => {
       </Space>
       {(markRead.isError || markAll.isError) && (
         <Text type="danger" style={{ display: 'block', marginTop: 8 }}>{apiErrorMessage(markRead.error ?? markAll.error)}</Text>
+      )}
+      {hidden > 0 && (
+        <Text type="secondary" style={{ display: 'block', marginTop: 8 }}>
+          Showing the newest {list.data?.data.length} of {list.data?.pagination.total} alerts. Mark these as read to bring the older ones up.
+        </Text>
       )}
       <div style={{ marginTop: 16 }}>
         <QueryBoundary query={list} loadingTip="Loading alerts" isEmpty={(p) => p.data.length === 0} emptyTitle="No alerts" emptyDescription="Nothing needs your attention.">
