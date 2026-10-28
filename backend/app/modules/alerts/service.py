@@ -50,14 +50,21 @@ def dedupe_key(
     case_id: Optional[int] = None,
     group_id: Optional[int] = None,
     permanent_id: Optional[str] = None,
+    event: Optional[str] = None,
 ) -> str:
-    """`type:recipient:entity:date`, e.g. `sla_breach:3:case-104:2026-11-20` (entity: group, else case, else institution)."""
+    """
+    `type:recipient:entity:date`, e.g. `sla_breach:3:case-104:2026-11-20` (entity: group, else case, else institution).
+    `event` separates two different happenings of one type about one entity on one day: a group being flagged and
+    the same group being confirmed are both `overlap` alerts, and the second must not be swallowed as a duplicate.
+    """
     if group_id is not None:
         entity = f"group-{group_id}"
     elif case_id is not None:
         entity = f"case-{case_id}"
     else:
         entity = f"inst-{permanent_id or 'none'}"
+    if event:
+        entity = f"{entity}-{event}"
     return f"{type.value}:{recipient_id}:{entity}:{today().isoformat()}"
 
 
@@ -72,6 +79,7 @@ def create_alert(
     case_id: Optional[int] = None,
     group_id: Optional[int] = None,
     permanent_id: Optional[str] = None,
+    event: Optional[str] = None,
 ) -> List[Alert]:
     """
     One alert per distinct recipient. Returns the alerts actually created: a recipient who already
@@ -94,7 +102,7 @@ def create_alert(
             permanent_id=permanent_id,
             title=title[:200],
             body=body[:1000],
-            dedupe_key=dedupe_key(type, user.id, case_id, group_id, permanent_id),
+            dedupe_key=dedupe_key(type, user.id, case_id, group_id, permanent_id, event),
         )
         try:
             with session.begin_nested():  # savepoint: a duplicate rolls back only itself

@@ -131,7 +131,7 @@ def decide(session: Session, group_id: int, body, user: User) -> OverlapGroupDet
         alert_service.create_alert(
             session, AlertType.overlap, severity, recipients,
             title=f"Overlap confirmed: {group.anchor_key}",
-            body=f"Coordinator assigned for overlap group {group_id}", group_id=group_id,
+            body=f"Coordinator assigned for overlap group {group_id}", group_id=group_id, event="confirmed",
         )
     session.flush()
     return _detail(session, group, user)

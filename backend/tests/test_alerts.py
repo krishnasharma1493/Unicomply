@@ -139,3 +139,13 @@ def test_read_all_only_touches_the_callers_alerts(seeded_client: TestClient) -> 
 
 def test_alert_endpoints_need_a_token(seeded_client: TestClient) -> None:
     assert seeded_client.get("/api/v1/alerts").status_code == 401
+
+
+def test_two_different_events_about_one_group_on_one_day_are_both_delivered(db: Session) -> None:
+    """A group being flagged and the same group being confirmed are separate alerts, not duplicates."""
+    head = user(db, "rb.head@aicte.example")
+    flagged = service.create_alert(db, AlertType.overlap, AlertSeverity.critical, [head], title="flagged", body="b", group_id=1)
+    confirmed = service.create_alert(db, AlertType.overlap, AlertSeverity.critical, [head], title="confirmed", body="b", group_id=1, event="confirmed")
+    again = service.create_alert(db, AlertType.overlap, AlertSeverity.critical, [head], title="confirmed", body="b", group_id=1, event="confirmed")
+    assert (len(flagged), len(confirmed), len(again)) == (1, 1, 0)
+    assert service.dedupe_key(AlertType.overlap, 3, group_id=1, event="confirmed").endswith("group-1-confirmed:" + service.today().isoformat())

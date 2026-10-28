@@ -8,13 +8,23 @@ const alertsKey = ['alerts'] as const;
 const fetchAlerts = async (params: Record<string, unknown>, signal?: AbortSignal) =>
   (await client.get<Page<Alert>>('/alerts', { params, signal })).data;
 
-/** Everything the viewer has been sent (a work list, so one big page), newest first from the API. */
+/** The API pages at 100; the page shows the newest few hundred, which is already more than anyone reads. */
+export const MAX_PAGES = 5;
+
+/** The viewer's alerts, newest first, up to MAX_PAGES x 100; `pagination.total` is still the real total. */
 export const useAlertList = () =>
   useQuery<Page<Alert>>({
     queryKey: [...alertsKey, 'list'],
     retry: false,
     refetchInterval: POLL_MS,
-    queryFn: ({ signal }) => fetchAlerts({ limit: 100 }, signal),
+    queryFn: async ({ signal }) => {
+      const first = await fetchAlerts({ limit: 100, page: 1 }, signal);
+      const data = [...first.data];
+      for (let page = 2; page <= Math.min(first.pagination.total_pages, MAX_PAGES); page += 1) {
+        data.push(...(await fetchAlerts({ limit: 100, page }, signal)).data);
+      }
+      return { ...first, data };
+    },
   });
 
 /** The bell: the latest five, and the unread count (the total of a one-row unread query). */

@@ -169,3 +169,37 @@ describe('Alerts on the mock API (Issue #33)', () => {
     expect(document.querySelector('script')).toBeNull();
   });
 });
+
+describe('Alerts page with more alerts than one API page (Issue #50)', () => {
+  beforeAll(() => {
+    attachMockAdapter(client, { latencyMs: [0, 0] });
+  });
+  afterEach(() => {
+    tokenStore.clear();
+    vi.restoreAllMocks();
+  });
+
+  it('fetches several pages and says when it is showing only the newest', async () => {
+    tokenStore.set(fixtures.login.rb_head.data.access_token);
+    const make = (from: number, n: number) => Array.from({ length: n }, (_, i) => alert({ id: from + i, permanent_id: `P${from + i}`, institution_name: `Inst ${from + i}`, title: `Alert ${from + i}`, created_at: '2026-11-20T09:00:00Z' }));
+    const get = client.get.bind(client);
+    const pages: number[] = [];
+    vi.spyOn(client, 'get').mockImplementation(((url: string, config?: { params?: { page?: number; limit?: number; unread_only?: boolean } }, ...rest: unknown[]) => {
+      if (url === '/alerts' && config?.params?.limit === 100) {
+        const page = config.params.page ?? 1;
+        pages.push(page);
+        return Promise.resolve({ data: { success: true, data: make(1000 + page * 100, 100), pagination: { total: 750, page, limit: 100, total_pages: 8 } } });
+      }
+      return (get as (...a: unknown[]) => unknown)(url, config, ...rest);
+    }) as typeof client.get);
+    render(
+      <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+        <MemoryRouter>
+          <AlertsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(await screen.findByText(/Showing the newest 500 of 750 alerts/)).toBeInTheDocument();
+    expect(pages).toEqual([1, 2, 3, 4, 5]); // and no more
+  });
+});
