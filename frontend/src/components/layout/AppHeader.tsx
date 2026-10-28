@@ -1,14 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Space, Avatar, Typography, Button, Badge, Tooltip } from 'antd';
+import { Layout, Space, Avatar, Typography, Button, Tooltip } from 'antd';
 import {
-  BellOutlined,
   LogoutOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   BankOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../../auth/AuthProvider';
+import { AlertBell } from '../../features/alerts/AlertBell';
 import { PersonaSwitcher } from './PersonaSwitcher';
 import { findPersonaByEmail } from '../../features/auth/personas';
 import { ROLE_THEMES } from '../../theme';
@@ -152,18 +152,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
       <Space orientation="horizontal" size={isMobile ? 8 : 16}>
         <PersonaSwitcher />
 
-        {/* Alerts Bell */}
-        <Tooltip title="Alerts & Notifications">
-          <Badge count={3} offset={[-2, 6]} size="small">
-            <Button
-              type="text"
-              shape="circle"
-              icon={<BellOutlined style={{ fontSize: '16px', color: '#475569' }} />}
-              onClick={() => navigate('/alerts')}
-              aria-label="View alerts"
-            />
-          </Badge>
-        </Tooltip>
+        <AlertBell />
 
         {/* User Identity Chip */}
         {user && (
