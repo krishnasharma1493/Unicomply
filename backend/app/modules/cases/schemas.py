@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field as PydanticField, field_validator
 from sqlmodel import Field, SQLModel
@@ -113,6 +113,9 @@ class CaseListParams(PageParams):
     to: Optional[date] = None
     beyond_sla: Optional[bool] = None
     in_overlap: Optional[bool] = None
+    sort: Literal["received_desc", "sla_due_asc"] = PydanticField(
+        default="received_desc", description="received_desc (newest first, default) or sla_due_asc (soonest SLA due first)"
+    )
 
     model_config = {"populate_by_name": True}
 

@@ -302,6 +302,8 @@ export type CaseListParams = PageParams & {
   to?: IsoDate;
   beyond_sla?: boolean;
   in_overlap?: boolean;
+  /** `received_desc` (newest first, default) or `sla_due_asc` (soonest SLA due first). */
+  sort?: 'received_desc' | 'sla_due_asc';
 };
 
 /** One `case_action` row: the action history / timeline. */
