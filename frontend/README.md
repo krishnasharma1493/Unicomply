@@ -17,7 +17,7 @@ AICTE Integrated Complaint Monitoring Dashboard (`frontend/`).
 
 ## Route Architecture (PRD §7)
 
-All routes are scaffolded with placeholders and protected with `<RequireAuth>` (except `/login`):
+Every route is a working page and is protected with `<RequireAuth>` (except `/login`):
 
 | Path | Page | Description |
 |---|---|---|

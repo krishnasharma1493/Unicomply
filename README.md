@@ -109,7 +109,7 @@ The backend builds the matching index while it starts, before it answers request
 ## Run the tests
 
 ```bash
-cd backend && source .venv/bin/activate && pytest     # about 7 minutes
+cd backend && source .venv/bin/activate && pytest     # 1 to 7 minutes, depending on the machine
 cd frontend && npm run typecheck && npm test
 ```
 
@@ -122,14 +122,14 @@ cd backend && source .venv/bin/activate
 python -m app.eval --split test --mode tfidf
 ```
 
-This prints the resolution and overlap metrics and **rewrites `docs/pitch/eval_results.md`**. `--split dev` only prints. Thresholds are tuned on the dev split only (`--tune`, see #44).
+This prints the resolution and overlap metrics and **rewrites `docs/pitch/eval_results.md`**. `--split dev` only prints. The thresholds in `backend/seed_data/thresholds.json` were tuned once on the dev split and frozen (`python -m app.eval --split dev --tune` re-runs the search, on dev only); the test split is only ever reported.
 
 ## Troubleshooting
 
 | Symptom | Fix |
 | --- | --- |
 | First intake hangs, Hugging Face errors in the backend log | No network for the model: set `EMBEDDINGS_MODE=tfidf` in `backend/.env` and restart, or pre-download the model (above) |
-| Hero intake goes to review or picks another institution | Run `python -m app.seed --reset`; demo it through Match Review (`/reviews`) instead (see `docs/pitch/demo_script.md`, F-1) |
+| Hero intake goes to review or picks another institution | Check `SEED_SET=full` in `backend/.env` (on the tiny seed the hero ranks the wrong institution first), then `python -m app.seed --reset`; or demo it through Match Review (`/reviews`) instead (see `docs/pitch/demo_script.md`, F-1) |
 | SLA days differ from the demo script ("Day 19 of 21") | Set `DEMO_TODAY=2026-11-20` in `backend/.env`, restart, and reset the data |
 | Too many Possible overlap alerts | Expected on the full seed; Possible alerts go only to bureau heads. Thresholds live in `backend/seed_data/thresholds.json` |
 | Blank page; the browser console says "Invalid frontend environment variables" | `frontend/.env` is missing: `cp .env.example .env` in `frontend/`, then restart `npm run dev` |

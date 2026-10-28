@@ -54,7 +54,7 @@ If the model cannot load (no network, or PyTorch too old, as on Intel Macs where
 ## Tests
 
 ```bash
-pytest                              # the whole suite, about 7 minutes
+pytest                              # the whole suite: about 1.5 minutes on a recent laptop, up to 7 on an older one
 pytest tests/test_intake_real.py    # one file
 ```
 
