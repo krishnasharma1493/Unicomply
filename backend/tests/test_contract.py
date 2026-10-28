@@ -3,7 +3,7 @@ The API contract (#7): every contract fixture (#2) is a valid instance of its Py
 round-trips unchanged, and every §5 endpoint serves it through real auth with documented errors.
 """
 
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List
 
 import pytest
 from fastapi.testclient import TestClient
@@ -115,53 +115,9 @@ def test_open_overlap_details_shape() -> None:
     OpenOverlapErrorDetails.model_validate(load_fixture("errors/open_overlap")["error"]["details"])
 
 
-# ── Endpoints: every §5 Must endpoint serves its fixture through real auth ───
-
-STUBS: List[Tuple[str, str, Any, str, int]] = [
-    # method, path, body, fixture, status
-    # cases list/detail/intake/actions are real since #14/#15: tests/test_cases_api.py and test_workflow.py
-    # alerts are real since #13: tests/test_alerts.py
-    # dashboard is real since #36: tests/test_dashboard.py
-    *[("GET", f"/api/v1/reports/{k}?from=2026-09-01&to=2026-11-20", None, f"get_reports_{k}", 200) for k in REPORT_KINDS],
-]
-
-
-def call(client: TestClient, method: str, path: str, body: Any, headers: Dict[str, str]) -> Any:
-    payload = load_fixture(body) if body else None
-    return client.request(method, path, json=payload, headers=headers)
-
-
-@pytest.mark.parametrize("method, path, body, name, status", STUBS, ids=[s[1] for s in STUBS])
-def test_endpoint_serves_its_fixture(
-    seeded_client: TestClient,
-    auth_headers: Callable[[str], Dict[str, str]],
-    method: str, path: str, body: Any, name: str, status: int,
-) -> None:
-    res = call(seeded_client, method, path, body, auth_headers("senior@aicte.example"))
-    assert res.status_code == status, res.text
-    assert res.json() == load_fixture(name)
-
-
-@pytest.mark.parametrize("method, path, body, name, status", STUBS, ids=[s[1] for s in STUBS])
-def test_endpoint_requires_a_token(
-    seeded_client: TestClient, method: str, path: str, body: Any, name: str, status: int
-) -> None:
-    res = call(seeded_client, method, path, body, {})
-    assert res.status_code == 401
-    assert res.json()["error"]["code"] == "UNAUTHORIZED"
-
-
-def test_report_csv_comes_from_the_backend(
-    seeded_client: TestClient, auth_headers: Callable[[str], Dict[str, str]]
-) -> None:
-    res = seeded_client.get("/api/v1/reports/bureau?format=csv", headers=auth_headers("senior@aicte.example"))
-    assert res.status_code == 200
-    assert res.headers["content-type"].startswith("text/csv")
-    assert "unicomply-bureau-2026-09-01-2026-11-20.csv" in res.headers["content-disposition"]
-    report = load_fixture("get_reports_bureau")["data"]
-    lines = res.text.strip().splitlines()
-    assert lines[0].split(",") == [c["label"] for c in report["columns"]]
-    assert len(lines) == 1 + len(report["rows"])
+# ── Endpoints ────────────────────────────────────────────────────────────────
+# Every §5 endpoint is real: tests/test_cases_api.py, test_workflow.py, test_alerts.py, test_dashboard.py,
+# test_reports.py and friends check the numbers; the tests below check validation and the published docs.
 
 
 @pytest.mark.parametrize(
@@ -194,8 +150,8 @@ def test_docs_list_every_endpoint_with_models_and_errors(seeded_client: TestClie
     expected = {
         ("post", "/api/v1/auth/login"), ("get", "/api/v1/users/me"), ("post", "/api/v1/demo/reset"),
         ("get", "/api/v1/reports/{kind}"),
-        *{(m.lower(), "/api/v1/" + p.split("/api/v1/")[1].split("?")[0]) for m, p, *_ in STUBS
-          if not p.startswith("/api/v1/reports/")},
+        ("get", "/api/v1/dashboard/summary"), ("get", "/api/v1/dashboard/workload"),
+        ("get", "/api/v1/dashboard/ageing"), ("get", "/api/v1/dashboard/institutions"),
     }
     normalised = {
         "/api/v1/institutions/1-4812730561": "/api/v1/institutions/{permanent_id}",
