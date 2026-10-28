@@ -3,7 +3,7 @@ Dashboard numbers (PRD §4.1 derived fields, §7 Dashboard). Everything is count
 `scope_cases`, so each persona sees totals for exactly the cases they may open, and nothing is stored.
 """
 
-from datetime import timedelta
+from datetime import date, timedelta
 from typing import Any, Dict, List, Optional, Tuple
 
 from sqlalchemy import Select, and_, case, func
@@ -23,7 +23,7 @@ OPEN_STATUSES = [s for s in CaseStatus if s != CaseStatus.disposed]
 UNDER_PROCESS = (CaseStatus.under_process, CaseStatus.interim_reply)
 
 # (key, label, min_days, max_days): days since `received_at`, oldest bucket open-ended.
-_BUCKETS: List[Tuple[str, str, int, Optional[int]]] = [
+BUCKETS: List[Tuple[str, str, int, Optional[int]]] = [
     ("0_7", "0–7 days", 0, 7),
     ("8_14", "8–14 days", 8, 14),
     ("15_21", "15–21 days", 15, 21),
@@ -115,21 +115,28 @@ def workload(session: Session, user: User) -> List[WorkloadRow]:
     return sorted(out, key=lambda r: (-r.open, r.bureau_id))
 
 
+def bucket_conditions(now: date, low: int, high: Optional[int]) -> List[Any]:
+    """`received_at` filters for "between `low` and `high` days old" (open-ended when `high` is None)."""
+    # No lower bound on the first bucket: a future-dated case still counts as brand new.
+    cond = [col(Case.received_at) <= now - timedelta(days=low)] if low else []
+    if high is not None:
+        cond.append(col(Case.received_at) >= now - timedelta(days=high))
+    return cond
+
+
 def ageing(session: Session, user: User) -> List[AgeingBucket]:
     """Open cases by days since `received_at`; every bucket is returned, empty ones as 0."""
     now = today()
     counts = {}
-    for key, _, low, high in _BUCKETS:
-        # No lower bound on the first bucket: a future-dated case still counts as brand new.
-        cond = [col(Case.received_at) <= now - timedelta(days=low)] if low else []
-        if high is not None:
-            cond.append(col(Case.received_at) >= now - timedelta(days=high))
+    for key, _, low, high in BUCKETS:
         counts[key] = session.exec(
-            select(func.count()).where(col(Case.id).in_(_scoped_ids(user)), _is_open(), *cond)
+            select(func.count()).where(
+                col(Case.id).in_(_scoped_ids(user)), _is_open(), *bucket_conditions(now, low, high)
+            )
         ).one()
     return [
         AgeingBucket(bucket=key, label=label, min_days=low, max_days=high, count=int(counts[key]))  # type: ignore[arg-type]
-        for key, label, low, high in _BUCKETS
+        for key, label, low, high in BUCKETS
     ]
 
 

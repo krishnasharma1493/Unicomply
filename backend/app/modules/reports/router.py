@@ -2,13 +2,17 @@ import csv
 import io
 from typing import Annotated, Any, Dict, Union
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import Response, StreamingResponse
 
+from app.core.db import SessionDep
 from app.core.deps import CurrentUser
-from app.core.fixtures import fixture
+from app.core.enums import Role
+from app.core.errors import ForbiddenError
 from app.core.schemas import Envelope, error_responses
+from app.modules.reports import service
 from app.modules.reports.schemas import AnyReport, ReportKind, ReportParams
+from app.modules.users.models import User
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -18,6 +22,16 @@ _CSV_RESPONSE: Dict[Union[int, str], Dict[str, Any]] = {
         "content": {"text/csv": {"schema": {"type": "string"}}},
     }
 }
+
+
+def _report_reader(user: CurrentUser) -> User:
+    """Senior management, bureau heads and admins read reports; RO officers and intake operators do not."""
+    if user.role not in (Role.senior_mgmt, Role.bureau_head) and not user.is_admin:
+        raise ForbiddenError()
+    return user
+
+
+ReportReader = Annotated[User, Depends(_report_reader)]
 
 
 def report_csv(report: Any) -> StreamingResponse:
@@ -42,13 +56,14 @@ def report_csv(report: Any) -> StreamingResponse:
     responses={**_CSV_RESPONSE, **error_responses(400, 401, 403)},
 )
 def get_report(
-    _: CurrentUser, kind: ReportKind, params: Annotated[ReportParams, Query()]
+    user: ReportReader, session: SessionDep, kind: ReportKind, params: Annotated[ReportParams, Query()]
 ) -> Union[Envelope[AnyReport], Response]:
     """Bureau, region, institution, status, ageing, disposal rate, reopen rate, overlaps, periodic.
 
-    Stub (#7): serves contract/fixtures/get_reports_<kind>.json until #37.
+    Counts cover the cases the caller may open, received between `from` and `to` (default: the last
+    three calendar months). `format=csv` downloads the same rows.
     """
-    envelope = fixture(f"get_reports_{kind}", Envelope[AnyReport])
+    report = service.build(session, user, kind, params)
     if params.format == "csv":
-        return report_csv(envelope.data)
-    return envelope
+        return report_csv(report)
+    return Envelope(data=report)
