@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any, Literal, Protocol, Sequence
 
 import numpy as np
@@ -9,6 +10,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
 
 EmbeddingsMode = Literal["model", "tfidf"]
+
+logger = logging.getLogger("unicomply.matching")
 
 
 class Embedder(Protocol):
@@ -64,9 +67,25 @@ class _SentenceTransformerEmbedder:
         return np.asarray(vectors, dtype=np.float32)
 
 
-def make_embedder(mode: EmbeddingsMode, model_name: str) -> Any:
+def make_embedder(mode: EmbeddingsMode, model_name: str, fallback: bool = True) -> Any:
+    """
+    The embedder for `mode`. If the sentence-transformers model cannot be loaded (package missing, model folder
+    missing, no network to download it), fall back to TF-IDF with one clear log line, so the app still starts and
+    the hero still works on stage with no Wi-Fi (PRD A8, §10B). `fallback=False` raises instead; the accuracy
+    harness uses it so a report never claims `model` while running `tfidf`.
+    """
     if mode == "tfidf":
         return _TfidfEmbedder()
     if mode == "model":
-        return _SentenceTransformerEmbedder(model_name)
+        try:
+            return _SentenceTransformerEmbedder(model_name)
+        except Exception as exc:  # ImportError, OSError (no model / no network), a corrupt download, ...
+            if not fallback:
+                raise
+            logger.warning(
+                "Embedding model %r is unavailable (%s: %s); falling back to EMBEDDINGS_MODE=tfidf. "
+                "The matching engine still works offline; scores differ slightly from model mode.",
+                model_name, type(exc).__name__, exc,
+            )
+            return _TfidfEmbedder()
     raise ValueError(f"Unsupported embedding mode: {mode}")

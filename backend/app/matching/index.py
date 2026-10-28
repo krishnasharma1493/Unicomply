@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
 import os
+import time
 import pickle
 from dataclasses import asdict
 from datetime import date, timedelta
@@ -17,6 +19,8 @@ import numpy as np
 from app.matching.embed import Embedder
 from app.matching.types import AliasLite, CaseLite, InstitutionLite, Level
 
+
+logger = logging.getLogger("unicomply.matching")
 
 # Bump whenever MatchIndex gains or changes state: a cached pickle of an older shape must never be loaded.
 INDEX_FORMAT = 3
@@ -147,6 +151,7 @@ def build_index(
     embedder: Embedder,
     trust_names: Optional[Mapping[int, str]] = None,
 ) -> MatchIndex:
+    started = time.perf_counter()
     institutions, aliases, cases = list(institutions), list(aliases), list(cases)
     dismissed_pairs = list(dismissed_pairs)
     corpus_hash = hashlib.sha256(json.dumps({
@@ -164,6 +169,8 @@ def build_index(
             with cache.open("rb") as handle:
                 saved_hash, index = pickle.load(handle)
             if saved_hash == corpus_hash and isinstance(index, MatchIndex):
+                logger.info("Match index loaded from cache: %d institutions, %d cases, %s, %.0f ms",
+                            len(institutions), len(cases), embedder.mode, (time.perf_counter() - started) * 1000)
                 return index
         except (OSError, EOFError, pickle.PickleError, ValueError, AttributeError):
             pass
@@ -182,4 +189,6 @@ def build_index(
         temp.replace(cache)
     except OSError:
         pass  # A read-only install can still use the in-memory index.
+    logger.info("Match index built: %d institutions, %d cases, %s, %.0f ms",
+                len(institutions), len(cases), embedder.mode, (time.perf_counter() - started) * 1000)
     return index
