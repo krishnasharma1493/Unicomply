@@ -1,0 +1,88 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "code": "fee_refund",
+      "name": "Fee refund",
+      "default_sla_days": 21,
+      "default_bureau_code": "PGRC"
+    },
+    {
+      "id": 2,
+      "code": "certificate_withheld",
+      "name": "Certificates withheld",
+      "default_sla_days": 21,
+      "default_bureau_code": "PGRC"
+    },
+    {
+      "id": 3,
+      "code": "admission_irregularity",
+      "name": "Admission irregularity",
+      "default_sla_days": 21,
+      "default_bureau_code": "RB"
+    },
+    {
+      "id": 4,
+      "code": "faculty_shortage",
+      "name": "Faculty shortage",
+      "default_sla_days": 21,
+      "default_bureau_code": "RB"
+    },
+    {
+      "id": 5,
+      "code": "infrastructure_deficiency",
+      "name": "Infrastructure deficiency",
+      "default_sla_days": 21,
+      "default_bureau_code": "RB"
+    },
+    {
+      "id": 6,
+      "code": "salary_non_payment",
+      "name": "Salary non-payment",
+      "default_sla_days": 21,
+      "default_bureau_code": "PGRC"
+    },
+    {
+      "id": 7,
+      "code": "ragging",
+      "name": "Ragging",
+      "default_sla_days": 7,
+      "default_bureau_code": "PGRC"
+    },
+    {
+      "id": 8,
+      "code": "unapproved_course",
+      "name": "Unapproved course",
+      "default_sla_days": 21,
+      "default_bureau_code": "AB"
+    },
+    {
+      "id": 9,
+      "code": "scholarship",
+      "name": "Scholarship",
+      "default_sla_days": 21,
+      "default_bureau_code": "PGRC"
+    },
+    {
+      "id": 10,
+      "code": "harassment",
+      "name": "Harassment",
+      "default_sla_days": 21,
+      "default_bureau_code": "PGRC"
+    },
+    {
+      "id": 11,
+      "code": "exam_result",
+      "name": "Exam result",
+      "default_sla_days": 21,
+      "default_bureau_code": "ACAD"
+    },
+    {
+      "id": 12,
+      "code": "other",
+      "name": "Other",
+      "default_sla_days": 21,
+      "default_bureau_code": "PGRC"
+    }
+  ]
+}

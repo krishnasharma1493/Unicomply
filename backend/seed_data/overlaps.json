@@ -1,192 +1,2091 @@
 {
-  "as_of": "2026-11-20",
-  "groups": [
+ "as_of": "2026-11-20",
+ "groups": [
+  {
+   "id": 1,
+   "level": "institution",
+   "anchor_key": "1-4812730561",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-11-10T08:40:02Z",
+   "updated_at": "2026-11-15T04:48:03Z",
+   "links": [
     {
-      "id": 1,
-      "level": "institution",
-      "anchor_key": "1-4812730561",
-      "tier": "probable",
-      "status": "open",
-      "coordinator_id": null,
-      "decided_by": null,
-      "decided_at": null,
-      "decision_remark": null,
-      "created_at": "2026-11-10T08:40:02Z",
-      "updated_at": "2026-11-15T04:48:03Z",
-      "links": [
-        {
-          "case_id": 101,
-          "added_at": "2026-11-10T08:40:02Z"
-        },
-        {
-          "case_id": 102,
-          "added_at": "2026-11-10T08:40:02Z"
-        },
-        {
-          "case_id": 103,
-          "added_at": "2026-11-15T04:48:03Z"
-        }
-      ]
+     "case_id": 101,
+     "added_at": "2026-11-10T08:40:02Z"
     },
     {
-      "id": 2,
-      "level": "trust",
-      "anchor_key": "trust:1",
-      "tier": "possible",
-      "status": "open",
-      "coordinator_id": null,
-      "decided_by": null,
-      "decided_at": null,
-      "decision_remark": null,
-      "created_at": "2026-11-15T04:48:03Z",
-      "updated_at": "2026-11-15T04:48:03Z",
-      "links": [
-        {
-          "case_id": 103,
-          "added_at": "2026-11-15T04:48:03Z"
-        },
-        {
-          "case_id": 104,
-          "added_at": "2026-11-15T04:48:03Z"
-        }
-      ]
+     "case_id": 102,
+     "added_at": "2026-11-10T08:40:02Z"
     },
     {
-      "id": 3,
-      "level": "parent",
-      "anchor_key": "parent:1-4800112233",
-      "tier": "possible",
-      "status": "dismissed",
-      "coordinator_id": null,
-      "decided_by": 1,
-      "decided_at": "2026-11-06T11:20:00Z",
-      "decision_remark": "Different issues: hostel and lab facilities at the main campus vs an unapproved D.Pharm batch in the pharmacy department. No coordination needed.",
-      "created_at": "2026-10-30T08:15:02Z",
-      "updated_at": "2026-11-06T11:20:00Z",
-      "links": [
-        {
-          "case_id": 108,
-          "added_at": "2026-10-30T08:15:02Z"
-        },
-        {
-          "case_id": 109,
-          "added_at": "2026-10-30T08:15:02Z"
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "level": "institution",
-      "anchor_key": "1-3156608124",
-      "tier": "possible",
-      "status": "open",
-      "coordinator_id": null,
-      "decided_by": null,
-      "decided_at": null,
-      "decision_remark": null,
-      "created_at": "2026-11-06T09:20:02Z",
-      "updated_at": "2026-11-12T06:45:01Z",
-      "links": [
-        {
-          "case_id": 110,
-          "added_at": "2026-11-06T09:20:02Z"
-        },
-        {
-          "case_id": 111,
-          "added_at": "2026-11-06T09:20:02Z"
-        }
-      ]
+     "case_id": 103,
+     "added_at": "2026-11-15T04:48:03Z"
     }
-  ],
-  "pairs": [
+   ]
+  },
+  {
+   "id": 2,
+   "level": "trust",
+   "anchor_key": "trust:1",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-11-15T04:48:03Z",
+   "updated_at": "2026-11-15T04:48:03Z",
+   "links": [
     {
-      "id": 201,
-      "case_a_id": 101,
-      "case_b_id": 102,
-      "level": "institution",
-      "score": 0.33,
-      "reasons": [
-        "Same institution 1-4812730561",
-        "Handled by PGRC and RB",
-        "Received 9 days apart"
-      ],
-      "decision": "none",
-      "created_at": "2026-11-10T08:40:02Z"
+     "case_id": 103,
+     "added_at": "2026-11-15T04:48:03Z"
     },
     {
-      "id": 202,
-      "case_a_id": 101,
-      "case_b_id": 103,
-      "level": "institution",
-      "score": 0.73,
-      "reasons": [
-        "Same institution 1-4812730561",
-        "Handled by PGRC and RO-CRO",
-        "Both about original certificates being withheld",
-        "Description similarity 0.81",
-        "Received 14 days apart"
-      ],
-      "decision": "none",
-      "created_at": "2026-11-15T04:48:03Z"
-    },
-    {
-      "id": 203,
-      "case_a_id": 102,
-      "case_b_id": 103,
-      "level": "institution",
-      "score": 0.31,
-      "reasons": [
-        "Same institution 1-4812730561",
-        "Handled by RB and RO-CRO",
-        "Received 5 days apart"
-      ],
-      "decision": "none",
-      "created_at": "2026-11-15T04:48:03Z"
-    },
-    {
-      "id": 204,
-      "case_a_id": 103,
-      "case_b_id": 104,
-      "level": "trust",
-      "score": 0.61,
-      "reasons": [
-        "Both run by Vindhya Valley Education Trust",
-        "Handled by RO-CRO and RB",
-        "Both about certificates being withheld",
-        "Description similarity 0.79",
-        "Received 25 days apart"
-      ],
-      "decision": "none",
-      "created_at": "2026-11-15T04:48:03Z"
-    },
-    {
-      "id": 205,
-      "case_a_id": 108,
-      "case_b_id": 109,
-      "level": "parent",
-      "score": 0.52,
-      "reasons": [
-        "Main campus and Department of Pharmacy of Mahakaushal Technical University",
-        "Handled by RO-CRO and AB",
-        "Related issues: infrastructure deficiency and unapproved course",
-        "Received 18 days apart"
-      ],
-      "decision": "dismissed",
-      "created_at": "2026-10-30T08:15:02Z"
-    },
-    {
-      "id": 206,
-      "case_a_id": 110,
-      "case_b_id": 111,
-      "level": "institution",
-      "score": 0.38,
-      "reasons": [
-        "Same institution 1-3156608124",
-        "Handled by PGRC and RO-WRO",
-        "Received 52 days apart"
-      ],
-      "decision": "none",
-      "created_at": "2026-11-06T09:20:02Z"
+     "case_id": 104,
+     "added_at": "2026-11-15T04:48:03Z"
     }
-  ]
+   ]
+  },
+  {
+   "id": 3,
+   "level": "parent",
+   "anchor_key": "parent:1-4800112233",
+   "tier": "possible",
+   "status": "dismissed",
+   "coordinator_id": null,
+   "decided_by": 1,
+   "decided_at": "2026-11-06T11:20:00Z",
+   "decision_remark": "Different issues: hostel and lab facilities at the main campus vs an unapproved D.Pharm batch in the pharmacy department. No coordination needed.",
+   "created_at": "2026-10-30T08:15:02Z",
+   "updated_at": "2026-11-06T11:20:00Z",
+   "links": [
+    {
+     "case_id": 108,
+     "added_at": "2026-10-30T08:15:02Z"
+    },
+    {
+     "case_id": 109,
+     "added_at": "2026-10-30T08:15:02Z"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "level": "institution",
+   "anchor_key": "1-3156608124",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-11-06T09:20:02Z",
+   "updated_at": "2026-11-12T06:45:01Z",
+   "links": [
+    {
+     "case_id": 110,
+     "added_at": "2026-11-06T09:20:02Z"
+    },
+    {
+     "case_id": 111,
+     "added_at": "2026-11-06T09:20:02Z"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "level": "institution",
+   "anchor_key": "1-4018743421",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-22T13:00:00Z",
+   "updated_at": "2026-10-22T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1438,
+     "added_at": "2026-10-22T13:00:00Z"
+    },
+    {
+     "case_id": 1449,
+     "added_at": "2026-10-22T13:00:00Z"
+    },
+    {
+     "case_id": 1510,
+     "added_at": "2026-10-22T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "level": "institution",
+   "anchor_key": "1-4046473727",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-31T13:00:00Z",
+   "updated_at": "2026-10-31T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1484,
+     "added_at": "2026-10-31T13:00:00Z"
+    },
+    {
+     "case_id": 1572,
+     "added_at": "2026-10-31T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "level": "institution",
+   "anchor_key": "1-4052986311",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-30T12:00:00Z",
+   "updated_at": "2026-08-30T12:00:00Z",
+   "links": [
+    {
+     "case_id": 1150,
+     "added_at": "2026-08-30T12:00:00Z"
+    },
+    {
+     "case_id": 1211,
+     "added_at": "2026-08-30T12:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "level": "institution",
+   "anchor_key": "1-4106987465",
+   "tier": "probable",
+   "status": "dismissed",
+   "coordinator_id": null,
+   "decided_by": 1,
+   "decided_at": "2026-11-04T11:00:00Z",
+   "decision_remark": "Different matters; no coordination needed.",
+   "created_at": "2026-11-03T13:00:00Z",
+   "updated_at": "2026-11-04T11:00:00Z",
+   "links": [
+    {
+     "case_id": 1558,
+     "added_at": "2026-11-03T13:00:00Z"
+    },
+    {
+     "case_id": 1588,
+     "added_at": "2026-11-03T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "level": "institution",
+   "anchor_key": "1-4111126641",
+   "tier": "probable",
+   "status": "confirmed",
+   "coordinator_id": 14,
+   "decided_by": 1,
+   "decided_at": "2026-09-16T10:00:00Z",
+   "decision_remark": null,
+   "created_at": "2026-09-15T12:00:00Z",
+   "updated_at": "2026-09-16T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1286,
+     "added_at": "2026-09-15T12:00:00Z"
+    },
+    {
+     "case_id": 1309,
+     "added_at": "2026-09-15T12:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "level": "institution",
+   "anchor_key": "1-4130169571",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-02T13:00:00Z",
+   "updated_at": "2026-10-02T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1386,
+     "added_at": "2026-10-02T13:00:00Z"
+    },
+    {
+     "case_id": 1398,
+     "added_at": "2026-10-02T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "level": "institution",
+   "anchor_key": "1-4155961887",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-13T12:00:00Z",
+   "updated_at": "2026-09-13T12:00:00Z",
+   "links": [
+    {
+     "case_id": 1262,
+     "added_at": "2026-09-13T12:00:00Z"
+    },
+    {
+     "case_id": 1300,
+     "added_at": "2026-09-13T12:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "level": "institution",
+   "anchor_key": "1-4159423601",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-19T13:00:00Z",
+   "updated_at": "2026-09-19T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1261,
+     "added_at": "2026-09-19T13:00:00Z"
+    },
+    {
+     "case_id": 1328,
+     "added_at": "2026-09-19T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "level": "institution",
+   "anchor_key": "1-4311089306",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-07T13:00:00Z",
+   "updated_at": "2026-10-07T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1365,
+     "added_at": "2026-10-07T13:00:00Z"
+    },
+    {
+     "case_id": 1409,
+     "added_at": "2026-10-07T13:00:00Z"
+    },
+    {
+     "case_id": 1427,
+     "added_at": "2026-10-07T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "level": "institution",
+   "anchor_key": "1-4329721855",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-07T11:00:00Z",
+   "updated_at": "2026-08-07T11:00:00Z",
+   "links": [
+    {
+     "case_id": 1000,
+     "added_at": "2026-08-07T11:00:00Z"
+    },
+    {
+     "case_id": 1073,
+     "added_at": "2026-08-07T11:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "level": "institution",
+   "anchor_key": "1-4338343316",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-07-27T13:00:00Z",
+   "updated_at": "2026-07-27T13:00:00Z",
+   "links": [
+    {
+     "case_id": 999,
+     "added_at": "2026-07-27T13:00:00Z"
+    },
+    {
+     "case_id": 1005,
+     "added_at": "2026-07-27T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "level": "institution",
+   "anchor_key": "1-4386383840",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-08T13:00:00Z",
+   "updated_at": "2026-09-08T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1234,
+     "added_at": "2026-09-08T13:00:00Z"
+    },
+    {
+     "case_id": 1268,
+     "added_at": "2026-09-08T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "level": "institution",
+   "anchor_key": "1-4424205731",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-14T11:00:00Z",
+   "updated_at": "2026-10-14T11:00:00Z",
+   "links": [
+    {
+     "case_id": 1435,
+     "added_at": "2026-10-14T11:00:00Z"
+    },
+    {
+     "case_id": 1469,
+     "added_at": "2026-10-14T11:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 18,
+   "level": "institution",
+   "anchor_key": "1-4431656213",
+   "tier": "probable",
+   "status": "confirmed",
+   "coordinator_id": 7,
+   "decided_by": 1,
+   "decided_at": "2026-10-07T07:00:00Z",
+   "decision_remark": null,
+   "created_at": "2026-10-06T09:00:00Z",
+   "updated_at": "2026-10-07T07:00:00Z",
+   "links": [
+    {
+     "case_id": 1366,
+     "added_at": "2026-10-06T09:00:00Z"
+    },
+    {
+     "case_id": 1424,
+     "added_at": "2026-10-06T09:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 19,
+   "level": "institution",
+   "anchor_key": "1-4436895571",
+   "tier": "probable",
+   "status": "dismissed",
+   "coordinator_id": null,
+   "decided_by": 1,
+   "decided_at": "2026-10-02T09:00:00Z",
+   "decision_remark": "Different matters; no coordination needed.",
+   "created_at": "2026-10-01T11:00:00Z",
+   "updated_at": "2026-10-02T09:00:00Z",
+   "links": [
+    {
+     "case_id": 1367,
+     "added_at": "2026-10-01T11:00:00Z"
+    },
+    {
+     "case_id": 1390,
+     "added_at": "2026-10-01T11:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "level": "institution",
+   "anchor_key": "1-4443890446",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-06T13:00:00Z",
+   "updated_at": "2026-09-06T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1182,
+     "added_at": "2026-09-06T13:00:00Z"
+    },
+    {
+     "case_id": 1255,
+     "added_at": "2026-09-06T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "level": "institution",
+   "anchor_key": "1-4460862624",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-25T10:00:00Z",
+   "updated_at": "2026-08-25T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1107,
+     "added_at": "2026-08-25T10:00:00Z"
+    },
+    {
+     "case_id": 1177,
+     "added_at": "2026-08-25T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "level": "institution",
+   "anchor_key": "1-4465380751",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-11-05T11:00:00Z",
+   "updated_at": "2026-11-05T11:00:00Z",
+   "links": [
+    {
+     "case_id": 1541,
+     "added_at": "2026-11-05T11:00:00Z"
+    },
+    {
+     "case_id": 1598,
+     "added_at": "2026-11-05T11:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "level": "institution",
+   "anchor_key": "1-4469417107",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-27T10:00:00Z",
+   "updated_at": "2026-08-27T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1183,
+     "added_at": "2026-08-27T10:00:00Z"
+    },
+    {
+     "case_id": 1191,
+     "added_at": "2026-08-27T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "level": "institution",
+   "anchor_key": "1-4485225110",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-11T09:00:00Z",
+   "updated_at": "2026-10-11T09:00:00Z",
+   "links": [
+    {
+     "case_id": 1372,
+     "added_at": "2026-10-11T09:00:00Z"
+    },
+    {
+     "case_id": 1399,
+     "added_at": "2026-10-11T09:00:00Z"
+    },
+    {
+     "case_id": 1456,
+     "added_at": "2026-10-11T09:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 25,
+   "level": "institution",
+   "anchor_key": "1-4541682073",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-22T09:00:00Z",
+   "updated_at": "2026-09-22T09:00:00Z",
+   "links": [
+    {
+     "case_id": 1280,
+     "added_at": "2026-09-22T09:00:00Z"
+    },
+    {
+     "case_id": 1343,
+     "added_at": "2026-09-22T09:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 26,
+   "level": "institution",
+   "anchor_key": "1-4648235401",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-25T11:00:00Z",
+   "updated_at": "2026-10-25T11:00:00Z",
+   "links": [
+    {
+     "case_id": 1460,
+     "added_at": "2026-10-25T11:00:00Z"
+    },
+    {
+     "case_id": 1527,
+     "added_at": "2026-10-25T11:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 27,
+   "level": "institution",
+   "anchor_key": "1-4653518420",
+   "tier": "probable",
+   "status": "confirmed",
+   "coordinator_id": 13,
+   "decided_by": 1,
+   "decided_at": "2026-10-19T08:00:00Z",
+   "decision_remark": null,
+   "created_at": "2026-10-18T10:00:00Z",
+   "updated_at": "2026-10-19T08:00:00Z",
+   "links": [
+    {
+     "case_id": 1428,
+     "added_at": "2026-10-18T10:00:00Z"
+    },
+    {
+     "case_id": 1491,
+     "added_at": "2026-10-18T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 28,
+   "level": "institution",
+   "anchor_key": "1-4657034914",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-07-30T11:00:00Z",
+   "updated_at": "2026-07-30T11:00:00Z",
+   "links": [
+    {
+     "case_id": 1009,
+     "added_at": "2026-07-30T11:00:00Z"
+    },
+    {
+     "case_id": 1021,
+     "added_at": "2026-07-30T11:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 29,
+   "level": "institution",
+   "anchor_key": "1-4689521748",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-11-02T10:00:00Z",
+   "updated_at": "2026-11-02T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1509,
+     "added_at": "2026-11-02T10:00:00Z"
+    },
+    {
+     "case_id": 1583,
+     "added_at": "2026-11-02T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 30,
+   "level": "institution",
+   "anchor_key": "1-4717785677",
+   "tier": "probable",
+   "status": "dismissed",
+   "coordinator_id": null,
+   "decided_by": 1,
+   "decided_at": "2026-11-06T07:00:00Z",
+   "decision_remark": "Different matters; no coordination needed.",
+   "created_at": "2026-11-05T09:00:00Z",
+   "updated_at": "2026-11-06T07:00:00Z",
+   "links": [
+    {
+     "case_id": 1505,
+     "added_at": "2026-11-05T09:00:00Z"
+    },
+    {
+     "case_id": 1557,
+     "added_at": "2026-11-05T09:00:00Z"
+    },
+    {
+     "case_id": 1597,
+     "added_at": "2026-11-05T09:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 31,
+   "level": "institution",
+   "anchor_key": "1-4805476284",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-08T10:00:00Z",
+   "updated_at": "2026-10-08T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1417,
+     "added_at": "2026-10-08T10:00:00Z"
+    },
+    {
+     "case_id": 1436,
+     "added_at": "2026-10-08T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 32,
+   "level": "institution",
+   "anchor_key": "1-4848412141",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-24T10:00:00Z",
+   "updated_at": "2026-09-24T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1305,
+     "added_at": "2026-09-24T10:00:00Z"
+    },
+    {
+     "case_id": 1352,
+     "added_at": "2026-09-24T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 33,
+   "level": "institution",
+   "anchor_key": "1-4945362750",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-04T12:00:00Z",
+   "updated_at": "2026-10-04T12:00:00Z",
+   "links": [
+    {
+     "case_id": 1373,
+     "added_at": "2026-10-04T12:00:00Z"
+    },
+    {
+     "case_id": 1410,
+     "added_at": "2026-10-04T12:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 34,
+   "level": "institution",
+   "anchor_key": "1-4988765106",
+   "tier": "probable",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-08T10:00:00Z",
+   "updated_at": "2026-10-08T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1418,
+     "added_at": "2026-10-08T10:00:00Z"
+    },
+    {
+     "case_id": 1437,
+     "added_at": "2026-10-08T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 35,
+   "level": "parent",
+   "anchor_key": "parent:1-4055042784",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-29T10:00:00Z",
+   "updated_at": "2026-10-29T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1530,
+     "added_at": "2026-10-29T10:00:00Z"
+    },
+    {
+     "case_id": 1559,
+     "added_at": "2026-10-29T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 36,
+   "level": "parent",
+   "anchor_key": "parent:1-4116540827",
+   "tier": "possible",
+   "status": "confirmed",
+   "coordinator_id": 20,
+   "decided_by": 1,
+   "decided_at": "2026-09-02T10:00:00Z",
+   "decision_remark": null,
+   "created_at": "2026-09-01T12:00:00Z",
+   "updated_at": "2026-09-02T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1218,
+     "added_at": "2026-09-01T12:00:00Z"
+    },
+    {
+     "case_id": 1230,
+     "added_at": "2026-09-01T12:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 37,
+   "level": "parent",
+   "anchor_key": "parent:1-4829681194",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-10T11:00:00Z",
+   "updated_at": "2026-08-10T11:00:00Z",
+   "links": [
+    {
+     "case_id": 1062,
+     "added_at": "2026-08-10T11:00:00Z"
+    },
+    {
+     "case_id": 1088,
+     "added_at": "2026-08-10T11:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 38,
+   "level": "parent",
+   "anchor_key": "parent:1-4946244091",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-15T10:00:00Z",
+   "updated_at": "2026-09-15T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1287,
+     "added_at": "2026-09-15T10:00:00Z"
+    },
+    {
+     "case_id": 1310,
+     "added_at": "2026-09-15T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 39,
+   "level": "parent",
+   "anchor_key": "parent:1-4983919570",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-07T09:00:00Z",
+   "updated_at": "2026-08-07T09:00:00Z",
+   "links": [
+    {
+     "case_id": 1039,
+     "added_at": "2026-08-07T09:00:00Z"
+    },
+    {
+     "case_id": 1074,
+     "added_at": "2026-08-07T09:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 40,
+   "level": "trust",
+   "anchor_key": "trust:14",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-14T13:00:00Z",
+   "updated_at": "2026-08-14T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1077,
+     "added_at": "2026-08-14T13:00:00Z"
+    },
+    {
+     "case_id": 1115,
+     "added_at": "2026-08-14T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 41,
+   "level": "trust",
+   "anchor_key": "trust:17",
+   "tier": "possible",
+   "status": "dismissed",
+   "coordinator_id": null,
+   "decided_by": 1,
+   "decided_at": "2026-08-03T10:00:00Z",
+   "decision_remark": "Different matters; no coordination needed.",
+   "created_at": "2026-08-02T12:00:00Z",
+   "updated_at": "2026-08-03T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1010,
+     "added_at": "2026-08-02T12:00:00Z"
+    },
+    {
+     "case_id": 1040,
+     "added_at": "2026-08-02T12:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 42,
+   "level": "trust",
+   "anchor_key": "trust:25",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-26T13:00:00Z",
+   "updated_at": "2026-08-26T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1171,
+     "added_at": "2026-08-26T13:00:00Z"
+    },
+    {
+     "case_id": 1184,
+     "added_at": "2026-08-26T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 43,
+   "level": "trust",
+   "anchor_key": "trust:26",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-15T10:00:00Z",
+   "updated_at": "2026-10-15T10:00:00Z",
+   "links": [
+    {
+     "case_id": 1450,
+     "added_at": "2026-10-15T10:00:00Z"
+    },
+    {
+     "case_id": 1476,
+     "added_at": "2026-10-15T10:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 44,
+   "level": "trust",
+   "anchor_key": "trust:38",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-22T13:00:00Z",
+   "updated_at": "2026-08-22T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1157,
+     "added_at": "2026-08-22T13:00:00Z"
+    },
+    {
+     "case_id": 1166,
+     "added_at": "2026-08-22T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 45,
+   "level": "trust",
+   "anchor_key": "trust:48",
+   "tier": "possible",
+   "status": "confirmed",
+   "coordinator_id": 9,
+   "decided_by": 1,
+   "decided_at": "2026-09-04T09:00:00Z",
+   "decision_remark": null,
+   "created_at": "2026-09-03T11:00:00Z",
+   "updated_at": "2026-09-04T09:00:00Z",
+   "links": [
+    {
+     "case_id": 1219,
+     "added_at": "2026-09-03T11:00:00Z"
+    },
+    {
+     "case_id": 1240,
+     "added_at": "2026-09-03T11:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 46,
+   "level": "trust",
+   "anchor_key": "trust:51",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-08-05T09:00:00Z",
+   "updated_at": "2026-08-05T09:00:00Z",
+   "links": [
+    {
+     "case_id": 1046,
+     "added_at": "2026-08-05T09:00:00Z"
+    },
+    {
+     "case_id": 1055,
+     "added_at": "2026-08-05T09:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 47,
+   "level": "trust",
+   "anchor_key": "trust:57",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-13T13:00:00Z",
+   "updated_at": "2026-09-13T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1263,
+     "added_at": "2026-09-13T13:00:00Z"
+    },
+    {
+     "case_id": 1301,
+     "added_at": "2026-09-13T13:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 48,
+   "level": "trust",
+   "anchor_key": "trust:58",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-10-02T12:00:00Z",
+   "updated_at": "2026-10-02T12:00:00Z",
+   "links": [
+    {
+     "case_id": 1374,
+     "added_at": "2026-10-02T12:00:00Z"
+    },
+    {
+     "case_id": 1400,
+     "added_at": "2026-10-02T12:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": 49,
+   "level": "trust",
+   "anchor_key": "trust:6",
+   "tier": "possible",
+   "status": "open",
+   "coordinator_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "decision_remark": null,
+   "created_at": "2026-09-11T13:00:00Z",
+   "updated_at": "2026-09-11T13:00:00Z",
+   "links": [
+    {
+     "case_id": 1269,
+     "added_at": "2026-09-11T13:00:00Z"
+    },
+    {
+     "case_id": 1288,
+     "added_at": "2026-09-11T13:00:00Z"
+    }
+   ]
+  }
+ ],
+ "pairs": [
+  {
+   "id": 201,
+   "case_a_id": 101,
+   "case_b_id": 102,
+   "level": "institution",
+   "score": 0.33,
+   "reasons": [
+    "Same institution 1-4812730561",
+    "Handled by PGRC and RB",
+    "Received 9 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-11-10T08:40:02Z"
+  },
+  {
+   "id": 202,
+   "case_a_id": 101,
+   "case_b_id": 103,
+   "level": "institution",
+   "score": 0.73,
+   "reasons": [
+    "Same institution 1-4812730561",
+    "Handled by PGRC and RO-CRO",
+    "Both about original certificates being withheld",
+    "Description similarity 0.81",
+    "Received 14 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-11-15T04:48:03Z"
+  },
+  {
+   "id": 203,
+   "case_a_id": 102,
+   "case_b_id": 103,
+   "level": "institution",
+   "score": 0.31,
+   "reasons": [
+    "Same institution 1-4812730561",
+    "Handled by RB and RO-CRO",
+    "Received 5 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-11-15T04:48:03Z"
+  },
+  {
+   "id": 204,
+   "case_a_id": 103,
+   "case_b_id": 104,
+   "level": "trust",
+   "score": 0.61,
+   "reasons": [
+    "Both run by Vindhya Valley Education Trust",
+    "Handled by RO-CRO and RB",
+    "Both about certificates being withheld",
+    "Description similarity 0.79",
+    "Received 25 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-11-15T04:48:03Z"
+  },
+  {
+   "id": 205,
+   "case_a_id": 108,
+   "case_b_id": 109,
+   "level": "parent",
+   "score": 0.52,
+   "reasons": [
+    "Main campus and Department of Pharmacy of Mahakaushal Technical University",
+    "Handled by RO-CRO and AB",
+    "Related issues: infrastructure deficiency and unapproved course",
+    "Received 18 days apart"
+   ],
+   "decision": "dismissed",
+   "created_at": "2026-10-30T08:15:02Z"
+  },
+  {
+   "id": 206,
+   "case_a_id": 110,
+   "case_b_id": 111,
+   "level": "institution",
+   "score": 0.38,
+   "reasons": [
+    "Same institution 1-3156608124",
+    "Handled by PGRC and RO-WRO",
+    "Received 52 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-11-06T09:20:02Z"
+  },
+  {
+   "id": 207,
+   "case_a_id": 1438,
+   "case_b_id": 1449,
+   "level": "institution",
+   "score": 0.78,
+   "reasons": [
+    "Same institution 1-4018743421",
+    "Handled by PGRC and RB",
+    "Both about exam result",
+    "Description similarity 0.75",
+    "Received 2 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-22T13:00:00Z"
+  },
+  {
+   "id": 208,
+   "case_a_id": 1438,
+   "case_b_id": 1510,
+   "level": "institution",
+   "score": 0.9,
+   "reasons": [
+    "Same institution 1-4018743421",
+    "Handled by PGRC and RO-SRO",
+    "Both about exam result",
+    "Description similarity 0.63",
+    "Received 14 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-22T13:00:00Z"
+  },
+  {
+   "id": 209,
+   "case_a_id": 1449,
+   "case_b_id": 1510,
+   "level": "institution",
+   "score": 0.78,
+   "reasons": [
+    "Same institution 1-4018743421",
+    "Handled by RB and RO-SRO",
+    "Both about exam result",
+    "Description similarity 0.88",
+    "Received 12 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-22T13:00:00Z"
+  },
+  {
+   "id": 210,
+   "case_a_id": 1484,
+   "case_b_id": 1572,
+   "level": "institution",
+   "score": 0.76,
+   "reasons": [
+    "Same institution 1-4046473727",
+    "Handled by PGRC and AB",
+    "Both about admission irregularity",
+    "Description similarity 0.88",
+    "Received 14 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-31T13:00:00Z"
+  },
+  {
+   "id": 211,
+   "case_a_id": 1150,
+   "case_b_id": 1211,
+   "level": "institution",
+   "score": 0.77,
+   "reasons": [
+    "Same institution 1-4052986311",
+    "Handled by RO-NRO and ACAD",
+    "Both about infrastructure deficiency",
+    "Description similarity 0.83",
+    "Received 10 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-30T12:00:00Z"
+  },
+  {
+   "id": 212,
+   "case_a_id": 1558,
+   "case_b_id": 1588,
+   "level": "institution",
+   "score": 0.88,
+   "reasons": [
+    "Same institution 1-4106987465",
+    "Handled by ACAD and RO-ERO",
+    "Both about unapproved course",
+    "Description similarity 0.62",
+    "Received 5 days apart"
+   ],
+   "decision": "dismissed",
+   "created_at": "2026-11-03T13:00:00Z"
+  },
+  {
+   "id": 213,
+   "case_a_id": 1286,
+   "case_b_id": 1309,
+   "level": "institution",
+   "score": 0.92,
+   "reasons": [
+    "Same institution 1-4111126641",
+    "Handled by RO-ERO and PGRC",
+    "Both about faculty shortage",
+    "Description similarity 0.94",
+    "Received 4 days apart"
+   ],
+   "decision": "confirmed",
+   "created_at": "2026-09-15T12:00:00Z"
+  },
+  {
+   "id": 214,
+   "case_a_id": 1386,
+   "case_b_id": 1398,
+   "level": "institution",
+   "score": 0.84,
+   "reasons": [
+    "Same institution 1-4130169571",
+    "Handled by AB and PGRC",
+    "Both about infrastructure deficiency",
+    "Description similarity 0.74",
+    "Received 2 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-02T13:00:00Z"
+  },
+  {
+   "id": 215,
+   "case_a_id": 1262,
+   "case_b_id": 1300,
+   "level": "institution",
+   "score": 0.89,
+   "reasons": [
+    "Same institution 1-4155961887",
+    "Handled by RO-ERO and ACAD",
+    "Both about faculty shortage",
+    "Description similarity 0.75",
+    "Received 6 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-13T12:00:00Z"
+  },
+  {
+   "id": 216,
+   "case_a_id": 1261,
+   "case_b_id": 1328,
+   "level": "institution",
+   "score": 0.82,
+   "reasons": [
+    "Same institution 1-4159423601",
+    "Handled by RO-ERO and ACAD",
+    "Both about ragging",
+    "Description similarity 0.79",
+    "Received 12 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-19T13:00:00Z"
+  },
+  {
+   "id": 217,
+   "case_a_id": 1365,
+   "case_b_id": 1409,
+   "level": "institution",
+   "score": 0.87,
+   "reasons": [
+    "Same institution 1-4311089306",
+    "Handled by PGRC and RO-CRO",
+    "Both about certificates withheld",
+    "Description similarity 0.68",
+    "Received 7 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-07T13:00:00Z"
+  },
+  {
+   "id": 218,
+   "case_a_id": 1365,
+   "case_b_id": 1427,
+   "level": "institution",
+   "score": 0.78,
+   "reasons": [
+    "Same institution 1-4311089306",
+    "Handled by PGRC and RB",
+    "Both about certificates withheld",
+    "Description similarity 0.73",
+    "Received 10 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-07T13:00:00Z"
+  },
+  {
+   "id": 219,
+   "case_a_id": 1409,
+   "case_b_id": 1427,
+   "level": "institution",
+   "score": 0.8,
+   "reasons": [
+    "Same institution 1-4311089306",
+    "Handled by RO-CRO and RB",
+    "Both about certificates withheld",
+    "Description similarity 0.72",
+    "Received 3 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-07T13:00:00Z"
+  },
+  {
+   "id": 220,
+   "case_a_id": 1000,
+   "case_b_id": 1073,
+   "level": "institution",
+   "score": 0.83,
+   "reasons": [
+    "Same institution 1-4329721855",
+    "Handled by PGRC and AB",
+    "Both about scholarship",
+    "Description similarity 0.93",
+    "Received 12 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-07T11:00:00Z"
+  },
+  {
+   "id": 221,
+   "case_a_id": 999,
+   "case_b_id": 1005,
+   "level": "institution",
+   "score": 0.8,
+   "reasons": [
+    "Same institution 1-4338343316",
+    "Handled by PGRC and AB",
+    "Both about salary non-payment",
+    "Description similarity 0.73",
+    "Received 1 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-07-27T13:00:00Z"
+  },
+  {
+   "id": 222,
+   "case_a_id": 1234,
+   "case_b_id": 1268,
+   "level": "institution",
+   "score": 0.8,
+   "reasons": [
+    "Same institution 1-4386383840",
+    "Handled by PGRC and RO-NWRO",
+    "Both about certificates withheld",
+    "Description similarity 0.80",
+    "Received 6 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-08T13:00:00Z"
+  },
+  {
+   "id": 223,
+   "case_a_id": 1435,
+   "case_b_id": 1469,
+   "level": "institution",
+   "score": 0.8,
+   "reasons": [
+    "Same institution 1-4424205731",
+    "Handled by RB and RO-CRO",
+    "Both about certificates withheld",
+    "Description similarity 0.88",
+    "Received 6 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-14T11:00:00Z"
+  },
+  {
+   "id": 224,
+   "case_a_id": 1366,
+   "case_b_id": 1424,
+   "level": "institution",
+   "score": 0.71,
+   "reasons": [
+    "Same institution 1-4431656213",
+    "Handled by RB and RO-SWRO",
+    "Both about harassment",
+    "Description similarity 0.75",
+    "Received 9 days apart"
+   ],
+   "decision": "confirmed",
+   "created_at": "2026-10-06T09:00:00Z"
+  },
+  {
+   "id": 225,
+   "case_a_id": 1367,
+   "case_b_id": 1390,
+   "level": "institution",
+   "score": 0.72,
+   "reasons": [
+    "Same institution 1-4436895571",
+    "Handled by AB and ACAD",
+    "Both about harassment",
+    "Description similarity 0.89",
+    "Received 4 days apart"
+   ],
+   "decision": "dismissed",
+   "created_at": "2026-10-01T11:00:00Z"
+  },
+  {
+   "id": 226,
+   "case_a_id": 1182,
+   "case_b_id": 1255,
+   "level": "institution",
+   "score": 0.91,
+   "reasons": [
+    "Same institution 1-4443890446",
+    "Handled by RO-SERO and AB",
+    "Both about faculty shortage",
+    "Description similarity 0.83",
+    "Received 11 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-06T13:00:00Z"
+  },
+  {
+   "id": 227,
+   "case_a_id": 1107,
+   "case_b_id": 1177,
+   "level": "institution",
+   "score": 0.83,
+   "reasons": [
+    "Same institution 1-4460862624",
+    "Handled by ACAD and AB",
+    "Both about exam result",
+    "Description similarity 0.60",
+    "Received 12 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-25T10:00:00Z"
+  },
+  {
+   "id": 228,
+   "case_a_id": 1541,
+   "case_b_id": 1598,
+   "level": "institution",
+   "score": 0.74,
+   "reasons": [
+    "Same institution 1-4465380751",
+    "Handled by RB and RO-SWRO",
+    "Both about admission irregularity",
+    "Description similarity 0.67",
+    "Received 8 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-11-05T11:00:00Z"
+  },
+  {
+   "id": 229,
+   "case_a_id": 1183,
+   "case_b_id": 1191,
+   "level": "institution",
+   "score": 0.83,
+   "reasons": [
+    "Same institution 1-4469417107",
+    "Handled by RB and PGRC",
+    "Both about faculty shortage",
+    "Description similarity 0.87",
+    "Received 1 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-27T10:00:00Z"
+  },
+  {
+   "id": 230,
+   "case_a_id": 1372,
+   "case_b_id": 1399,
+   "level": "institution",
+   "score": 0.89,
+   "reasons": [
+    "Same institution 1-4485225110",
+    "Handled by AB and RB",
+    "Both about harassment",
+    "Description similarity 0.79",
+    "Received 4 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-11T09:00:00Z"
+  },
+  {
+   "id": 231,
+   "case_a_id": 1372,
+   "case_b_id": 1456,
+   "level": "institution",
+   "score": 0.73,
+   "reasons": [
+    "Same institution 1-4485225110",
+    "Handled by AB and RO-ERO",
+    "Both about harassment",
+    "Description similarity 0.80",
+    "Received 13 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-11T09:00:00Z"
+  },
+  {
+   "id": 232,
+   "case_a_id": 1399,
+   "case_b_id": 1456,
+   "level": "institution",
+   "score": 0.81,
+   "reasons": [
+    "Same institution 1-4485225110",
+    "Handled by RB and RO-ERO",
+    "Both about harassment",
+    "Description similarity 0.86",
+    "Received 9 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-11T09:00:00Z"
+  },
+  {
+   "id": 233,
+   "case_a_id": 1280,
+   "case_b_id": 1343,
+   "level": "institution",
+   "score": 0.93,
+   "reasons": [
+    "Same institution 1-4541682073",
+    "Handled by RB and ACAD",
+    "Both about certificates withheld",
+    "Description similarity 0.77",
+    "Received 12 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-22T09:00:00Z"
+  },
+  {
+   "id": 234,
+   "case_a_id": 1460,
+   "case_b_id": 1527,
+   "level": "institution",
+   "score": 0.78,
+   "reasons": [
+    "Same institution 1-4648235401",
+    "Handled by RO-NRO and AB",
+    "Both about certificates withheld",
+    "Description similarity 0.74",
+    "Received 13 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-25T11:00:00Z"
+  },
+  {
+   "id": 235,
+   "case_a_id": 1428,
+   "case_b_id": 1491,
+   "level": "institution",
+   "score": 0.89,
+   "reasons": [
+    "Same institution 1-4653518420",
+    "Handled by ACAD and RO-CRO",
+    "Both about faculty shortage",
+    "Description similarity 0.61",
+    "Received 11 days apart"
+   ],
+   "decision": "confirmed",
+   "created_at": "2026-10-18T10:00:00Z"
+  },
+  {
+   "id": 236,
+   "case_a_id": 1009,
+   "case_b_id": 1021,
+   "level": "institution",
+   "score": 0.86,
+   "reasons": [
+    "Same institution 1-4657034914",
+    "Handled by RO-CRO and ACAD",
+    "Both about fee refund",
+    "Description similarity 0.79",
+    "Received 2 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-07-30T11:00:00Z"
+  },
+  {
+   "id": 237,
+   "case_a_id": 1509,
+   "case_b_id": 1583,
+   "level": "institution",
+   "score": 0.73,
+   "reasons": [
+    "Same institution 1-4689521748",
+    "Handled by RB and RO-NRO",
+    "Both about admission irregularity",
+    "Description similarity 0.80",
+    "Received 11 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-11-02T10:00:00Z"
+  },
+  {
+   "id": 238,
+   "case_a_id": 1505,
+   "case_b_id": 1557,
+   "level": "institution",
+   "score": 0.81,
+   "reasons": [
+    "Same institution 1-4717785677",
+    "Handled by PGRC and ACAD",
+    "Both about scholarship",
+    "Description similarity 0.78",
+    "Received 8 days apart"
+   ],
+   "decision": "dismissed",
+   "created_at": "2026-11-05T09:00:00Z"
+  },
+  {
+   "id": 239,
+   "case_a_id": 1505,
+   "case_b_id": 1597,
+   "level": "institution",
+   "score": 0.82,
+   "reasons": [
+    "Same institution 1-4717785677",
+    "Handled by PGRC and AB",
+    "Both about scholarship",
+    "Description similarity 0.92",
+    "Received 15 days apart"
+   ],
+   "decision": "dismissed",
+   "created_at": "2026-11-05T09:00:00Z"
+  },
+  {
+   "id": 240,
+   "case_a_id": 1557,
+   "case_b_id": 1597,
+   "level": "institution",
+   "score": 0.84,
+   "reasons": [
+    "Same institution 1-4717785677",
+    "Handled by ACAD and AB",
+    "Both about scholarship",
+    "Description similarity 0.60",
+    "Received 7 days apart"
+   ],
+   "decision": "dismissed",
+   "created_at": "2026-11-05T09:00:00Z"
+  },
+  {
+   "id": 241,
+   "case_a_id": 1417,
+   "case_b_id": 1436,
+   "level": "institution",
+   "score": 0.84,
+   "reasons": [
+    "Same institution 1-4805476284",
+    "Handled by RB and ACAD",
+    "Both about ragging",
+    "Description similarity 0.90",
+    "Received 3 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-08T10:00:00Z"
+  },
+  {
+   "id": 242,
+   "case_a_id": 1305,
+   "case_b_id": 1352,
+   "level": "institution",
+   "score": 0.82,
+   "reasons": [
+    "Same institution 1-4848412141",
+    "Handled by AB and PGRC",
+    "Both about fee refund",
+    "Description similarity 0.64",
+    "Received 10 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-24T10:00:00Z"
+  },
+  {
+   "id": 243,
+   "case_a_id": 1373,
+   "case_b_id": 1410,
+   "level": "institution",
+   "score": 0.75,
+   "reasons": [
+    "Same institution 1-4945362750",
+    "Handled by PGRC and ACAD",
+    "Both about ragging",
+    "Description similarity 0.87",
+    "Received 6 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-04T12:00:00Z"
+  },
+  {
+   "id": 244,
+   "case_a_id": 1418,
+   "case_b_id": 1437,
+   "level": "institution",
+   "score": 0.82,
+   "reasons": [
+    "Same institution 1-4988765106",
+    "Handled by ACAD and AB",
+    "Both about certificates withheld",
+    "Description similarity 0.63",
+    "Received 3 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-08T10:00:00Z"
+  },
+  {
+   "id": 245,
+   "case_a_id": 1530,
+   "case_b_id": 1559,
+   "level": "parent",
+   "score": 0.77,
+   "reasons": [
+    "Institutions belong to the same parent university",
+    "Handled by PGRC and AB",
+    "Both about certificates withheld",
+    "Description similarity 0.92",
+    "Received 3 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-29T10:00:00Z"
+  },
+  {
+   "id": 246,
+   "case_a_id": 1218,
+   "case_b_id": 1230,
+   "level": "parent",
+   "score": 0.62,
+   "reasons": [
+    "Institutions belong to the same parent university",
+    "Handled by RO-SRO and ACAD",
+    "Both about ragging",
+    "Description similarity 0.90",
+    "Received 1 days apart"
+   ],
+   "decision": "confirmed",
+   "created_at": "2026-09-01T12:00:00Z"
+  },
+  {
+   "id": 247,
+   "case_a_id": 1062,
+   "case_b_id": 1088,
+   "level": "parent",
+   "score": 0.62,
+   "reasons": [
+    "Institutions belong to the same parent university",
+    "Handled by ACAD and RB",
+    "Both about harassment",
+    "Description similarity 0.93",
+    "Received 4 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-10T11:00:00Z"
+  },
+  {
+   "id": 248,
+   "case_a_id": 1287,
+   "case_b_id": 1310,
+   "level": "parent",
+   "score": 0.76,
+   "reasons": [
+    "Institutions belong to the same parent university",
+    "Handled by PGRC and ACAD",
+    "Both about exam result",
+    "Description similarity 0.85",
+    "Received 4 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-15T10:00:00Z"
+  },
+  {
+   "id": 249,
+   "case_a_id": 1039,
+   "case_b_id": 1074,
+   "level": "parent",
+   "score": 0.63,
+   "reasons": [
+    "Institutions belong to the same parent university",
+    "Handled by ACAD and RB",
+    "Both about infrastructure deficiency",
+    "Description similarity 0.93",
+    "Received 5 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-07T09:00:00Z"
+  },
+  {
+   "id": 250,
+   "case_a_id": 1077,
+   "case_b_id": 1115,
+   "level": "trust",
+   "score": 0.52,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by PGRC and RO-SCRO",
+    "Both about infrastructure deficiency",
+    "Description similarity 0.87",
+    "Received 6 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-14T13:00:00Z"
+  },
+  {
+   "id": 251,
+   "case_a_id": 1010,
+   "case_b_id": 1040,
+   "level": "trust",
+   "score": 0.56,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by RO-NRO and ACAD",
+    "Both about admission irregularity",
+    "Description similarity 0.82",
+    "Received 5 days apart"
+   ],
+   "decision": "dismissed",
+   "created_at": "2026-08-02T12:00:00Z"
+  },
+  {
+   "id": 252,
+   "case_a_id": 1171,
+   "case_b_id": 1184,
+   "level": "trust",
+   "score": 0.56,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by AB and RO-NWRO",
+    "Both about admission irregularity",
+    "Description similarity 0.90",
+    "Received 2 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-26T13:00:00Z"
+  },
+  {
+   "id": 253,
+   "case_a_id": 1450,
+   "case_b_id": 1476,
+   "level": "trust",
+   "score": 0.53,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by RB and PGRC",
+    "Both about fee refund",
+    "Description similarity 0.63",
+    "Received 5 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-15T10:00:00Z"
+  },
+  {
+   "id": 254,
+   "case_a_id": 1157,
+   "case_b_id": 1166,
+   "level": "trust",
+   "score": 0.54,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by AB and PGRC",
+    "Both about scholarship",
+    "Description similarity 0.74",
+    "Received 1 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-22T13:00:00Z"
+  },
+  {
+   "id": 255,
+   "case_a_id": 1219,
+   "case_b_id": 1240,
+   "level": "trust",
+   "score": 0.53,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by AB and PGRC",
+    "Both about ragging",
+    "Description similarity 0.88",
+    "Received 3 days apart"
+   ],
+   "decision": "confirmed",
+   "created_at": "2026-09-03T11:00:00Z"
+  },
+  {
+   "id": 256,
+   "case_a_id": 1046,
+   "case_b_id": 1055,
+   "level": "trust",
+   "score": 0.53,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by ACAD and PGRC",
+    "Both about faculty shortage",
+    "Description similarity 0.71",
+    "Received 1 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-08-05T09:00:00Z"
+  },
+  {
+   "id": 257,
+   "case_a_id": 1263,
+   "case_b_id": 1301,
+   "level": "trust",
+   "score": 0.49,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by AB and PGRC",
+    "Both about certificates withheld",
+    "Description similarity 0.94",
+    "Received 6 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-13T13:00:00Z"
+  },
+  {
+   "id": 258,
+   "case_a_id": 1374,
+   "case_b_id": 1400,
+   "level": "trust",
+   "score": 0.52,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by RB and ACAD",
+    "Both about unapproved course",
+    "Description similarity 0.89",
+    "Received 4 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-10-02T12:00:00Z"
+  },
+  {
+   "id": 259,
+   "case_a_id": 1269,
+   "case_b_id": 1288,
+   "level": "trust",
+   "score": 0.53,
+   "reasons": [
+    "Both run by the same trust",
+    "Handled by RO-NWRO and AB",
+    "Both about certificates withheld",
+    "Description similarity 0.79",
+    "Received 3 days apart"
+   ],
+   "decision": "none",
+   "created_at": "2026-09-11T13:00:00Z"
+  }
+ ]
 }

@@ -1,0 +1,216 @@
+{
+  "trusts": [
+    {
+      "id": 1,
+      "name": "Vindhya Valley Education Trust",
+      "address": "Plot 14, Vindhya Nagar, Jabalpur, Madhya Pradesh 482002",
+      "state": "Madhya Pradesh"
+    },
+    {
+      "id": 2,
+      "name": "Satpura Technical Education Society",
+      "address": "E-5, Arera Colony, Bhopal, Madhya Pradesh 462016",
+      "state": "Madhya Pradesh"
+    },
+    {
+      "id": 3,
+      "name": "Deccan Plateau Education Society",
+      "address": "Survey No. 44, Hingne Khurd, Pune, Maharashtra 411051",
+      "state": "Maharashtra"
+    }
+  ],
+  "institutions": [
+    {
+      "permanent_id": "1-4812730561",
+      "name": "Vindhya Valley Institute of Engineering & Technology",
+      "name_norm": "VINDHYA VALLEY INSTITUTE ENGINEERING TECHNOLOGY",
+      "acronym": "VVIET",
+      "address": "Tilwara Ghat Road, Jabalpur, Madhya Pradesh",
+      "district": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "pin": "482003",
+      "region": "central",
+      "inst_type": "engineering",
+      "year_est": 2008,
+      "trust_id": 1,
+      "parent_id": null,
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-4812730987",
+      "name": "Vindhya Valley Institute of Management",
+      "name_norm": "VINDHYA VALLEY INSTITUTE MANAGEMENT",
+      "acronym": "VVIM",
+      "address": "Tilwara Ghat Road, Jabalpur, Madhya Pradesh",
+      "district": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "pin": "482003",
+      "region": "central",
+      "inst_type": "management",
+      "year_est": 2011,
+      "trust_id": 1,
+      "parent_id": null,
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-4812744105",
+      "name": "Narmada Valley College of Engineering",
+      "name_norm": "NARMADA VALLEY COLLEGE ENGINEERING",
+      "acronym": "NVCE",
+      "address": "Gwarighat Road, Jabalpur, Madhya Pradesh",
+      "district": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "pin": "482008",
+      "region": "central",
+      "inst_type": "engineering",
+      "year_est": 2001,
+      "trust_id": 2,
+      "parent_id": null,
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-4870215534",
+      "name": "Satpura Institute of Technology",
+      "name_norm": "SATPURA INSTITUTE TECHNOLOGY",
+      "acronym": "SIT",
+      "address": "Hoshangabad Road, Bhopal, Madhya Pradesh",
+      "district": "Bhopal",
+      "state": "Madhya Pradesh",
+      "pin": "462026",
+      "region": "central",
+      "inst_type": "engineering",
+      "year_est": 2005,
+      "trust_id": 2,
+      "parent_id": null,
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-4870219908",
+      "name": "Sarovar Institute of Technology",
+      "name_norm": "SAROVAR INSTITUTE TECHNOLOGY",
+      "acronym": "SIT",
+      "address": "Bhadbhada Road, Bhopal, Madhya Pradesh",
+      "district": "Bhopal",
+      "state": "Madhya Pradesh",
+      "pin": "462003",
+      "region": "central",
+      "inst_type": "engineering",
+      "year_est": 2012,
+      "trust_id": null,
+      "parent_id": null,
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-4800112233",
+      "name": "Mahakaushal Technical University",
+      "name_norm": "MAHAKAUSHAL TECHNICAL UNIVERSITY",
+      "acronym": "MTU",
+      "address": "Katni Road, Jabalpur, Madhya Pradesh",
+      "district": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "pin": "482011",
+      "region": "central",
+      "inst_type": "university",
+      "year_est": 1998,
+      "trust_id": null,
+      "parent_id": null,
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-4800112290",
+      "name": "Mahakaushal Technical University – Department of Pharmacy",
+      "name_norm": "MAHAKAUSHAL TECHNICAL UNIVERSITY DEPARTMENT PHARMACY",
+      "acronym": "MTU-DOP",
+      "address": "Katni Road, Jabalpur, Madhya Pradesh",
+      "district": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "pin": "482011",
+      "region": "central",
+      "inst_type": "university_department",
+      "year_est": 2004,
+      "trust_id": null,
+      "parent_id": "1-4800112233",
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-3156608124",
+      "name": "Deccan Plateau Institute of Technology",
+      "name_norm": "DECCAN PLATEAU INSTITUTE TECHNOLOGY",
+      "acronym": "DPIT",
+      "address": "Sinhagad Link Road, Pune, Maharashtra",
+      "district": "Pune",
+      "state": "Maharashtra",
+      "pin": "411041",
+      "region": "western",
+      "inst_type": "engineering",
+      "year_est": 2009,
+      "trust_id": 3,
+      "parent_id": null,
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-4800112291",
+      "name": "Mahakaushal Technical University – Department of Management Studies",
+      "name_norm": "MAHAKAUSHAL TECHNICAL UNIVERSITY DEPARTMENT MANAGEMENT STUDIES",
+      "acronym": "MTU-DMS",
+      "address": "University Campus, Bhedaghat Road, Jabalpur, Madhya Pradesh 482011",
+      "district": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "pin": "482011",
+      "region": "central",
+      "inst_type": "university_department",
+      "year_est": 2007,
+      "trust_id": null,
+      "parent_id": "1-4800112233",
+      "is_active": true
+    },
+    {
+      "permanent_id": "1-2491105538",
+      "name": "Narmada Valley College of Engineering",
+      "name_norm": "NARMADA VALLEY COLLEGE ENGINEERING",
+      "acronym": "NVCE",
+      "address": "Zadeshwar Road, Bharuch, Gujarat 392011",
+      "district": "Bharuch",
+      "state": "Gujarat",
+      "pin": "392011",
+      "region": "western",
+      "inst_type": "engineering",
+      "year_est": 2010,
+      "trust_id": null,
+      "parent_id": null,
+      "is_active": true
+    }
+  ],
+  "aliases": [
+    {
+      "id": 1,
+      "permanent_id": "1-4812730561",
+      "alias_norm": "VVIET",
+      "source": "seed"
+    },
+    {
+      "id": 2,
+      "permanent_id": "1-4812730987",
+      "alias_norm": "VVIM",
+      "source": "seed"
+    },
+    {
+      "id": 3,
+      "permanent_id": "1-4812744105",
+      "alias_norm": "NVCE JABALPUR",
+      "source": "seed"
+    },
+    {
+      "id": 4,
+      "permanent_id": "1-4800112233",
+      "alias_norm": "MTU JABALPUR",
+      "source": "seed"
+    },
+    {
+      "id": 5,
+      "permanent_id": "1-3156608124",
+      "alias_norm": "DPIT PUNE",
+      "source": "seed"
+    }
+  ]
+}

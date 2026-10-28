@@ -2,7 +2,7 @@
 Load the demo world from seed_data/*.json — run with: python -m app.seed [--reset]
 
 The file format is documented in seed_data/README.md; the synthetic generator (#23) writes
-the same files at scale. Files with an `as_of` date are shifted by `today() - as_of`, so
+the same files at scale (seed_data/), around the hand-written hero world (seed_data/tiny/). Files with an `as_of` date are shifted by `today() - as_of`, so
 "PGRC/2026/00412 is on day 19 of 21" holds on any day (exactly the fixture dates when
 DEMO_TODAY equals as_of). Ids come from the files, so they are stable across resets and
 existing tokens keep working.
@@ -22,6 +22,7 @@ from sqlalchemy.engine import Engine
 from sqlmodel import Session, SQLModel, select
 
 from app.core import db
+from app.core.config import get_settings
 from app.modules.alerts.models import Alert
 from app.modules.cases.models import Case, CaseAction
 from app.modules.institutions.models import Institution, InstitutionAlias, Trust
@@ -31,7 +32,8 @@ from app.modules.reviews.models import MatchReview
 from app.modules.users.models import User
 from app.utils.time import today as current_today
 
-SEED_DIR = Path(__file__).resolve().parents[1] / "seed_data"
+SEED_DIR = Path(__file__).resolve().parents[1] / "seed_data"  # the full synthetic world (#23)
+TINY_SEED_DIR = SEED_DIR / "tiny"  # the hand-written hero world; fast, and what the tests run on
 
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _DATETIME_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?$")
@@ -141,38 +143,46 @@ def load_seed(session: Session, seed_dir: Path = SEED_DIR, today: Optional[date]
     return counts
 
 
+def default_seed_dir() -> Path:
+    """Where seeding and `POST /demo/reset` read from: SEED_SET=full (seed_data/) or tiny (seed_data/tiny/)."""
+    return TINY_SEED_DIR if get_settings().SEED_SET == "tiny" else SEED_DIR
+
+
 def _engine(target_engine: Optional[Engine]) -> Engine:
     return target_engine if target_engine is not None else db.engine  # looked up at call time
 
 
-def seed_if_empty(target_engine: Optional[Engine] = None) -> bool:
+def seed_if_empty(target_engine: Optional[Engine] = None, seed_dir: Optional[Path] = None) -> bool:
     """Create tables and load the seed if there are no users yet. Returns True if it seeded."""
     eng = _engine(target_engine)
     db.init_db(eng)
     with Session(eng) as session:
         if session.exec(select(User)).first() is not None:
             return False
-        load_seed(session)
+        load_seed(session, seed_dir or default_seed_dir())
         return True
 
 
-def reset_and_seed(target_engine: Optional[Engine] = None) -> Dict[str, int]:
+def reset_and_seed(target_engine: Optional[Engine] = None, seed_dir: Optional[Path] = None) -> Dict[str, int]:
     """Drop every table, recreate the schema and load the seed."""
     eng = _engine(target_engine)
     db.reset_db(eng)
     with Session(eng) as session:
-        return load_seed(session)
+        return load_seed(session, seed_dir or default_seed_dir())
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Create tables and load the Unicomply demo data")
     parser.add_argument("--reset", action="store_true", help="drop all tables first")
+    parser.add_argument("--tiny", action="store_true", help="load only the hand-written hero world (seed_data/tiny)")
+    parser.add_argument("--seed-dir", type=Path, default=None, help="load a generated directory (python -m seed_data.generator --output)")
     args = parser.parse_args()
+    chosen = args.seed_dir or (TINY_SEED_DIR if args.tiny else None)
     started = time.perf_counter()
     if args.reset:
-        result = reset_and_seed()
+        result = reset_and_seed(seed_dir=chosen)
         print(f"Demo data reset in {time.perf_counter() - started:.2f}s: {result}")
-    elif seed_if_empty():
+    elif seed_if_empty(seed_dir=chosen):
         print(f"Demo data loaded in {time.perf_counter() - started:.2f}s")
     else:
         print("Database already has data; nothing to do (use --reset to start over)")

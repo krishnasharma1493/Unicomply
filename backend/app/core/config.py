@@ -52,6 +52,9 @@ class Settings(BaseSettings):
 
     # ── Demo data & optional features ───────────────────────────────────
     SEED_ON_STARTUP: bool = Field(default=True, description="Seed an empty DB on boot")
+    SEED_SET: Literal["full", "tiny"] = Field(
+        default="full", description="Which data seeds and resets load: the generated world, or only the hero story"
+    )
     ENABLE_REALTIME: bool = Field(default=False, description="python-socketio on the same port")
     ENABLE_SCHEDULER: bool = Field(default=False, description="asyncio background job loop")
 

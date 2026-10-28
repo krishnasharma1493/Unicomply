@@ -1,8 +1,15 @@
 # `seed_data/` — the demo world and its file format
 
-`python -m app.seed [--reset]` (and `POST /api/v1/demo/reset`) loads these files into an empty schema in one transaction, in foreign-key order. **This README is the contract for the synthetic generator (#23):** it must write the same files, with the same fields, at scale.
+`python -m app.seed [--reset]` (and `POST /api/v1/demo/reset`) loads these files into an empty schema in one transaction, in foreign-key order.
 
-The current files are the **tiny seed** (#6). It is exactly the world described by `contract/fixtures/` (#2): the same ids, case refs, people, hero story, overlap groups, reviews and alerts, plus two institutions without cases. So the real API answers like the frontend mocks.
+## Two worlds
+
+| Directory | What | Used by |
+| --- | --- | --- |
+| `seed_data/*.json` | The **full synthetic world** written by `python -m seed_data.generator --seed 26264` (#23): 500 institutions, 60 trusts, 15 universities, 1,500 cases with action histories, 45 planted overlaps, 20 hard negatives, review queue, plus `ground_truth.json`. Deterministic: the same seed gives byte-identical files, and a test fails if the checked-in files differ from the generator's output. | the demo, `python -m app.eval` (#40) |
+| `seed_data/tiny/` | The hand-written **hero story** (#6): the world described by `contract/fixtures/`. The generator reads it as its base and keeps it verbatim (ids 101–114), so the hero cases are identical after every reset. | the tests (`SEED_SET=tiny`), `python -m app.seed --tiny` |
+
+`SEED_SET=full|tiny` (env, default `full`) picks which one seeding and demo reset load. Everything below describes the file format, which both worlds share.
 
 ## Conventions
 
@@ -26,7 +33,25 @@ The current files are the **tiny seed** (#6). It is exactly the world described 
 | `overlaps.json` *(optional)* | `as_of`, `groups`, `pairs` | Groups `{id, level, anchor_key, tier, status, coordinator_id, decided_by, decided_at, decision_remark, created_at, updated_at, links: [{case_id, added_at}]}` (`anchor_key` = a Permanent ID, `parent:<permanent_id>` or `trust:<id>`); pairs `{id, case_a_id < case_b_id, level, score, reasons, decision (none / confirmed / dismissed), created_at}` |
 | `alerts.json` *(optional)* | `as_of`, `alerts` | `{id, type, severity, recipient_id, case_id, group_id, permanent_id, title, body, dedupe_key (type:recipient:entity:date, unique), is_read, created_at}` |
 
-The generator (#23) adds `ground_truth.json` (true Permanent ID per case, true overlap clusters, dev/test split). The loader ignores it; `python -m app.eval` (#40) reads it. `abbreviations.json` and `thresholds.json` belong to the matching engine (#19) and are not loaded into tables.
+### `ground_truth.json` (written by the generator, ignored by the loader, read by `python -m app.eval`)
+
+| Key | Meaning |
+| --- | --- |
+| `case_to_permanent_id` | true Permanent ID per case id (`null` for the four complaints about institutions that are not in the registry) |
+| `noise` | per case, the name noise applied to its text: `typo`, `abbreviation`, `acronym_only`, `district_missing`, `city_for_district`, `wrong_state` |
+| `overlap_clusters` | the true overlaps: `{group_id, level, anchor_key, tier, case_ids, split}` — the 45 planted ones plus the hero story's three |
+| `hard_negatives` | `{kind: same_name_other_state / disposed_long_ago, case_ids, permanent_ids}`: pairs that must **not** be linked or flagged |
+| `split_by_family`, `dev_case_ids`, `test_case_ids` | 50/50 dev/test split. Whole institution families (a trust, or a university and its departments) go to one side, so nothing leaks between tuning and reporting |
+
+`abbreviations.json` and `thresholds.json` belong to the matching engine (#19) and are not loaded into tables. The generator reads `abbreviations.json` (it never writes it) to produce abbreviated names.
+
+### What the generator does
+
+- **Names.** Fictional: place word + founder word + type (e.g. "Sahyadri Prabhat Institute of Engineering & Technology"). Spot-check against AICTE's public approved-institution search before the event and rename any real match (PRD §10B).
+- **Name noise** (per case, PRD §4.7): typos on 40% (p = 0.03 per character), abbreviations 35%, acronym only 15%, district missing 20%, city instead of district 10% (the localities are district aliases in `abbreviations.json`), wrong state 2%. The location rates are exact quotas, not coin flips.
+- **No accidental overlaps.** Background cases at one trust or university family always sit in one bureau, so the only cross-bureau overlaps in the data are the planted ones and the ground truth is complete.
+- **Planted overlaps.** 30 institution-level, 5 parent-level, 10 trust-level, each with near-identical wording and dates within a few weeks. With the default weights a trust-level pair scores at most 0.6, below `T_probable` (0.68), so the engine cannot find them until #44 settles whether non-institution levels use `T_possible`.
+- **Case histories.** Chronological, and every step obeys the §4.3 transition table (a test replays them). A case's status, bureau, officer, SLA and counters are derived from its actions.
 
 ## What the tiny seed contains
 

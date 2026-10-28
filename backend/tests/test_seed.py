@@ -20,7 +20,7 @@ from app.modules.cases.schemas import CaseCreate, CaseRecord
 from app.modules.institutions.models import InstitutionAlias
 from app.modules.overlaps.models import OverlapPair
 from app.modules.reviews.schemas import MatchReviewUpdate
-from app.seed import SEED_DIR, load_seed, reset_and_seed, seed_if_empty
+from app.seed import SEED_DIR, TINY_SEED_DIR, load_seed, reset_and_seed, seed_if_empty
 from tests.conftest import SEED_AS_OF
 
 REPO = Path(__file__).resolve().parents[2]
@@ -43,7 +43,7 @@ def fresh_engine():
 
 def test_seed_loads_every_table() -> None:
     with Session(fresh_engine()) as session:
-        counts = load_seed(session, today=SEED_AS_OF)
+        counts = load_seed(session, TINY_SEED_DIR, today=SEED_AS_OF)
     assert counts == {
         "bureaus": 14, "categories": 12, "users": 12, "trusts": 3, "institutions": 10, "aliases": 5,
         "cases": 13, "case_actions": 19, "match_reviews": 2, "overlap_groups": 4, "overlap_links": 9,
@@ -55,7 +55,7 @@ def test_seed_loads_every_table() -> None:
 def test_hero_cases_keep_their_day_offsets(today: date) -> None:
     """§4.7 statuses and dates relative to DEMO_TODAY; PGRC/2026/00412 is always day 19 of 21."""
     with Session(fresh_engine()) as session:
-        load_seed(session, today=today)
+        load_seed(session, TINY_SEED_DIR, today=today)
         for case_id, (ref, days_ago, status) in HERO.items():
             case = session.get(Case, case_id)
             assert case is not None
@@ -107,7 +107,7 @@ def test_last_action_columns_match_the_history(seeded_engine) -> None:
 
 def test_alert_dedupe_day_moves_with_the_dates() -> None:
     with Session(fresh_engine()) as session:
-        load_seed(session, today=SEED_AS_OF + timedelta(days=3))
+        load_seed(session, TINY_SEED_DIR, today=SEED_AS_OF + timedelta(days=3))
         alert = session.get(Alert, 505)
         assert alert is not None
         assert alert.dedupe_key == "sla_breach:3:case-104:2026-11-23"
@@ -150,17 +150,17 @@ def test_permanent_id_pattern_is_enforced_by_schemas() -> None:
 def test_seed_is_fast_and_repeatable() -> None:
     engine = fresh_engine()
     started = time.perf_counter()
-    reset_and_seed(engine)
-    reset_and_seed(engine)
+    reset_and_seed(engine, TINY_SEED_DIR)
+    reset_and_seed(engine, TINY_SEED_DIR)
     assert time.perf_counter() - started < 10
-    assert seed_if_empty(engine) is False  # already seeded: nothing to do
+    assert seed_if_empty(engine, TINY_SEED_DIR) is False  # already seeded: nothing to do
     with Session(engine) as session:
         assert len(session.exec(select(Case)).all()) == 13
 
 
 def test_seed_readme_documents_every_file() -> None:
     readme = (SEED_DIR / "README.md").read_text()
-    for path in SEED_DIR.glob("*.json"):
+    for path in [*SEED_DIR.glob("*.json"), *TINY_SEED_DIR.glob("*.json")]:
         assert f"`{path.name}`" in readme, path.name
 
 
