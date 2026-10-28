@@ -121,10 +121,7 @@ STUBS: List[Tuple[str, str, Any, str, int]] = [
     # method, path, body, fixture, status
     # cases list/detail/intake/actions are real since #14/#15: tests/test_cases_api.py and test_workflow.py
     # alerts are real since #13: tests/test_alerts.py
-    ("GET", "/api/v1/dashboard/summary", None, "get_dashboard_summary", 200),
-    ("GET", "/api/v1/dashboard/workload", None, "get_dashboard_workload", 200),
-    ("GET", "/api/v1/dashboard/ageing", None, "get_dashboard_ageing", 200),
-    ("GET", "/api/v1/dashboard/institutions?limit=5", None, "get_dashboard_institutions", 200),
+    # dashboard is real since #36: tests/test_dashboard.py
     *[("GET", f"/api/v1/reports/{k}?from=2026-09-01&to=2026-11-20", None, f"get_reports_{k}", 200) for k in REPORT_KINDS],
 ]
 
