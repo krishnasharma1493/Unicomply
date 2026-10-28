@@ -164,11 +164,15 @@ describe('Intake page on the mock API (Issue #25)', () => {
     await user.type(screen.getByLabelText(/Description/), 'The college is not returning the original mark sheets.');
     fireEvent.mouseDown(document.getElementById('intake-category_id')!);
     fireEvent.click(await screen.findByText('Certificates withheld'));
-    vi.spyOn(client, 'post').mockRejectedValueOnce({
-      isAxiosError: true,
-      message: 'Request failed',
-      response: { status: 400, data: { success: false, error: { code: 'VALIDATION_ERROR', message: 'Validation failed', fields: { subject: ['Subject is not allowed'] } } } },
-    });
+    const realPost = client.post.bind(client);
+    vi.spyOn(client, 'post').mockImplementation(((url: string, ...rest: unknown[]) =>
+      url === '/cases'
+        ? Promise.reject({
+            isAxiosError: true,
+            message: 'Request failed',
+            response: { status: 400, data: { success: false, error: { code: 'VALIDATION_ERROR', message: 'Validation failed', fields: { subject: ['Subject is not allowed'] } } } },
+          })
+        : (realPost as (...a: unknown[]) => unknown)(url, ...rest)) as typeof client.post);
     await user.click(screen.getByRole('button', { name: 'Register case' }));
     expect(await screen.findByText('Subject is not allowed')).toBeInTheDocument();
     expect(screen.getByText('Please correct the highlighted fields.')).toBeInTheDocument();
