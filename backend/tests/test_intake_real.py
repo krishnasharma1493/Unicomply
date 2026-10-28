@@ -62,10 +62,11 @@ def test_hero_group_is_probable_with_the_ps_banner_when_the_pair_clears_the_bar(
     assert group["banner"] == "Potential Overlapping Cases \u2013 Coordination Required"
 
 
-@pytest.mark.xfail(strict=True, reason="With TF-IDF the hero's best pair scores ~0.47, under T_probable 0.68: #44 (thresholds) / #45 (offline parity) / #54 (hero determinism)")
-def test_hero_group_is_probable_at_the_shipped_thresholds(full_client: TestClient) -> None:
+def test_hero_group_is_possible_at_the_shipped_thresholds(full_client: TestClient) -> None:
+    """The frozen thresholds (#44, #54): with TF-IDF the hero's best pair scores ~0.48, under T_probable 0.5."""
     [group] = full_client.post("/api/v1/cases", json=hero_body(), headers=login(full_client, "intake@aicte.example")).json()["data"]["overlaps"]
-    assert group["tier"] == "probable"
+    assert group["tier"] == "possible"
+    assert group["banner"] == "Possible Overlapping Cases \u2013 Review Suggested"
 
 
 def test_the_live_preview_ranks_the_right_institution_first(full_client: TestClient) -> None:

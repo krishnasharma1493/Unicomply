@@ -35,12 +35,16 @@ My son left the college after the first semester. The college is not returning h
 ---
 Expected after the institution name is typed (the candidates panel, about a second):
 Top candidate: Vindhya Valley Institute of Engineering & Technology (Jabalpur, Madhya Pradesh), 1-4812730561
+Next: Vindhya Valley Institute of Management, then Narmada Valley College of Engineering
 Decision: linked automatically (no "needs review" label)
-Reasons shown: name similar after expanding ENGG, district Jabalpur matches, acronym VVIET matches
+Reasons shown: name 81% similar, district Jabalpur matches, state Madhya Pradesh matches, description/name context similarity
+Scores: 0.70 / 0.64 / 0.61 with the real model; 0.68 / 0.62 / 0.56 with the offline TF-IDF fallback
 
 Expected after Submit:
 New case in PGRC (the category's default bureau), status Received, ref PGRC/2026/00715 on the full seed
-Red banner: Potential Overlapping Cases – Coordination Required
 Linked cases: PGRC/2026/00412, RB/2026/00087, RO-CRO/2026/00133
+Real model: red banner "Potential Overlapping Cases – Coordination Required" (Probable)
+Offline TF-IDF fallback: amber banner "Possible Overlapping Cases – Review Suggested" (Possible)
+If the banner is amber and you expected red, the model is not loaded.
 
 Same values as contract/fixtures/requests/post_cases.json (category_id 2 = Certificates withheld).
