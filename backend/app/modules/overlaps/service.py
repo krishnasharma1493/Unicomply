@@ -78,8 +78,9 @@ def decide(session: Session, group_id: int, body, user: User) -> OverlapGroupDet
         raise RemarksRequiredError(details={"decision": "dismiss"})
     if body.decision == "confirm":
         coordinator = session.get(User, body.coordinator_id)
-        if coordinator is None or coordinator.role != Role.case_officer or coordinator.bureau_id not in bureau_ids:
-            raise _validation("coordinator_id", "Coordinator must be a case officer in an involved bureau")
+        eligible = (Role.case_officer, Role.bureau_head, Role.ro_officer)  # anyone working in an involved bureau
+        if coordinator is None or coordinator.role not in eligible or coordinator.bureau_id not in bureau_ids:
+            raise _validation("coordinator_id", "Coordinator must be a head, officer or case officer of an involved bureau")
 
     old_values = {
         "status": group.status.value,
