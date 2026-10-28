@@ -9,11 +9,11 @@ export interface ChartSpec {
   data: Record<string, string | number | null>[];
 }
 
-const BLUE = '#0071e3';
+const BLUE = '#0b5e6b';
 const GREEN = '#1d7a34';
-const RED = '#d70015';
+const RED = '#b42318';
 const AMBER = '#c26a00';
-const PURPLE = '#8e8e93';
+const PURPLE = '#8a918d';
 
 /** One bar chart per report kind, shaped from the rows the API already returned (nothing is recomputed). */
 export function chartSpec(report: AnyReport): ChartSpec {

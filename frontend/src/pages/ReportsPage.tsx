@@ -28,8 +28,8 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
           <ResponsiveContainer>
             <BarChart data={spec.data} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
               <CartesianGrid vertical={false} stroke="rgba(0, 0, 0, 0.07)" />
-              <XAxis dataKey={spec.categoryKey} tick={{ fontSize: 11, fill: '#636366' }} tickLine={false} axisLine={{ stroke: 'rgba(0, 0, 0, 0.15)' }} interval={0} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#636366' }} tickLine={false} axisLine={false} tickFormatter={(v: number) => (spec.percent ? `${Math.round(v * 100)}%` : String(v))} domain={spec.percent ? [0, 1] : undefined} />
+              <XAxis dataKey={spec.categoryKey} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={{ stroke: 'rgba(0, 0, 0, 0.15)' }} interval={0} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={false} tickFormatter={(v: number) => (spec.percent ? `${Math.round(v * 100)}%` : String(v))} domain={spec.percent ? [0, 1] : undefined} />
               <Tooltip
                 cursor={{ fill: 'rgba(0, 0, 0, 0.04)' }}
                 contentStyle={{ borderRadius: 10, border: 0, boxShadow: '0 8px 24px rgba(0,0,0,0.14)', fontSize: 13 }}

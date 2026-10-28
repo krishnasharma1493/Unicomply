@@ -6,28 +6,28 @@ import type { Role } from './lib/api/enums';
  * The rationale lives in docs/design/DIRECTION.md; the CSS variables in index.css mirror these values
  * for the parts Ant Design does not theme (glass, scroll edges, focus, reduced transparency).
  *
- * Restrained colour: neutrals plus one accent. Red, amber and green are semantic only and always
+ * Restrained colour: cool paper neutrals plus one accent, a deep registry ink (#0b5e6b). Red, amber and green are semantic only and always
  * travel with a word or an icon.
  */
 export const palette = {
-  canvas: '#f5f5f7',
+  canvas: '#f2f3f1',
   surface: '#ffffff',
-  text: '#1d1d1f',
-  textSecondary: '#636366',
+  text: '#1b1f1d',
+  textSecondary: '#5b625e',
   hairline: 'rgba(0, 0, 0, 0.08)',
-  border: '#d2d2d7',
-  accent: '#0071e3',
-  accentText: '#0066cc',
-  accentTint: 'rgba(0, 113, 227, 0.1)',
-  red: '#d70015',
-  redText: '#b3000c',
-  redTint: '#fff2f2',
+  border: '#cfd3d0',
+  accent: '#0b5e6b',
+  accentText: '#0b5e6b',
+  accentTint: 'rgba(11, 94, 107, 0.09)',
+  red: '#b42318',
+  redText: '#b42318',
+  redTint: '#fdf1ef',
   amber: '#9a5300',
   amberText: '#8a4b00',
-  amberTint: '#fff7e8',
+  amberTint: '#fdf5e7',
   green: '#1d7a34',
   /** Chart ink for neutral series: readable on white, quieter than the accent. */
-  chartNeutral: '#8e8e93',
+  chartNeutral: '#8a918d',
 } as const;
 
 const fontFamily =
@@ -41,7 +41,7 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
       colorPrimary: palette.accent,
       colorInfo: palette.accent,
       colorLink: palette.accentText,
-      colorLinkHover: '#0058b0',
+      colorLinkHover: '#084a54',
       colorSuccess: palette.green,
       colorWarning: palette.amber,
       colorError: palette.red,
@@ -50,14 +50,14 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
       colorTextSecondary: palette.textSecondary,
       colorTextTertiary: palette.textSecondary,
       colorTextDescription: palette.textSecondary,
-      colorTextPlaceholder: '#6e6e73',
+      colorTextPlaceholder: '#646b67',
       colorBgBase: '#ffffff',
       colorBgLayout: palette.canvas,
       colorBgContainer: palette.surface,
       colorBorder: palette.border,
-      colorBorderSecondary: '#e8e8ed',
+      colorBorderSecondary: '#e3e6e3',
       colorSplit: palette.hairline,
-      colorFillAlter: '#fafafc',
+      colorFillAlter: '#f9faf8',
       fontFamily,
       fontSize: 14,
       lineHeight: 1.5,
@@ -70,10 +70,10 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
       lineHeightHeading2: 1.18,
       lineHeightHeading3: 1.25,
       fontWeightStrong: 600,
-      borderRadius: 8,
-      borderRadiusLG: 14,
-      borderRadiusSM: 6,
-      borderRadiusXS: 4,
+      borderRadius: 6,
+      borderRadiusLG: 8,
+      borderRadiusSM: 4,
+      borderRadiusXS: 3,
       controlHeight: 34,
       controlHeightLG: 40,
       controlHeightSM: 26,
@@ -104,7 +104,7 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
         itemActiveBg: 'rgba(0, 0, 0, 0.08)',
         itemSelectedBg: palette.accentTint,
         itemSelectedColor: palette.accentText,
-        itemBorderRadius: 8,
+        itemBorderRadius: 6,
         itemHeight: 34,
         itemMarginInline: 10,
         itemMarginBlock: 2,
@@ -126,9 +126,9 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
         headerBg: palette.surface,
         headerColor: palette.textSecondary,
         headerSplitColor: 'transparent',
-        headerSortActiveBg: '#f5f5f7',
-        rowHoverBg: '#f7f7f9',
-        rowSelectedBg: '#eef5fd',
+        headerSortActiveBg: '#f2f3f1',
+        rowHoverBg: '#f6f7f5',
+        rowSelectedBg: '#e7f0f1',
         borderColor: 'rgba(0, 0, 0, 0.07)',
         cellPaddingBlock: 12,
         cellPaddingInline: 14,
@@ -145,8 +145,8 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
         paddingInline: 14,
       },
       Tag: {
-        defaultBg: '#f0f0f3',
-        defaultColor: '#3a3a3c',
+        defaultBg: '#eceeeb',
+        defaultColor: '#2e3431',
       },
       Tabs: {
         itemColor: palette.textSecondary,
@@ -158,18 +158,18 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
         horizontalItemGutter: 28,
       },
       Input: {
-        activeShadow: '0 0 0 3px rgba(0, 113, 227, 0.22)',
+        activeShadow: '0 0 0 3px rgba(11, 94, 107, 0.22)',
         errorActiveShadow: '0 0 0 3px rgba(215, 0, 21, 0.18)',
         paddingInline: 11,
       },
       Select: {
-        activeOutlineColor: 'rgba(0, 113, 227, 0.22)',
+        activeOutlineColor: 'rgba(11, 94, 107, 0.22)',
         optionSelectedBg: palette.accentTint,
         optionSelectedColor: palette.accentText,
         optionActiveBg: 'rgba(0, 0, 0, 0.05)',
       },
       DatePicker: {
-        activeShadow: '0 0 0 3px rgba(0, 113, 227, 0.22)',
+        activeShadow: '0 0 0 3px rgba(11, 94, 107, 0.22)',
       },
       Modal: {
         titleFontSize: 17,
@@ -217,7 +217,7 @@ export interface RoleTheme {
   label: string;
 }
 
-const neutralRole = { primary: '#636366', bgLight: '#f5f5f7', borderColor: '#d2d2d7', badgeTag: 'default' };
+const neutralRole = { primary: '#5b625e', bgLight: '#f2f3f1', borderColor: '#cfd3d0', badgeTag: 'default' };
 
 export const ROLE_THEMES: Record<Role, RoleTheme> = {
   senior_mgmt: { ...neutralRole, label: 'Senior Management' },

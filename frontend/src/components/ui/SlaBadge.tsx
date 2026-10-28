@@ -20,7 +20,28 @@ export interface SlaBadgeProps {
   today?: string | Date;
   className?: string;
   style?: React.CSSProperties;
+  /** Draw the SLA as a track of days beside the words (default). Off where space is tight. */
+  track?: boolean;
 }
+
+/**
+ * The SLA clock: one tick per day of the SLA, elapsed days filled. It reads as proportion at a glance;
+ * the words beside it carry the meaning, so colour is never alone.
+ */
+const SlaTrack: React.FC<{ age: number; total: number; tone: 'normal' | 'warning' | 'error' }> = ({ age, total, tone }) => {
+  const n = Math.min(Math.max(total, 1), 30);
+  const filled = Math.min(age, total) * (n / Math.max(total, 1));
+  const w = 64;
+  const gap = n > 15 ? 1 : 2;
+  const seg = (w - gap * (n - 1)) / n;
+  return (
+    <svg className={`uc-sla-track uc-sla-track--${tone}`} width={w} height="8" viewBox={`0 0 ${w} 8`} aria-hidden="true">
+      {Array.from({ length: n }, (_, i) => (
+        <rect key={i} x={i * (seg + gap)} y="1" width={seg} height="6" rx="0.75" className={i < Math.round(filled) ? 'on' : 'off'} />
+      ))}
+    </svg>
+  );
+};
 
 export const SlaBadge: React.FC<SlaBadgeProps> = ({
   ageDays,
@@ -32,6 +53,7 @@ export const SlaBadge: React.FC<SlaBadgeProps> = ({
   today,
   className,
   style,
+  track = true,
 }) => {
   // Disposed cases are closed; SLA clock is stopped
   if (status === 'disposed') {
@@ -73,38 +95,35 @@ export const SlaBadge: React.FC<SlaBadgeProps> = ({
   if (isOverdue) {
     const overdueDays = Math.max(1, age - totalDays);
     return (
-      <Tag
-        color="error"
-        className={className}
-        style={{ fontWeight: 600, ...style }}
-      >
-        Beyond SLA +{overdueDays}
-      </Tag>
+      <span className="uc-sla">
+        {track && <SlaTrack age={age} total={totalDays} tone="error" />}
+        <Tag color="error" className={className} style={{ fontWeight: 600, ...style }}>
+          Beyond SLA +{overdueDays}
+        </Tag>
+      </span>
     );
   }
 
   // Warning threshold (day 17 to totalDays e.g. day 21) is amber
   if (age >= warnThreshold) {
     return (
-      <Tag
-        color="warning"
-        className={className}
-        style={{ fontWeight: 600, ...style }}
-      >
-        Day {age} of {totalDays}
-      </Tag>
+      <span className="uc-sla">
+        {track && <SlaTrack age={age} total={totalDays} tone="warning" />}
+        <Tag color="warning" className={className} style={{ fontWeight: 600, ...style }}>
+          Day {age} of {totalDays}
+        </Tag>
+      </span>
     );
   }
 
   // Normal within SLA (< warnThreshold) is neutral
   return (
-    <Tag
-      color="default"
-      className={className}
-      style={{ fontWeight: 500, ...style }}
-    >
-      Day {age} of {totalDays}
-    </Tag>
+    <span className="uc-sla">
+      {track && <SlaTrack age={age} total={totalDays} tone="normal" />}
+      <Tag color="default" className={['uc-sla-plain', className].filter(Boolean).join(' ')} style={{ fontWeight: 500, ...style }}>
+        Day {age} of {totalDays}
+      </Tag>
+    </span>
   );
 };
 

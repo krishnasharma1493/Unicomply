@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Drawer } from 'antd';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
+import { useMotionPrefs } from '../../lib/motion';
 import { AppHeader } from './AppHeader';
 import { AppSidebar } from './AppSidebar';
 
 const MOBILE_QUERY = '(max-width: 767px)';
-
-/** Critically damped, ~0.35 s: the house spring (docs/design/DIRECTION.md, Motion). */
-const PAGE_SPRING = { type: 'spring', bounce: 0, duration: 0.35 } as const;
 
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(() =>
@@ -34,7 +32,7 @@ export const AppShell: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const isMobile = useMediaQuery(MOBILE_QUERY);
-  const reduceMotion = useReducedMotion();
+  const motionPrefs = useMotionPrefs();
   const location = useLocation();
 
   useEffect(() => {
@@ -87,9 +85,9 @@ export const AppShell: React.FC = () => {
         <main className="uc-content" id="main">
           <motion.div
             key={location.pathname}
-            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 }}
+            initial={motionPrefs.enter()}
             animate={{ opacity: 1, y: 0 }}
-            transition={reduceMotion ? { duration: 0.15 } : PAGE_SPRING}
+            transition={motionPrefs.spring}
           >
             <Outlet />
           </motion.div>
