@@ -42,9 +42,12 @@ def seeded_session(seeded_engine) -> Iterator[Session]:
 
 @pytest.fixture(name="commits")
 def count_commits(session: Session) -> List[int]:
-    """Records every commit on the session: the façade must never commit."""
+    """Records every real commit on the connection: the façade must never commit.
+
+    (The session's own `after_commit` also fires for SAVEPOINT releases, which `create_alert` uses.)
+    """
     seen: List[int] = []
-    event.listen(session, "after_commit", lambda _: seen.append(1))
+    event.listen(session.get_bind(), "commit", lambda _: seen.append(1))
     return seen
 
 

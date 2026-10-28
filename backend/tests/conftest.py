@@ -27,6 +27,7 @@ os.environ.update(
     ENABLE_REALTIME="false",
     ENABLE_SCHEDULER="false",
     SEED_ON_STARTUP="false",
+    MATCHING_ENGINE="stub",  # the contract-world tests (tiny seed) expect the canned hero results; real-engine tests opt in
     SEED_SET="tiny",  # the hand-written hero world: small, and what the contract fixtures describe
     EMBEDDINGS_MODE="tfidf",
 )
@@ -132,3 +133,34 @@ def auth_headers_fixture(seeded_client: TestClient) -> Callable[[str], Dict[str,
         return {"Authorization": f"Bearer {res.json()['data']['access_token']}"}
 
     return make
+
+
+@pytest.fixture(name="real_engine")
+def real_engine_fixture(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Run the request under the real matching engine (the test environment defaults to the stub)."""
+    from app.matching import get_engine
+    from app.modules.engine import service
+
+    monkeypatch.setattr(service, "current_engine", lambda: get_engine("real"))
+    service.reset_indexes()
+    yield
+    service.reset_indexes()
+
+
+@pytest.fixture(name="full_engine")
+def full_engine_fixture():
+    """In-memory engine loaded with the full generated world (seed_data/), dated as the contract fixtures."""
+    from app.seed import SEED_DIR
+
+    engine = _memory_engine()
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as session:
+        load_seed(session, SEED_DIR, today=SEED_AS_OF)
+    yield engine
+    SQLModel.metadata.drop_all(engine)
+
+
+@pytest.fixture(name="full_client")
+def full_client_fixture(test_settings, full_engine, real_engine) -> Generator[TestClient, None, None]:
+    """TestClient over the full world, running the real matching engine."""
+    yield from _client_for(full_engine, test_settings)

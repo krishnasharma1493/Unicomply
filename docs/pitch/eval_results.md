@@ -19,14 +19,14 @@ Synthetic data with planted ground truth (generator seed 26264, as of 2026-11-20
 
 | Metric | Value | Counts | Target | Status |
 | --- | --- | --- | --- | --- |
-| Resolution precision | 0.998 | 531/532 | >= 0.97 | met |
-| Resolution recall | 0.760 | 531/699 | >= 0.85 | **missed** |
-| Resolution F1 | 0.863 | | >= 0.9 | **missed** |
-| Review rate | 0.114 | 80/699 | report | |
-| Unresolved rate | 0.124 | 87/699 | report | |
-| Overlap pair recall (Probable + Possible) | 0.485 | 16/33 | >= 0.9 | **missed** |
-| Overlap precision (Probable) | 1.000 | 16/16 | report | |
-| Overlap precision (all flagged) | 0.410 | 16/39 | report | |
+| Resolution precision | 1.000 | 502/502 | >= 0.97 | met |
+| Resolution recall | 0.718 | 502/699 | >= 0.85 | **missed** |
+| Resolution F1 | 0.836 | | >= 0.9 | **missed** |
+| Review rate | 0.050 | 35/699 | report | |
+| Unresolved rate | 0.232 | 162/699 | report | |
+| Overlap pair recall (Probable + Possible) | 0.455 | 15/33 | >= 0.9 | **missed** |
+| Overlap precision (Probable) | 1.000 | 15/15 | report | |
+| Overlap precision (all flagged) | 0.500 | 15/30 | report | |
 | Hard-negative false links (same name, other state) | 0 | 0/7 | 0 | met |
 | Hard-negative false flags (disposed long ago) | 0 | 0/3 | 0 | met |
 
@@ -36,10 +36,10 @@ Precision and recall are always shown with F1 (Hand and Christen: F1 alone hides
 
 | Level | Found, engine-linked | Found, true institution known |
 | --- | --- | --- |
-| institution | 16/24 (0.667) | 24/24 (1.000) |
+| institution | 15/24 (0.625) | 24/24 (1.000) |
 | parent | 0/3 (0.000) | 3/3 (1.000) |
 | trust | 0/6 (0.000) | 0/6 (0.000) |
-| **all** | 16/33 (0.485) | 27/33 (0.818) |
+| **all** | 15/33 (0.455) | 27/33 (0.818) |
 
 The right-hand column feeds the overlap logic the true institution of every case, so it isolates the overlap scoring from resolution mistakes.
 
@@ -49,12 +49,12 @@ A case can carry several noise types, so rows overlap.
 
 | Noise | Cases | Precision | Recall | F1 | Review rate |
 | --- | --- | --- | --- | --- | --- |
-| Typo | 274 | 0.995 | 0.737 | 0.847 | 0.128 |
-| Abbreviation | 243 | 1.000 | 0.897 | 0.946 | 0.021 |
-| Acronym only | 92 | 0.857 | 0.065 | 0.121 | 0.707 |
-| District missing | 139 | 1.000 | 0.827 | 0.906 | 0.101 |
+| Typo | 274 | 1.000 | 0.646 | 0.785 | 0.124 |
+| Abbreviation | 243 | 1.000 | 0.835 | 0.910 | 0.074 |
+| Acronym only | 92 | n/a | 0.000 | n/a | 0.000 |
+| District missing | 139 | 1.000 | 0.784 | 0.879 | 0.086 |
 | City for district | 65 | n/a | 0.000 | n/a | 0.000 |
-| Wrong state | 14 | n/a | 0.000 | n/a | 0.143 |
-| No noise | 158 | 1.000 | 0.987 | 0.994 | 0.013 |
+| Wrong state | 14 | n/a | 0.000 | n/a | 0.000 |
+| No noise | 158 | 1.000 | 0.987 | 0.994 | 0.006 |
 
 Reproduce: `python -m app.eval --split test --mode tfidf`

@@ -13,15 +13,16 @@ from app.core.config import Settings, load_and_validate_settings
 BACKEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 
-def test_default_settings_match_prd() -> None:
+def test_default_settings_match_prd(monkeypatch: pytest.MonkeyPatch) -> None:
     """Defaults follow PRD §3: 21-day SLA, warning on day 17, multilingual model, no threshold overrides."""
+    monkeypatch.delenv("MATCHING_ENGINE", raising=False)  # the test environment pins the stub
     settings = Settings(_env_file=None)
     assert settings.PROJECT_NAME == "Unicomply"
     assert settings.SLA_DEFAULT_DAYS == 21
     assert settings.SLA_WARN_DAY == 17
     assert settings.EMBEDDING_MODEL_NAME == "paraphrase-multilingual-MiniLM-L12-v2"
     assert settings.JWT_EXPIRES_MINUTES == 720
-    assert settings.MATCHING_ENGINE == "stub"
+    assert settings.MATCHING_ENGINE == "real"
     # Thresholds come from seed_data/thresholds.json unless overridden
     assert settings.MATCH_T_AUTO is None
     assert settings.MATCH_T_REVIEW is None

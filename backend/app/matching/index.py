@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import pickle
 from dataclasses import asdict
@@ -15,6 +16,10 @@ import numpy as np
 
 from app.matching.embed import Embedder
 from app.matching.types import AliasLite, CaseLite, InstitutionLite, Level
+
+
+# Bump whenever MatchIndex gains or changes state: a cached pickle of an older shape must never be loaded.
+INDEX_FORMAT = 3
 
 
 def _ordered(a: int, b: int) -> Tuple[int, int]:
@@ -42,6 +47,16 @@ class MatchIndex:
         self.embedder = embedder
         self.trust_names = dict(trust_names or {})
         self._ids = list(self.institutions)
+        # Every word that appears in a registered name: what a misspelt word in a complaint is corrected against.
+        document_frequency: Dict[str, int] = {}
+        for row in institutions:
+            for word in set(row.name_norm.split()):
+                document_frequency[word] = document_frequency.get(word, 0) + 1
+        self.vocabulary: frozenset[str] = frozenset(document_frequency)
+        # How telling a word is: VINDHYA (in two names) counts far more than INSTITUTE (in hundreds).
+        total = len(institutions) + 1
+        self.token_idf: Dict[str, float] = {w: math.log(total / (df + 1)) + 1.0 for w, df in document_frequency.items()}
+        self.default_idf: float = (sum(self.token_idf.values()) / len(self.token_idf)) if self.token_idf else 1.0
         self.name_vectors = name_vectors if name_vectors is not None else np.zeros((0, 0), dtype=np.float32)
         self._case_ids = list(self.cases)
         self.case_vectors = case_vectors if case_vectors is not None else np.zeros((0, 0), dtype=np.float32)
@@ -135,6 +150,7 @@ def build_index(
     institutions, aliases, cases = list(institutions), list(aliases), list(cases)
     dismissed_pairs = list(dismissed_pairs)
     corpus_hash = hashlib.sha256(json.dumps({
+        "format": INDEX_FORMAT,
         "institutions": [asdict(x) for x in institutions],
         "aliases": [asdict(x) for x in aliases],
         "cases": [asdict(x) for x in cases],
