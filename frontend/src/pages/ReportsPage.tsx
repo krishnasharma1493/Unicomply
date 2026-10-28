@@ -35,7 +35,7 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
                 contentStyle={{ borderRadius: 10, border: 0, boxShadow: '0 8px 24px rgba(0,0,0,0.14)', fontSize: 13 }}
                 formatter={(v) => (spec.percent && typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : String(v))}
               />
-              <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 13, color: '#1d1d1f' }} />
+              <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 13 }} formatter={(value: string) => <span style={{ color: 'var(--uc-text)' }}>{value}</span>} />
               {spec.series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.colour} radius={[3, 3, 0, 0]} maxBarSize={28} />)}
             </BarChart>
           </ResponsiveContainer>

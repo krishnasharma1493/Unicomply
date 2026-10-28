@@ -996,13 +996,17 @@ body .uc-fields .ant-descriptions-row > th,
 body .uc-fields .ant-descriptions-row > td {
   padding-bottom: 0;
 }
+body .uc-fields .ant-descriptions-row > th.ant-descriptions-item {
+  padding-bottom: 0.125rem;
+}
+body .uc-fields .ant-descriptions-row > td.ant-descriptions-item {
+  padding-bottom: var(--uc-s4);
+}
 body .uc-fields .ant-descriptions-item-label {
   font-size: 0.8125rem;
   color: var(--uc-text-2);
-  padding-bottom: 0.125rem;
 }
 body .uc-fields .ant-descriptions-item-content {
-  padding-bottom: var(--uc-s4);
   font-size: 0.875rem;
 }
 
@@ -1087,6 +1091,7 @@ body .uc-fields .ant-descriptions-item-content {
 }
 .uc-score {
   display: grid;
+  justify-content: start;
   grid-template-columns: auto minmax(6rem, 14rem) auto;
   align-items: center;
   gap: var(--uc-s3);

@@ -27,12 +27,14 @@ export const TrackingFields: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ d
         {c.raw_district || c.raw_state ? ` (${[c.raw_district, c.raw_state].filter(Boolean).join(', ')})` : ''}
       </Descriptions.Item>
       <Descriptions.Item label="Institution (resolved)">
+        <span>
         {institution ? (
           <Link to={`/institutions/${institution.permanent_id}`}>{institution.name}</Link>
         ) : (
           'Not resolved yet'
         )}
         {c.match_score !== null && ` · match ${c.match_status}`}
+        </span>
       </Descriptions.Item>
       <Descriptions.Item label="Permanent ID">{c.permanent_id ?? '—'}</Descriptions.Item>
       <Descriptions.Item label="Trust">{institution?.trust_name ?? '—'}</Descriptions.Item>

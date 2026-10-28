@@ -19,10 +19,10 @@ const columns = (meta: Meta): ColumnsType<CaseRead> => [
   {
     title: 'Case',
     key: 'case_ref',
-    width: 170,
+    width: 168,
     render: (_, c) => (
       <div className="uc-cell-stack">
-        <Link to={`/cases/${c.id}`} onClick={(e) => e.stopPropagation()} className="uc-num" style={{ fontWeight: 600 }}>{c.case_ref}</Link>
+        <Link to={`/cases/${c.id}`} onClick={(e) => e.stopPropagation()} className="uc-num" style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>{c.case_ref}</Link>
         <span className="uc-meta">{formatDate(c.received_at)}</span>
       </div>
     ),
@@ -40,24 +40,24 @@ const columns = (meta: Meta): ColumnsType<CaseRead> => [
   {
     title: 'Bureau',
     key: 'bureau',
-    width: 120,
+    width: 96,
     render: (_, c) => {
       const b = meta.bureaus.find((x) => x.id === c.current_bureau_id);
       return <BureauChip code={b?.code ?? String(c.current_bureau_id)} name={b?.name} />;
     },
   },
-  { title: 'Category', key: 'category', width: 170, render: (_, c) => meta.categories.find((k) => k.id === c.category_id)?.name ?? c.category_id },
-  { title: 'Status', key: 'status', width: 140, render: (_, c) => <StatusChip status={c.status} /> },
+  { title: 'Category', key: 'category', width: 160, render: (_, c) => meta.categories.find((k) => k.id === c.category_id)?.name ?? c.category_id },
+  { title: 'Status', key: 'status', width: 130, render: (_, c) => <StatusChip status={c.status} /> },
   {
     title: 'SLA',
     key: 'sla',
-    width: 150,
+    width: 124,
     render: (_, c) => <SlaBadge ageDays={c.age_days} beyondSla={c.beyond_sla} receivedAt={c.received_at} slaDueOn={c.sla_due_on} status={c.status} />,
   },
   {
     title: 'Overlap',
     key: 'overlap',
-    width: 100,
+    width: 104,
     render: (_, c) =>
       c.in_overlap ? (
         <Tooltip title="This case is in an open overlap group">
@@ -67,7 +67,7 @@ const columns = (meta: Meta): ColumnsType<CaseRead> => [
         <Text type="secondary">—</Text>
       ),
   },
-  { title: 'Officer', key: 'officer', width: 150, render: (_, c) => meta.officers.find((o) => o.id === c.assigned_officer_id)?.name ?? <Text type="secondary">Not assigned</Text> },
+  { title: 'Officer', key: 'officer', width: 140, render: (_, c) => meta.officers.find((o) => o.id === c.assigned_officer_id)?.name ?? <Text type="secondary">Not assigned</Text> },
 ];
 
 const CaseTable: React.FC<{ filters: CaseFilters; meta: Meta; setFilters: (f: CaseFilters) => void }> = ({ filters, meta, setFilters }) => {

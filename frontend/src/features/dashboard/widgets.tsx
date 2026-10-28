@@ -54,11 +54,20 @@ const ClickableBars: React.FC<{
   const navigate = useNavigate();
   return (
     <>
-      <div style={{ width: '100%', height: 220 }} aria-hidden="true">
+      <div style={{ width: '100%', height: 240 }} aria-hidden="true">
         <ResponsiveContainer>
           <BarChart data={data} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
             <CartesianGrid vertical={false} stroke="rgba(0, 0, 0, 0.07)" />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: palette.textSecondary }} tickLine={false} axisLine={{ stroke: 'rgba(0, 0, 0, 0.15)' }} interval={0} />
+            <XAxis
+              dataKey="label"
+              tick={{ fontSize: 11, fill: palette.textSecondary }}
+              tickLine={false}
+              axisLine={{ stroke: 'rgba(0, 0, 0, 0.15)' }}
+              interval={0}
+              angle={data.length > 7 ? -40 : 0}
+              textAnchor={data.length > 7 ? 'end' : 'middle'}
+              height={data.length > 7 ? 52 : 30}
+            />
             <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: palette.textSecondary }} tickLine={false} axisLine={false} />
             <Tooltip
               cursor={{ fill: 'rgba(0, 0, 0, 0.04)' }}
