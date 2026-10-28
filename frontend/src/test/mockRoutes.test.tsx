@@ -28,7 +28,7 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
     ['/overlaps', 'Overlap Center'],
     ['/overlaps/1', 'Vindhya Valley Institute of Engineering'],
     ['/institutions', 'Institutions'],
-    ['/institutions/1-4812730561', 'Institution'],
+    ['/institutions/1-4812730561', 'Vindhya Valley Institute of Engineering'],
     ['/alerts', 'Alerts'],
     ['/reports', 'Reports'],
     ['/admin', 'Admin'],
