@@ -12,7 +12,7 @@ export const TrackingFields: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ d
   const bureau = meta.bureaus.find((b) => b.id === c.current_bureau_id);
   const officer = meta.officers.find((o) => o.id === c.assigned_officer_id);
   return (
-    <Descriptions bordered size="small" column={{ xs: 1, md: 2 }}>
+    <Descriptions className="uc-fields" layout="vertical" size="small" colon={false} column={{ xs: 1, md: 2, xl: 3 }}>
       <Descriptions.Item label="Source">{SOURCE_CHANNEL_LABELS[c.source_channel]}</Descriptions.Item>
       <Descriptions.Item label="External reference">{c.external_ref ?? '—'}</Descriptions.Item>
       <Descriptions.Item label="Received">{formatDate(c.received_at)}</Descriptions.Item>
@@ -44,7 +44,7 @@ export const TrackingFields: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ d
       <Descriptions.Item label="Reopened">{c.reopen_count} {c.reopen_count === 1 ? 'time' : 'times'}</Descriptions.Item>
       <Descriptions.Item label="Subject" span="filled">{c.subject}</Descriptions.Item>
       <Descriptions.Item label="Description" span="filled">
-        <div style={{ whiteSpace: 'pre-wrap' }}>{c.description}</div>
+        <div style={{ whiteSpace: 'pre-wrap', maxWidth: '72ch' }}>{c.description}</div>
       </Descriptions.Item>
     </Descriptions>
   );
