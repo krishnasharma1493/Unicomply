@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Drawer } from 'antd';
 import { motion } from 'motion/react';
 import { useMotionPrefs } from '../../lib/motion';
 import { AppHeader } from './AppHeader';
 import { AppSidebar } from './AppSidebar';
+import { CommandBar, useCommandShortcut } from './CommandBar';
 
 const MOBILE_QUERY = '(max-width: 767px)';
 
@@ -34,6 +35,9 @@ export const AppShell: React.FC = () => {
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const motionPrefs = useMotionPrefs();
   const location = useLocation();
+  const [commandOpen, setCommandOpen] = useState(false);
+  const openCommand = useCallback(() => setCommandOpen(true), []);
+  useCommandShortcut(openCommand);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -81,6 +85,7 @@ export const AppShell: React.FC = () => {
           isMobile={isMobile}
           onOpenMobileMenu={() => setMobileMenuOpen(true)}
           scrolled={scrolled}
+          onOpenCommand={openCommand}
         />
         <main className="uc-content" id="main">
           <motion.div
@@ -93,6 +98,7 @@ export const AppShell: React.FC = () => {
           </motion.div>
         </main>
       </div>
+      <CommandBar open={commandOpen} onClose={() => setCommandOpen(false)} />
     </div>
   );
 };

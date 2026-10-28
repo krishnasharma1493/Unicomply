@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, Button, Dropdown, Tooltip } from 'antd';
-import { LogoutOutlined, MenuOutlined } from '@ant-design/icons';
+import { LogoutOutlined, MenuOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useAuth } from '../../auth/AuthProvider';
 import { AlertBell } from '../../features/alerts/AlertBell';
 import { PersonaSwitcher } from './PersonaSwitcher';
@@ -15,6 +15,7 @@ export interface AppHeaderProps {
   onOpenMobileMenu: () => void;
   /** Content has scrolled under the toolbar: show the scroll edge. */
   scrolled?: boolean;
+  onOpenCommand?: () => void;
 }
 
 /** A sidebar glyph drawn to match the 16 px outline icon set. */
@@ -25,12 +26,16 @@ const SidebarIcon: React.FC = () => (
   </svg>
 );
 
+const shortcutLabel =
+  typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘K' : 'Ctrl K';
+
 export const AppHeader: React.FC<AppHeaderProps> = ({
   collapsed,
   onToggleCollapse,
   isMobile,
   onOpenMobileMenu,
   scrolled = false,
+  onOpenCommand,
 }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -38,6 +43,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   const persona = user ? findPersonaByEmail(user.email) : undefined;
   const roleLabel = persona?.title ?? (user?.role ? ROLE_THEMES[user.role].label : undefined);
   const initials = persona?.initials ?? user?.name?.slice(0, 2).toUpperCase() ?? 'OF';
+
+  const canCreate = user?.role === 'intake_operator' || user?.role === 'bureau_head' || user?.role === 'senior_mgmt';
 
   const signOut = () => {
     logout();
@@ -62,9 +69,21 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           </Tooltip>
         )}
         {isMobile && <span className="uc-brand-name">Unicomply</span>}
+        {onOpenCommand && (
+          <button type="button" className="uc-search-trigger uc-pressable" onClick={onOpenCommand} aria-label="Search cases, institutions and pages" aria-keyshortcuts="Meta+K Control+K">
+            <SearchOutlined aria-hidden="true" />
+            {!isMobile && <span>Search cases, institutions…</span>}
+            {!isMobile && <kbd aria-hidden="true">{shortcutLabel}</kbd>}
+          </button>
+        )}
       </div>
 
       <div className="uc-toolbar-group">
+        {canCreate && !isMobile && (
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/cases/new')}>
+            New case
+          </Button>
+        )}
         <PersonaSwitcher />
         <AlertBell />
         {user && (

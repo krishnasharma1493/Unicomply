@@ -65,7 +65,7 @@ describe('Dashboard on the mock API (Issue #30)', () => {
   it('renders all eight KPIs with the summary numbers, and every widget', async () => {
     renderAs();
     const s = fixtures.dashboardSummary.data;
-    await screen.findByRole('heading', { name: 'Dashboard' });
+    await screen.findByRole('heading', { name: 'Overview' });
     const expected: [string, number][] = [
       ['Total cases', s.total], ['Pending', s.pending], ['Under process', s.under_process], ['Disposed', s.disposed],
       ['Transferred', s.transferred], ['Escalated', s.escalated], ['Beyond SLA', s.beyond_sla], ['Open overlaps', s.open_overlaps],
@@ -92,7 +92,7 @@ describe('Dashboard on the mock API (Issue #30)', () => {
   ])('clicking %s opens %s', async (label, url) => {
     const user = userEvent.setup();
     renderAs();
-    await screen.findByRole('heading', { name: 'Dashboard' });
+    await screen.findByRole('heading', { name: 'Overview' });
     await user.click(await kpi(label));
     expect(await screen.findByTestId('where')).toHaveTextContent(url);
   });
