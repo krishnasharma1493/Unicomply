@@ -24,6 +24,7 @@ import { ReportsPage } from './pages/ReportsPage';
 import { AdminPage } from './pages/AdminPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PrimitivesDevPage } from './pages/dev/PrimitivesDevPage';
+import { SignaturePreview } from './pages/dev/SignaturePreview';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,6 +67,9 @@ export const AppRoutes: React.FC = () => {
       {/* Dev-only route */}
       {import.meta.env.DEV && (
         <Route path="/dev/primitives" element={<PrimitivesDevPage />} />
+      )}
+      {import.meta.env.DEV && (
+        <Route path="/dev/signature" element={<SignaturePreview />} />
       )}
 
       {/* Catch-all 404 Route */}
