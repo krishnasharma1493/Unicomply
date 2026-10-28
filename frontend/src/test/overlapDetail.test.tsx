@@ -5,28 +5,11 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../auth/AuthProvider';
 import { tokenStore } from '../auth/tokenStore';
-import { asCard } from '../features/overlaps/detail/normalise';
 import { client } from '../lib/api/client';
 import { attachMockAdapter } from '../lib/api/mock';
 import { fixtures, type Persona } from '../lib/api/mock/fixtures';
 import { resetWorld } from '../lib/api/mock/state';
 import { OverlapDetailPage } from '../pages/OverlapDetailPage';
-
-const meta = fixtures.meta.data;
-
-describe('asCard', () => {
-  it('leaves a card alone', () => {
-    const card = fixtures.overlapDetail.data.cases[0];
-    expect(asCard(card, meta)).toBe(card);
-  });
-  it('turns the full case record the backend sends for in-scope cases into a card', () => {
-    const record = fixtures.cases.data.find((c) => c.case_ref === 'PGRC/2026/00412')!;
-    const card = asCard(record, meta);
-    expect(card).toMatchObject({ case_id: 101, case_ref: 'PGRC/2026/00412', bureau_code: 'PGRC', in_scope: true, category_code: meta.categories.find((k) => k.id === record.category_id)!.code });
-    expect(card.assigned_officer_name).toBe(meta.officers.find((o) => o.id === record.assigned_officer_id)?.name ?? null);
-    expect(JSON.stringify(card)).not.toContain(record.description);
-  });
-});
 
 describe('Overlap detail on the mock API (Issue #28)', () => {
   beforeAll(() => {

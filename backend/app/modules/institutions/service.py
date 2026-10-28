@@ -18,7 +18,7 @@ from app.modules.institutions.schemas import (
 )
 from app.modules.meta.models import Bureau
 from app.modules.overlaps.models import OverlapGroup, OverlapLink, OverlapPair
-from app.modules.overlaps.schemas import OverlapSummary
+from app.modules.overlaps.schemas import LinkedCaseCard, OverlapSummary
 from app.modules.users.models import User
 from app.utils.time import today
 from app.matching.types import BANNERS
@@ -81,13 +81,9 @@ def get_360(session: Session, permanent_id: str, viewer: User) -> Institution360
     cases = session.exec(select(Case).where(Case.permanent_id == permanent_id)
                          .order_by(col(Case.received_at).desc(), col(Case.id).desc())).all()
     in_scope = in_scope_callback(session, viewer)
-    grouped: Dict[int, List] = {}
-    for case in cases:
-        grouped.setdefault(case.current_bureau_id, []).append(
-            case_read(session, case).model_dump(mode="json")
-            if in_scope(case)
-            else linked_case_card(session, case, in_scope).model_dump(mode="json")
-        )
+    grouped: Dict[int, List[LinkedCaseCard]] = {}
+    for case in cases:  # always the reduced card (PRD §4.2): `in_scope` says whether the viewer can open the case
+        grouped.setdefault(case.current_bureau_id, []).append(linked_case_card(session, case, in_scope))
     columns = []
     for bureau_id, records in sorted(grouped.items()):
         bureau = session.get(Bureau, bureau_id)

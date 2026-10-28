@@ -107,8 +107,8 @@ class BureauCaseColumn(BaseModel):
     bureau_id: int
     bureau_code: str
     bureau_name: str
-    # Full CaseRead values in scope; reduced LinkedCaseCard values otherwise.
-    cases: List[dict]
+    # Summary cards (no description, no complainant name); `in_scope` says whether the viewer may open the case.
+    cases: List[LinkedCaseCard]
 
 
 class Institution360(BaseModel):

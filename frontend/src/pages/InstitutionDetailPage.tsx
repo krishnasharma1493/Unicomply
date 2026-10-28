@@ -4,11 +4,9 @@ import { Card, Col, Descriptions, Row, Space, Statistic, Tag, Timeline, Typograp
 import { LinkedCaseCard, OverlapBanner, WhyFlagged } from '../components/signature';
 import { QueryBoundary } from '../components/states';
 import { BureauChip, StatusChip } from '../components/ui';
-import { useMeta } from '../features/meta/useMeta';
-import { asCard } from '../features/overlaps/detail/normalise';
 import { useInstitution } from '../features/institutions/useInstitutions';
 import { INST_TYPE_LABELS, REGION_LABELS } from '../lib/api/enums';
-import type { Institution360, InstitutionLite, LinkedCaseCard as CardData, Meta } from '../lib/api/types';
+import type { Institution360, InstitutionLite, LinkedCaseCard as CardData } from '../lib/api/types';
 import { formatDate } from '../lib/format';
 
 const { Title, Text } = Typography;
@@ -26,9 +24,9 @@ const Links: React.FC<{ rows: InstitutionLite[]; empty: string }> = ({ rows, emp
     </ul>
   );
 
-const View: React.FC<{ data: Institution360; meta: Meta }> = ({ data, meta }) => {
+const View: React.FC<{ data: Institution360 }> = ({ data }) => {
   const { institution: inst, trust, parent, departments, trust_institutions: siblings, case_counts: counts } = data;
-  const columns = data.cases_by_bureau.map((col) => ({ ...col, cards: col.cases.map((c) => asCard(c, meta)) }));
+  const columns = data.cases_by_bureau.map((col) => ({ ...col, cards: col.cases }));
   const timeline: CardData[] = columns.flatMap((c) => c.cards).sort((a, b) => (a.received_at < b.received_at ? 1 : a.received_at > b.received_at ? -1 : b.case_id - a.case_id));
 
   return (
@@ -128,17 +126,12 @@ const View: React.FC<{ data: Institution360; meta: Meta }> = ({ data, meta }) =>
 export const InstitutionDetailPage: React.FC = () => {
   const { pid = '' } = useParams();
   const detail = useInstitution(pid);
-  const meta = useMeta();
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto' }}>
       <Link to="/institutions">← Institutions</Link>
       <div style={{ marginTop: 12 }}>
-        <QueryBoundary query={meta} loadingTip="Loading">
-          {(m) => (
-            <QueryBoundary query={detail} loadingTip="Loading institution">
-              {(d) => <View data={d} meta={m} />}
-            </QueryBoundary>
-          )}
+        <QueryBoundary query={detail} loadingTip="Loading institution">
+          {(d) => <View data={d} />}
         </QueryBoundary>
       </div>
     </div>
