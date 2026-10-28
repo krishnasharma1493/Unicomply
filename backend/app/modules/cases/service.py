@@ -31,7 +31,7 @@ from app.modules.cases.schemas import (
     CaseRead,
 )
 from app.modules.engine import service as engine
-from app.modules.engine.builders import InScope, everyone, linked_case_card
+from app.modules.engine.builders import InScope, coordinator_name, everyone, linked_case_card
 from app.modules.institutions.models import Institution, Trust
 from app.modules.meta.models import Bureau, Category
 from app.modules.overlaps.models import OverlapGroup, OverlapLink, OverlapPair
@@ -203,6 +203,7 @@ def overlap_summaries(session: Session, case: Case, in_scope: InScope = everyone
                 banner=BANNERS[group.tier.value],  # type: ignore[index]
                 cases=cards,
                 reasons=reasons,
+                coordinator_name=coordinator_name(session, group),
             )
         )
     return summaries

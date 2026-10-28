@@ -62,10 +62,11 @@ const CaseView: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ detail, meta }
               caseCount={group.cases.length + 1}
               bureauCodes={Array.from(new Set([...(ownBureau ? [ownBureau.code] : []), ...group.cases.map((x) => x.bureau_code)]))}
             />
+            {group.coordinator_name && <Text strong>Coordinator: {group.coordinator_name}</Text>}
             <WhyFlagged reasons={group.reasons} />
             <div style={{ display: 'grid', gap: 8 }}>
               {group.cases.map((x) => (
-                <LinkedCaseCard key={x.case_id} card={x} />
+                <LinkedCaseCard key={x.case_id} card={x} coordinatorName={group.coordinator_name} />
               ))}
             </div>
           </Space>

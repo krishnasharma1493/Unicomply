@@ -394,6 +394,8 @@ export type OverlapSummary = {
   banner: string;
   cases: LinkedCaseCard[];
   reasons: string[];
+  /** Set once a head has confirmed the group; shown on every linked case. */
+  coordinator_name: string | null;
 };
 
 export type OverlapGroupListItem = {

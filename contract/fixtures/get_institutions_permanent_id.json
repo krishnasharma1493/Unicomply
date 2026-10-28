@@ -188,7 +188,8 @@
           "PGRC/2026/00412 and RO-CRO/2026/00133 are both about original certificates being withheld",
           "Description similarity 0.81 (PGRC/2026/00412 ↔ RO-CRO/2026/00133)",
           "Received 14 days apart"
-        ]
+        ],
+        "coordinator_name": null
       },
       {
         "group_id": 2,
@@ -240,7 +241,8 @@
           "Both about certificates being withheld",
           "Description similarity 0.79",
           "Received 25 days apart"
-        ]
+        ],
+        "coordinator_name": null
       }
     ]
   }

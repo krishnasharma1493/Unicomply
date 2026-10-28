@@ -227,6 +227,7 @@ function summary(g: GroupState, viewer: UserMe, excludeCaseId?: number): Overlap
       .filter((c) => c.id !== excludeCaseId)
       .map((c) => card(c, viewer)),
     reasons: g.reasons,
+    coordinator_name: g.group.coordinator_name,
   };
 }
 

@@ -10,7 +10,7 @@ from app.core.errors import NotFoundError
 from app.core.scope import in_scope_callback
 from app.modules.cases.models import Case
 from app.modules.cases.service import case_read
-from app.modules.engine.builders import linked_case_card
+from app.modules.engine.builders import coordinator_name, linked_case_card
 from app.modules.institutions.models import Institution, InstitutionAlias, Trust
 from app.modules.institutions.schemas import (
     BureauCaseColumn, CaseCounts, Institution360, InstitutionListItem, InstitutionListParams,
@@ -120,6 +120,7 @@ def get_360(session: Session, permanent_id: str, viewer: User) -> Institution360
         summaries.append(OverlapSummary(
             group_id=group.id, level=group.level, tier=group.tier, status=group.status,
             banner=BANNERS[group.tier.value], cases=cards, reasons=reasons,
+            coordinator_name=coordinator_name(session, group),
         ))
     return Institution360(
         institution=item,
