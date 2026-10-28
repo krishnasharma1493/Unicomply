@@ -28,4 +28,42 @@ export function validateEnv(rawEnv: Record<string, unknown> = import.meta.env): 
   return parsed.data;
 }
 
-export const env = validateEnv();
+const overrides: Record<string, unknown> = {};
+
+export const env: Env = new Proxy({} as Env, {
+  get(_target, prop: string | symbol) {
+    if (typeof prop === 'string') {
+      if (prop in overrides) {
+        return overrides[prop];
+      }
+      return validateEnv()[prop as keyof Env];
+    }
+    return undefined;
+  },
+  set(_target, prop: string | symbol, value: unknown) {
+    if (typeof prop === 'string') {
+      overrides[prop] = value;
+      return true;
+    }
+    return false;
+  },
+  has(_target, prop: string | symbol) {
+    return typeof prop === 'string' && (prop in overrides || prop in validateEnv());
+  },
+  ownKeys(_target) {
+    return Array.from(new Set([...Reflect.ownKeys(overrides), ...Reflect.ownKeys(validateEnv())]));
+  },
+  getOwnPropertyDescriptor(_target, prop: string | symbol) {
+    return {
+      configurable: true,
+      enumerable: true,
+      value:
+        typeof prop === 'string'
+          ? prop in overrides
+            ? overrides[prop]
+            : validateEnv()[prop as keyof Env]
+          : undefined,
+      writable: true,
+    };
+  },
+});

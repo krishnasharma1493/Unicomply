@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/AuthProvider';
 import { client } from '../lib/api/client';
 import type { DemoResetResult, Envelope } from '../lib/api/types';
+import { apiErrorMessage } from '../lib/format';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -58,7 +59,7 @@ export const AdminPage: React.FC = () => {
             message.success('Demo environment reset to baseline fixtures successfully');
           }
         } catch (err: unknown) {
-          const msg = err instanceof Error ? err.message : 'Reset failed';
+          const msg = apiErrorMessage(err);
           message.error(`Failed to reset demo environment: ${msg}`);
         } finally {
           setResetting(false);

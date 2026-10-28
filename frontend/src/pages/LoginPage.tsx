@@ -224,10 +224,17 @@ export const LoginPage: React.FC = () => {
           <Form
             name="officer_login"
             layout="vertical"
-            initialValues={{
-              email: env.VITE_DEMO_EMAIL || 'senior@aicte.example',
-              password: getDemoPassword(),
-            }}
+            initialValues={
+              env.VITE_DEMO_MODE
+                ? {
+                    email: env.VITE_DEMO_EMAIL || 'senior@aicte.example',
+                    password: getDemoPassword(),
+                  }
+                : {
+                    email: '',
+                    password: '',
+                  }
+            }
             onFinish={handleFormSubmit}
             requiredMark={false}
           >
