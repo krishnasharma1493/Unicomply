@@ -1,4 +1,8 @@
 import '@testing-library/jest-dom/vitest';
+import { configure } from '@testing-library/react';
+
+// The page tests run in parallel and render Ant Design; the default 1 s wait for async UI is too tight under load.
+configure({ asyncUtilTimeout: 5000 });
 
 // Polyfill window.matchMedia for Ant Design in jsdom environment
 Object.defineProperty(window, 'matchMedia', {

@@ -26,7 +26,7 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
     ['/cases/101', 'PGRC/2026/00412'],
     ['/reviews', 'Match Review'],
     ['/overlaps', 'Overlap Center'],
-    ['/overlaps/1', 'Overlap'],
+    ['/overlaps/1', 'Vindhya Valley Institute of Engineering'],
     ['/institutions', 'Institutions'],
     ['/institutions/1-4812730561', 'Institution'],
     ['/alerts', 'Alerts'],
