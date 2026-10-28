@@ -162,7 +162,8 @@ const routes: Route[] = [
             ['region', (c, v) => c.region === v],
             // A category code (#3); a numeric id is accepted too until #7 settles it.
             ['category', (c, v) => c.category_id === Number(v) || fixtures.meta.data.categories.some((k) => k.id === c.category_id && k.code === v)],
-            ['status', (c, v) => c.status === v],
+            ['status', (c, v) => v.split(',').includes(c.status)],
+            ['pending', (c, v) => (c.status !== 'disposed') === (v === 'true')],
             ['from', (c, v) => c.received_at >= v],
             ['to', (c, v) => c.received_at <= v],
             ['beyond_sla', (c, v) => c.beyond_sla === (v === 'true')],

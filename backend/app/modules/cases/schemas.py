@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field as PydanticField
+from pydantic import BaseModel, Field as PydanticField, field_validator
 from sqlmodel import Field, SQLModel
 
 from app.core.enums import (
@@ -105,13 +105,31 @@ class CaseListParams(PageParams):
     bureau_id: Optional[int] = None
     region: Optional[Region] = None
     category: Optional[str] = PydanticField(default=None, max_length=40, description="Category code")
-    status: Optional[CaseStatus] = None
+    status: Optional[str] = PydanticField(
+        default=None, max_length=120, description="One status, or several separated by commas (e.g. under_process,interim_reply)"
+    )
+    pending: Optional[bool] = PydanticField(default=None, description="true = not disposed, false = disposed")
     from_: Optional[date] = PydanticField(default=None, alias="from")
     to: Optional[date] = None
     beyond_sla: Optional[bool] = None
     in_overlap: Optional[bool] = None
 
     model_config = {"populate_by_name": True}
+
+    @field_validator("status")
+    @classmethod
+    def _known_statuses(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        parts = [part.strip() for part in value.split(",") if part.strip()]
+        known = {s.value for s in CaseStatus}
+        unknown = [part for part in parts if part not in known]
+        if not parts or unknown:
+            raise ValueError(f"Unknown status {', '.join(unknown) or value!r}; use one or more of {', '.join(sorted(known))}")
+        return ",".join(parts)
+
+    def statuses(self) -> List[CaseStatus]:
+        return [CaseStatus(part) for part in self.status.split(",")] if self.status else []
 
 
 class CaseActionEntry(CaseActionRead):

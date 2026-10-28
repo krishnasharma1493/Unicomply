@@ -210,3 +210,22 @@ describe('Mock API: errors, latency and wiring', () => {
     expect(client.defaults.adapter).not.toBeTypeOf('function');
   });
 });
+
+describe('Mock API: dashboard drill-down filters', () => {
+  const refs = async (query: string) =>
+    ((await call('GET', `/cases?limit=100&${query}`, { as: 'senior' })).body as { data: { case_ref: string; status: string }[] }).data;
+
+  it('status takes several values, comma separated', async () => {
+    const both = await refs('status=under_process,interim_reply');
+    expect(both.length).toBeGreaterThan((await refs('status=interim_reply')).length);
+    expect(both.every((c) => ['under_process', 'interim_reply'].includes(c.status))).toBe(true);
+  });
+
+  it('pending=true is everything not disposed, pending=false the disposed', async () => {
+    const pending = await refs('pending=true');
+    const closed = await refs('pending=false');
+    expect(closed.every((c) => c.status === 'disposed')).toBe(true);
+    expect(pending.some((c) => c.status === 'disposed')).toBe(false);
+    expect(pending.length + closed.length).toBe(13);
+  });
+});

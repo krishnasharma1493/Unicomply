@@ -235,3 +235,25 @@ def test_logs_carry_case_ids_never_text(
     assert "created" in logged
     for secret in ("Sushila", "original certificates", "mark sheets", "vindya valley engg"):
         assert secret not in logged
+
+
+# ── Dashboard drill-down filters: several statuses, and pending ──────────
+
+
+def test_status_accepts_several_values(seeded_client: TestClient, auth_headers: Headers) -> None:
+    h = auth_headers(SENIOR)
+    both = set(refs(seeded_client, h, "status=under_process,interim_reply"))
+    assert both == set(refs(seeded_client, h, "status=under_process")) | set(refs(seeded_client, h, "status=interim_reply"))
+    assert len(both) > len(refs(seeded_client, h, "status=interim_reply"))
+
+
+def test_pending_means_not_disposed(seeded_client: TestClient, auth_headers: Headers) -> None:
+    h = auth_headers(SENIOR)
+    pending, closed = set(refs(seeded_client, h, "pending=true")), set(refs(seeded_client, h, "pending=false"))
+    assert closed == set(refs(seeded_client, h, "status=disposed"))
+    assert not pending & closed and len(pending | closed) == 13
+
+
+def test_unknown_status_is_a_400(seeded_client: TestClient, auth_headers: Headers) -> None:
+    res = seeded_client.get("/api/v1/cases?status=under_process,nonsense", headers=auth_headers(SENIOR))
+    assert res.status_code == 400 and "status" in res.json()["error"]["fields"]
