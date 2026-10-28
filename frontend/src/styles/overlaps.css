@@ -16,19 +16,9 @@
   color: var(--uc-red-text);
 }
 
-/* Probable rows carry the tier's rule at the edge; Possible rows stay plain. The chip still names the tier. */
+/* Rows need no tier stripe: the chip names the tier in words. */
 .ov-row {
   position: relative;
-}
-.ov-row--probable::before {
-  content: '';
-  position: absolute;
-  left: 0.375rem;
-  top: var(--uc-s3);
-  bottom: var(--uc-s3);
-  width: 2px;
-  border-radius: 1px;
-  background: var(--uc-red);
 }
 .ov-row-coordinator {
   color: var(--uc-text);

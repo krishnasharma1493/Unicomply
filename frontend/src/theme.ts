@@ -58,6 +58,9 @@ export function buildTheme({ reducedMotion = false }: { reducedMotion?: boolean 
       colorBorderSecondary: '#e3e6e3',
       colorSplit: palette.hairline,
       colorFillAlter: '#f9faf8',
+      // Hovering a selected option keeps the light tint, so ink text stays readable.
+      controlItemBgActiveHover: 'rgba(11, 94, 107, 0.14)',
+      controlItemBgActive: palette.accentTint,
       fontFamily,
       fontSize: 14,
       lineHeight: 1.5,
