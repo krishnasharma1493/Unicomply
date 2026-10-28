@@ -294,7 +294,10 @@ export type CaseListParams = PageParams & {
   bureau_id?: number;
   region?: Region;
   category?: CategoryCode;
-  status?: CaseStatus;
+  /** One status, or several separated by commas (e.g. `under_process,interim_reply`). */
+  status?: string;
+  /** true = not disposed, false = disposed. */
+  pending?: boolean;
   from?: IsoDate;
   to?: IsoDate;
   beyond_sla?: boolean;

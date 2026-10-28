@@ -116,8 +116,10 @@ def filter_cases(stmt: SelectOfScalar[Case], p: CaseListParams) -> SelectOfScala
         stmt = stmt.where(col(Case.permanent_id).in_(select(Institution.permanent_id).where(Institution.region == p.region)))
     if p.category:
         stmt = stmt.where(col(Case.category_id).in_(select(Category.id).where(Category.code == p.category)))
-    if p.status is not None:
-        stmt = stmt.where(Case.status == p.status)
+    if p.status:
+        stmt = stmt.where(col(Case.status).in_(p.statuses()))
+    if p.pending is not None:
+        stmt = stmt.where(Case.status != CaseStatus.disposed if p.pending else Case.status == CaseStatus.disposed)
     if p.from_ is not None:
         stmt = stmt.where(Case.received_at >= p.from_)
     if p.to is not None:
