@@ -62,10 +62,11 @@ def test_hero_group_is_probable_with_the_ps_banner_when_the_pair_clears_the_bar(
     assert group["banner"] == "Potential Overlapping Cases \u2013 Coordination Required"
 
 
-@pytest.mark.xfail(strict=True, reason="With TF-IDF the hero's best pair scores ~0.47, under T_probable 0.68: #44 (thresholds) / #45 (offline parity) / #54 (hero determinism)")
-def test_hero_group_is_probable_at_the_shipped_thresholds(full_client: TestClient) -> None:
+def test_hero_group_is_possible_at_the_shipped_thresholds(full_client: TestClient) -> None:
+    """The frozen thresholds (#44, #54): with TF-IDF the hero's best pair scores ~0.48, under T_probable 0.5."""
     [group] = full_client.post("/api/v1/cases", json=hero_body(), headers=login(full_client, "intake@aicte.example")).json()["data"]["overlaps"]
-    assert group["tier"] == "probable"
+    assert group["tier"] == "possible"
+    assert group["banner"] == "Possible Overlapping Cases \u2013 Review Suggested"
 
 
 def test_the_live_preview_ranks_the_right_institution_first(full_client: TestClient) -> None:
@@ -153,3 +154,47 @@ def test_median_intake_is_under_two_seconds_on_the_full_seed(full_client: TestCl
     with capsys.disabled():
         print(f"\nPOST /cases on the full seed (tfidf): median {median * 1000:.0f} ms, max {max(times) * 1000:.0f} ms over {len(times)} intakes")
     assert median < 2.0
+
+
+# ── #42: the live hero intake in both embeddings modes, and the ambiguous name ──
+
+NARMADA = "Narmada Valley College of Engineering"  # seeded in Madhya Pradesh and in Gujarat
+
+
+def test_the_same_name_in_two_states_without_a_state_is_registered_for_review(full_client: TestClient) -> None:
+    res = full_client.post(
+        "/api/v1/cases", json=hero_body(raw_institution_text=NARMADA, raw_state=None, raw_district=None),
+        headers=login(full_client, "intake@aicte.example"),
+    )
+    assert res.status_code == 201, res.text
+    data = res.json()["data"]
+    assert (data["resolution"]["decision"], data["case"]["match_status"], data["case"]["permanent_id"]) == ("pending_review", "pending_review", None)
+    assert {"Madhya Pradesh", "Gujarat"} <= {c["state"] for c in data["resolution"]["candidates"]}
+    assert data["overlaps"] == []
+    queue = full_client.get("/api/v1/reviews", params={"status": "pending", "limit": 100}, headers=login(full_client, "intake@aicte.example"))
+    assert data["case"]["id"] in {r["case_id"] for r in queue.json()["data"]}
+
+
+@pytest.fixture(name="model_mode")
+def model_mode_fixture(test_settings, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Run the engine with sentence-transformers embeddings; skip where the model cannot load (offline CI)."""
+    from app.matching.embed import make_embedder
+    from app.modules.engine import service
+
+    settings = test_settings.model_copy(update={"EMBEDDINGS_MODE": "model"})
+    try:
+        make_embedder("model", settings.EMBEDDING_MODEL_NAME, fallback=False)
+    except Exception as exc:  # noqa: BLE001 - any load failure means "no model here"
+        pytest.skip(f"embedding model unavailable: {exc}")
+    monkeypatch.setattr(service, "get_settings", lambda: settings)
+    service.reset_indexes()
+
+
+def test_hero_intake_is_probable_with_the_ps_banner_in_model_mode(full_client: TestClient, model_mode: None) -> None:
+    res = full_client.post("/api/v1/cases", json=hero_body(), headers=login(full_client, "intake@aicte.example"))
+    data = res.json()["data"]
+    assert data["resolution"]["decision"] == "auto" and data["case"]["permanent_id"] == VVIET
+    [group] = data["overlaps"]
+    assert (group["level"], group["tier"]) == ("institution", "probable")
+    assert group["banner"] == "Potential Overlapping Cases – Coordination Required"
+    assert {c["case_ref"] for c in group["cases"]} == HERO_REFS

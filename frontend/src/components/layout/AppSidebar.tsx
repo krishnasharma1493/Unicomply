@@ -55,7 +55,8 @@ const NAV_ITEMS: NavItemDef[] = [
     path: '/reviews',
     label: 'Match Review',
     icon: <CheckSquareOutlined />,
-    visible: (role) => role === 'intake_operator',
+    // PRD §5/§7 "intake, admin"; the backend's GET /reviews allows intake_operator and senior_mgmt.
+    visible: (role) => role === 'intake_operator' || role === 'senior_mgmt',
   },
   {
     key: '/overlaps',
