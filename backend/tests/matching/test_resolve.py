@@ -7,7 +7,7 @@ from app.matching.resolve import resolve_institution
 from app.matching.thresholds import load_thresholds
 from app.matching.types import AliasLite, InstitutionLite
 
-SEED = Path(__file__).resolve().parents[2] / "seed_data"
+SEED = Path(__file__).resolve().parents[2] / "seed_data" / "tiny"  # the hand-written hero world
 
 
 def hero_index(mode="tfidf"):

@@ -1,112 +1,193 @@
 {
-  "users": [
-    {
-      "id": 1,
-      "email": "senior@aicte.example",
-      "name": "Dr. Meera Raghavan",
-      "role": "senior_mgmt",
-      "bureau_id": null,
-      "region": null,
-      "is_admin": true
-    },
-    {
-      "id": 2,
-      "email": "pgrc.head@aicte.example",
-      "name": "Anil Deshmukh",
-      "role": "bureau_head",
-      "bureau_id": 2,
-      "region": null,
-      "is_admin": false
-    },
-    {
-      "id": 3,
-      "email": "rb.head@aicte.example",
-      "name": "Kavita Rao",
-      "role": "bureau_head",
-      "bureau_id": 1,
-      "region": null,
-      "is_admin": false
-    },
-    {
-      "id": 4,
-      "email": "ro.central@aicte.example",
-      "name": "Rakesh Tiwari",
-      "role": "ro_officer",
-      "bureau_id": 5,
-      "region": "central",
-      "is_admin": false
-    },
-    {
-      "id": 5,
-      "email": "intake@aicte.example",
-      "name": "Neha Joshi",
-      "role": "intake_operator",
-      "bureau_id": null,
-      "region": null,
-      "is_admin": false
-    },
-    {
-      "id": 6,
-      "email": "sunita.mishra@aicte.example",
-      "name": "Sunita Mishra",
-      "role": "case_officer",
-      "bureau_id": 2,
-      "region": null,
-      "is_admin": false
-    },
-    {
-      "id": 7,
-      "email": "vikram.choudhary@aicte.example",
-      "name": "Vikram Choudhary",
-      "role": "case_officer",
-      "bureau_id": 1,
-      "region": null,
-      "is_admin": false
-    },
-    {
-      "id": 8,
-      "email": "pooja.saxena@aicte.example",
-      "name": "Pooja Saxena",
-      "role": "case_officer",
-      "bureau_id": 1,
-      "region": null,
-      "is_admin": false
-    },
-    {
-      "id": 9,
-      "email": "arvind.kulkarni@aicte.example",
-      "name": "Arvind Kulkarni",
-      "role": "case_officer",
-      "bureau_id": 3,
-      "region": null,
-      "is_admin": false
-    },
-    {
-      "id": 10,
-      "email": "sanjay.patil@aicte.example",
-      "name": "Sanjay Patil",
-      "role": "case_officer",
-      "bureau_id": 14,
-      "region": "western",
-      "is_admin": false
-    },
-    {
-      "id": 11,
-      "email": "deepak.shrivastava@aicte.example",
-      "name": "Deepak Shrivastava",
-      "role": "case_officer",
-      "bureau_id": 5,
-      "region": "central",
-      "is_admin": false
-    },
-    {
-      "id": 12,
-      "email": "farhan.qureshi@aicte.example",
-      "name": "Farhan Qureshi",
-      "role": "case_officer",
-      "bureau_id": 2,
-      "region": null,
-      "is_admin": false
-    }
-  ]
+ "users": [
+  {
+   "id": 1,
+   "email": "senior@aicte.example",
+   "name": "Dr. Meera Raghavan",
+   "role": "senior_mgmt",
+   "bureau_id": null,
+   "region": null,
+   "is_admin": true
+  },
+  {
+   "id": 2,
+   "email": "pgrc.head@aicte.example",
+   "name": "Anil Deshmukh",
+   "role": "bureau_head",
+   "bureau_id": 2,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 3,
+   "email": "rb.head@aicte.example",
+   "name": "Kavita Rao",
+   "role": "bureau_head",
+   "bureau_id": 1,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 4,
+   "email": "ro.central@aicte.example",
+   "name": "Rakesh Tiwari",
+   "role": "ro_officer",
+   "bureau_id": 5,
+   "region": "central",
+   "is_admin": false
+  },
+  {
+   "id": 5,
+   "email": "intake@aicte.example",
+   "name": "Neha Joshi",
+   "role": "intake_operator",
+   "bureau_id": null,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 6,
+   "email": "sunita.mishra@aicte.example",
+   "name": "Sunita Mishra",
+   "role": "case_officer",
+   "bureau_id": 2,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 7,
+   "email": "vikram.choudhary@aicte.example",
+   "name": "Vikram Choudhary",
+   "role": "case_officer",
+   "bureau_id": 1,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 8,
+   "email": "pooja.saxena@aicte.example",
+   "name": "Pooja Saxena",
+   "role": "case_officer",
+   "bureau_id": 1,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 9,
+   "email": "arvind.kulkarni@aicte.example",
+   "name": "Arvind Kulkarni",
+   "role": "case_officer",
+   "bureau_id": 3,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 10,
+   "email": "sanjay.patil@aicte.example",
+   "name": "Sanjay Patil",
+   "role": "case_officer",
+   "bureau_id": 14,
+   "region": "western",
+   "is_admin": false
+  },
+  {
+   "id": 11,
+   "email": "deepak.shrivastava@aicte.example",
+   "name": "Deepak Shrivastava",
+   "role": "case_officer",
+   "bureau_id": 5,
+   "region": "central",
+   "is_admin": false
+  },
+  {
+   "id": 12,
+   "email": "farhan.qureshi@aicte.example",
+   "name": "Farhan Qureshi",
+   "role": "case_officer",
+   "bureau_id": 2,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 13,
+   "email": "lalit.reddy@aicte.example",
+   "name": "Lalit Reddy",
+   "role": "case_officer",
+   "bureau_id": 4,
+   "region": null,
+   "is_admin": false
+  },
+  {
+   "id": 14,
+   "email": "om.sharma@aicte.example",
+   "name": "Om Sharma",
+   "role": "case_officer",
+   "bureau_id": 6,
+   "region": "eastern",
+   "is_admin": false
+  },
+  {
+   "id": 15,
+   "email": "tanvi.kulkarni@aicte.example",
+   "name": "Tanvi Kulkarni",
+   "role": "case_officer",
+   "bureau_id": 7,
+   "region": "north_eastern",
+   "is_admin": false
+  },
+  {
+   "id": 16,
+   "email": "yash.nair@aicte.example",
+   "name": "Yash Nair",
+   "role": "case_officer",
+   "bureau_id": 8,
+   "region": "northern",
+   "is_admin": false
+  },
+  {
+   "id": 17,
+   "email": "harish.verma@aicte.example",
+   "name": "Harish Verma",
+   "role": "case_officer",
+   "bureau_id": 9,
+   "region": "north_western",
+   "is_admin": false
+  },
+  {
+   "id": 18,
+   "email": "alok.sharma@aicte.example",
+   "name": "Alok Sharma",
+   "role": "case_officer",
+   "bureau_id": 10,
+   "region": "south_central",
+   "is_admin": false
+  },
+  {
+   "id": 19,
+   "email": "farhan.das@aicte.example",
+   "name": "Farhan Das",
+   "role": "case_officer",
+   "bureau_id": 11,
+   "region": "south_eastern",
+   "is_admin": false
+  },
+  {
+   "id": 20,
+   "email": "aarav.dubey@aicte.example",
+   "name": "Aarav Dubey",
+   "role": "case_officer",
+   "bureau_id": 12,
+   "region": "southern",
+   "is_admin": false
+  },
+  {
+   "id": 21,
+   "email": "umesh.chauhan@aicte.example",
+   "name": "Umesh Chauhan",
+   "role": "case_officer",
+   "bureau_id": 13,
+   "region": "south_western",
+   "is_admin": false
+  }
+ ]
 }

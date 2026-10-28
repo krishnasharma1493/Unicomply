@@ -27,13 +27,14 @@ os.environ.update(
     ENABLE_REALTIME="false",
     ENABLE_SCHEDULER="false",
     SEED_ON_STARTUP="false",
+    SEED_SET="tiny",  # the hand-written hero world: small, and what the contract fixtures describe
     EMBEDDINGS_MODE="tfidf",
 )
 
 from app.core.config import Settings, get_settings
 from app.core.db import get_session, sqlite_savepoints
 from app.main import create_app
-from app.seed import load_seed
+from app.seed import TINY_SEED_DIR, load_seed
 
 DEMO_PASSWORD = "test-demo-pass"
 # The date the seed files (and contract fixtures) are written for.
@@ -77,11 +78,11 @@ def test_engine_fixture():
 
 @pytest.fixture(name="seeded_engine")
 def seeded_engine_fixture():
-    """In-memory engine loaded with seed_data/*.json, dated as the contract fixtures (2026-11-20)."""
+    """In-memory engine loaded with the tiny seed (seed_data/tiny), dated as the contract fixtures (2026-11-20)."""
     engine = _memory_engine()
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
-        load_seed(session, today=SEED_AS_OF)
+        load_seed(session, TINY_SEED_DIR, today=SEED_AS_OF)
     yield engine
     SQLModel.metadata.drop_all(engine)
 
