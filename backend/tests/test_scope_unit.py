@@ -11,7 +11,7 @@ from app.core import scope
 from app.core.config import get_settings
 from app.core.db import get_session
 from app.core.deps import CurrentUser
-from app.core.enums import Role
+from app.core.enums import ActionType, Role
 from app.core.errors import AppError, register_error_handlers
 from app.core.security import create_access_token
 from app.modules.cases.models import Case
@@ -111,7 +111,7 @@ def probe_client(db, test_settings) -> Iterator[TestClient]:
 
     @app.post("/cases/{case_id}/act")
     def act(case_id: int, who: CurrentUser, s: Session = Depends(get_session)) -> dict:
-        scope.require_can_act(who, scope.get_case_in_scope_or_404(s, case_id, who))
+        scope.require_can_act(who, scope.get_case_in_scope_or_404(s, case_id, who), ActionType.transfer)
         return {"ok": True}
 
     @app.post("/reviews/decide")
@@ -155,19 +155,22 @@ def test_in_scope_but_cannot_act_is_403(probe: TestClient, db: Session, test_set
 
 
 @pytest.mark.parametrize(
-    "email, ref, expected",
+    "email, ref, action, expected",
     [
-        ("senior@aicte.example", "RB/2026/00087", True),
-        ("pgrc.head@aicte.example", "PGRC/2026/00412", True),
-        ("pgrc.head@aicte.example", "RB/2026/00087", False),
-        ("ro.central@aicte.example", "RO-CRO/2026/00133", True),
-        ("ro.central@aicte.example", "RB/2026/00087", False),
-        ("intake@aicte.example", "PGRC/2026/00412", False),
+        ("senior@aicte.example", "RB/2026/00087", ActionType.escalate, True),
+        ("senior@aicte.example", "RB/2026/00087", ActionType.remark, True),
+        ("senior@aicte.example", "RB/2026/00087", ActionType.dispose, False),  # PRD §4.2: escalate and remark only
+        ("senior@aicte.example", "RB/2026/00087", ActionType.transfer, False),
+        ("pgrc.head@aicte.example", "PGRC/2026/00412", ActionType.dispose, True),
+        ("pgrc.head@aicte.example", "RB/2026/00087", ActionType.escalate, False),
+        ("ro.central@aicte.example", "RO-CRO/2026/00133", ActionType.transfer, True),
+        ("ro.central@aicte.example", "RB/2026/00087", ActionType.remark, False),
+        ("intake@aicte.example", "PGRC/2026/00412", ActionType.remark, False),
     ],
 )
-def test_can_act_on_case(db: Session, email: str, ref: str, expected: bool) -> None:
+def test_can_act_on_case(db: Session, email: str, ref: str, action: ActionType, expected: bool) -> None:
     case = db.exec(select(Case).where(Case.case_ref == ref)).one()
-    assert scope.can_act_on_case(user(db, email), case) is expected
+    assert scope.can_act_on_case(user(db, email), case, action) is expected
 
 
 # ── Coordination rule: summary cards ─────────────────────────────────────

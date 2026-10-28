@@ -73,9 +73,9 @@ def test_dispose_requires_outcome_and_open_overlap_confirmation(seeded_client, a
 def test_reopen_requires_disposed_case_remarks_and_resets_sla(seeded_client, auth_headers, seeded_engine, monkeypatch):
     from app.modules.cases import workflow
     monkeypatch.setattr(workflow, "today", lambda: date(2026, 11, 20))
-    missing = act(seeded_client, auth_headers(SENIOR), 107, action_type="reopen")
+    missing = act(seeded_client, auth_headers(PGRC), 107, action_type="reopen")
     assert missing.status_code == 400 and missing.json()["error"]["code"] == "REMARKS_REQUIRED"
-    response = act(seeded_client, auth_headers(SENIOR), 107, action_type="reopen", remarks="New evidence received")
+    response = act(seeded_client, auth_headers(PGRC), 107, action_type="reopen", remarks="New evidence received")
     assert response.status_code == 200
     assert response.json()["data"]["case"]["status"] == "reopened"
     assert response.json()["data"]["case"]["reopen_count"] == 1
@@ -87,7 +87,7 @@ def test_invalid_transition_is_rejected_without_writes(seeded_client, auth_heade
     # Case 107 is disposed; only remark and reopen are permitted.
     with Session(seeded_engine) as session:
         before = len(session.exec(select(CaseAction).where(CaseAction.case_id == 107)).all())
-    response = act(seeded_client, auth_headers(SENIOR), 107, action_type=action_type, remarks="Test", to_officer_id=6,
+    response = act(seeded_client, auth_headers(PGRC), 107, action_type=action_type, remarks="Test", to_officer_id=6,
                    to_bureau_id=1, expected_disposal_date="2026-12-01", outcome="redressed", confirm_open_overlap=True)
     assert response.status_code == 400 and response.json()["error"]["code"] == "INVALID_TRANSITION"
     with Session(seeded_engine) as session:
@@ -105,3 +105,12 @@ def test_remarks_required_and_scope_checked(seeded_client, auth_headers):
 def test_remark_is_allowed_after_disposal(seeded_client, auth_headers):
     response = act(seeded_client, auth_headers(SENIOR), 107, action_type="remark", remarks="Follow-up note")
     assert response.status_code == 200 and response.json()["data"]["case"]["status"] == "disposed"
+
+
+def test_senior_officer_may_only_escalate_or_remark(seeded_client, auth_headers):
+    """PRD §4.2: the senior officer's case actions are escalate and remark; everything else belongs to the bureau."""
+    assert act(seeded_client, auth_headers(SENIOR), 101, action_type="remark", remarks="Noted").status_code == 200
+    assert act(seeded_client, auth_headers(SENIOR), 101, action_type="escalate", remarks="Needs attention").status_code == 200
+    for body in ({"action_type": "transfer", "to_bureau_id": 1, "remarks": "x"}, {"action_type": "dispose", "outcome": "redressed", "remarks": "x"}):
+        res = act(seeded_client, auth_headers(SENIOR), 101, **body)
+        assert (res.status_code, res.json()["error"]["code"]) == (403, "FORBIDDEN")
