@@ -1,5 +1,7 @@
 """Main FastAPI application entrypoint for Unicomply."""
 
+import asyncio
+import contextlib
 import logging
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict, Optional
@@ -13,6 +15,7 @@ from app.core.db import init_db
 from app.core.db import engine as db_engine
 from app.core.errors import register_error_handlers
 from app.core.schemas import HealthData
+from app.jobs import job_loop
 from app.modules.alerts.router import router as alerts_router
 from app.modules.auth.router import router as auth_router
 from app.modules.cases.router import router as cases_router
@@ -81,7 +84,15 @@ def create_app(custom_settings: Optional[Settings] = None) -> FastAPI:
         except Exception:
             logger.exception("Database initialization failed")
 
+        # SLA, reminder and re-scan work (PRD §4.6), off unless ENABLE_SCHEDULER
+        job_task = asyncio.create_task(job_loop(db_engine, settings)) if settings.ENABLE_SCHEDULER else None
+
         yield
+
+        if job_task is not None:
+            job_task.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
+                await job_task
 
         logger.info(f"Shutting down {settings.PROJECT_NAME}")
 
