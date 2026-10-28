@@ -10,10 +10,11 @@ export const KPI_QUERY: Record<keyof Omit<DashboardSummary, 'as_of'>, string> = 
   transferred: 'status=transferred',
   escalated: 'status=escalated',
   beyond_sla: 'beyond_sla=true',
-  open_overlaps: 'in_overlap=true',
+  open_overlaps: '@/overlaps', // a count of overlap *groups*: it opens the Overlap Center, not a list of cases
 };
 
-export const casesUrl = (query: string) => (query ? `/cases?${query}` : '/cases');
+/** `@/path` is a link to another page; anything else is a query string for /cases. */
+export const casesUrl = (query: string) => (query.startsWith('@') ? query.slice(1) : query ? `/cases?${query}` : '/cases');
 
 export const workloadUrl = (bureauId: number) => casesUrl(`pending=true&bureau_id=${bureauId}`);
 
