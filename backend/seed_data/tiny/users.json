@@ -29,11 +29,11 @@
     },
     {
       "id": 4,
-      "email": "ro.central@aicte.example",
+      "email": "ro.nw@aicte.example",
       "name": "Rakesh Tiwari",
       "role": "ro_officer",
-      "bureau_id": 5,
-      "region": "central",
+      "bureau_id": 9,
+      "region": "north_western",
       "is_admin": false
     },
     {
@@ -106,6 +106,15 @@
       "role": "case_officer",
       "bureau_id": 2,
       "region": null,
+      "is_admin": false
+    },
+    {
+      "id": 13,
+      "email": "manish.bhatia@aicte.example",
+      "name": "Manish Bhatia",
+      "role": "case_officer",
+      "bureau_id": 9,
+      "region": "north_western",
       "is_admin": false
     }
   ]

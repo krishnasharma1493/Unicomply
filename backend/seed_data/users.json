@@ -29,11 +29,11 @@
   },
   {
    "id": 4,
-   "email": "ro.central@aicte.example",
+   "email": "ro.nw@aicte.example",
    "name": "Rakesh Tiwari",
    "role": "ro_officer",
-   "bureau_id": 5,
-   "region": "central",
+   "bureau_id": 9,
+   "region": "north_western",
    "is_admin": false
   },
   {
@@ -110,6 +110,15 @@
   },
   {
    "id": 13,
+   "email": "manish.bhatia@aicte.example",
+   "name": "Manish Bhatia",
+   "role": "case_officer",
+   "bureau_id": 9,
+   "region": "north_western",
+   "is_admin": false
+  },
+  {
+   "id": 14,
    "email": "lalit.reddy@aicte.example",
    "name": "Lalit Reddy",
    "role": "case_officer",
@@ -118,7 +127,7 @@
    "is_admin": false
   },
   {
-   "id": 14,
+   "id": 15,
    "email": "om.sharma@aicte.example",
    "name": "Om Sharma",
    "role": "case_officer",
@@ -127,7 +136,7 @@
    "is_admin": false
   },
   {
-   "id": 15,
+   "id": 16,
    "email": "tanvi.kulkarni@aicte.example",
    "name": "Tanvi Kulkarni",
    "role": "case_officer",
@@ -136,7 +145,7 @@
    "is_admin": false
   },
   {
-   "id": 16,
+   "id": 17,
    "email": "yash.nair@aicte.example",
    "name": "Yash Nair",
    "role": "case_officer",
@@ -145,18 +154,9 @@
    "is_admin": false
   },
   {
-   "id": 17,
+   "id": 18,
    "email": "harish.verma@aicte.example",
    "name": "Harish Verma",
-   "role": "case_officer",
-   "bureau_id": 9,
-   "region": "north_western",
-   "is_admin": false
-  },
-  {
-   "id": 18,
-   "email": "alok.sharma@aicte.example",
-   "name": "Alok Sharma",
    "role": "case_officer",
    "bureau_id": 10,
    "region": "south_central",
@@ -164,8 +164,8 @@
   },
   {
    "id": 19,
-   "email": "farhan.das@aicte.example",
-   "name": "Farhan Das",
+   "email": "alok.sharma@aicte.example",
+   "name": "Alok Sharma",
    "role": "case_officer",
    "bureau_id": 11,
    "region": "south_eastern",
@@ -173,8 +173,8 @@
   },
   {
    "id": 20,
-   "email": "aarav.dubey@aicte.example",
-   "name": "Aarav Dubey",
+   "email": "farhan.das@aicte.example",
+   "name": "Farhan Das",
    "role": "case_officer",
    "bureau_id": 12,
    "region": "southern",
@@ -182,8 +182,8 @@
   },
   {
    "id": 21,
-   "email": "umesh.chauhan@aicte.example",
-   "name": "Umesh Chauhan",
+   "email": "aarav.dubey@aicte.example",
+   "name": "Aarav Dubey",
    "role": "case_officer",
    "bureau_id": 13,
    "region": "south_western",

@@ -41,7 +41,7 @@ def count(client: TestClient, headers: Dict[str, str], query: str) -> int:
     return res.json()["pagination"]["total"]  # type: ignore[no-any-return]
 
 
-@pytest.mark.parametrize("email", ["senior@aicte.example", "pgrc.head@aicte.example", "rb.head@aicte.example", "ro.central@aicte.example"])
+@pytest.mark.parametrize("email", ["senior@aicte.example", "pgrc.head@aicte.example", "rb.head@aicte.example", "ro.nw@aicte.example"])
 def test_every_kpi_opens_exactly_the_cases_it_counts(full_client: TestClient, email: str) -> None:
     h = login(full_client, email)
     summary = full_client.get(f"{API}/dashboard/summary", headers=h).json()["data"]

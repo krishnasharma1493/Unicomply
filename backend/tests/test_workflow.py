@@ -122,6 +122,6 @@ def test_a_case_in_a_confirmed_overlap_group_still_needs_confirmation_to_dispose
                               json={"decision": "confirm", "coordinator_id": 6, "remark": "PGRC leads"}).status_code == 200
     refused = act(seeded_client, auth_headers(PGRC), 101, action_type="dispose", outcome="redressed", remarks="Closing")
     assert refused.status_code == 409 and refused.json()["error"]["code"] == "OPEN_OVERLAP"
-    assert set(refused.json()["error"]["details"]["linked_case_refs"]) == {"RB/2026/00087", "RO-CRO/2026/00133"}
+    assert set(refused.json()["error"]["details"]["linked_case_refs"]) == {"RB/2026/00087", "RO-NWRO/2026/00133"}
     allowed = act(seeded_client, auth_headers(PGRC), 101, action_type="dispose", outcome="redressed", remarks="Closing", confirm_open_overlap=True)
     assert allowed.status_code == 200

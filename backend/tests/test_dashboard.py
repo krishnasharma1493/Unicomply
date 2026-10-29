@@ -21,7 +21,7 @@ SENIOR, PGRC, RB, RO, INTAKE = (
     "senior@aicte.example",
     "pgrc.head@aicte.example",
     "rb.head@aicte.example",
-    "ro.central@aicte.example",
+    "ro.nw@aicte.example",
     "intake@aicte.example",
 )
 TODAY = date(2026, 11, 20)  # what the tiny seed and the contract fixtures are dated for
@@ -152,7 +152,7 @@ def test_institutions_match_direct_counts(
 def test_institutions_limit(seeded_client: TestClient, auth_headers: Headers) -> None:
     rows = get(seeded_client, auth_headers(SENIOR), "institutions?limit=2")
     assert isinstance(rows, list) and len(rows) == 2
-    assert [r["permanent_id"] for r in rows] == ["1-4812730561", "1-3156608124"]
+    assert [r["permanent_id"] for r in rows] == ["1-43655981521", "1-43658264742"]
 
 
 @pytest.mark.parametrize("limit", ["0", "101", "abc"])

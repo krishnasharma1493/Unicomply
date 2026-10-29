@@ -41,7 +41,7 @@ describe('Mock API: seeded reads match the fixtures', () => {
     ['/meta', 'senior', fixtures.meta],
     ['/cases', 'senior', fixtures.cases],
     ['/institutions', 'senior', fixtures.institutions],
-    ['/institutions/1-4812730561', 'senior', fixtures.institution360],
+    ['/institutions/1-43655981521', 'senior', fixtures.institution360],
     ['/cases/101', 'pgrc_head', fixtures.caseDetail],
     ['/reviews?status=pending', 'intake', fixtures.reviews],
     ['/overlaps', 'senior', fixtures.overlaps],
@@ -73,11 +73,11 @@ describe('Mock API: seeded reads match the fixtures', () => {
     expect(String(body).split('\n')[0]).toBe(report.columns.map((c) => c.label).join(','));
   });
 
-  it('scopes cases: a Western case is 404 for the Central RO', async () => {
-    expect(await call('GET', '/cases/110', { as: 'ro_central' })).toEqual({ status: 404, body: fixtures.errors.notFound });
-    const list = await call('GET', '/cases', { as: 'ro_central' });
+  it('scopes cases: a Western case is 404 for the North-Western RO', async () => {
+    expect(await call('GET', '/cases/110', { as: 'ro_nw' })).toEqual({ status: 404, body: fixtures.errors.notFound });
+    const list = await call('GET', '/cases', { as: 'ro_nw' });
     const regions = (list.body as typeof fixtures.cases).data.map((c) => c.region);
-    expect(regions.every((r) => r === 'central')).toBe(true);
+    expect(regions.every((r) => r === 'north_western')).toBe(true);
   });
 });
 
@@ -100,7 +100,7 @@ describe('Mock API: demo mutations', () => {
   });
 
   it('applies an action through the transition table and appends it to the timeline', async () => {
-    const res = await call('POST', '/cases/103/actions', { as: 'ro_central', data: fixtures.requests.caseAction });
+    const res = await call('POST', '/cases/103/actions', { as: 'ro_nw', data: fixtures.requests.caseAction });
     const expected = fixtures.caseAction.data;
     const body = res.body as typeof fixtures.caseAction;
     expect(res.status).toBe(200);
@@ -109,7 +109,7 @@ describe('Mock API: demo mutations', () => {
     expect(withoutTimes(body.data.case, ...unstamped)).toEqual(withoutTimes(expected.case, ...unstamped));
     expect(withoutTimes(body.data.action, 'id', 'created_at')).toEqual(withoutTimes(expected.action, 'id', 'created_at'));
 
-    const detail = (await call('GET', '/cases/103', { as: 'ro_central' })).body as typeof fixtures.caseDetail;
+    const detail = (await call('GET', '/cases/103', { as: 'senior' })).body as typeof fixtures.caseDetail;
     expect(detail.data.actions.at(-1)).toEqual(body.data.action);
     expect(detail.data.case.status).toBe('under_process');
   });
@@ -146,7 +146,7 @@ describe('Mock API: demo mutations', () => {
   it('returns ALREADY_DECIDED and FORBIDDEN for overlap decisions as in the fixtures', async () => {
     const again = await call('POST', '/overlaps/3/decision', { as: 'senior', data: { decision: 'dismiss', remark: 'x' } });
     expect(again).toEqual({ status: 409, body: fixtures.errors.alreadyDecided });
-    const ro = await call('POST', '/overlaps/1/decision', { as: 'ro_central', data: fixtures.requests.overlapDecision });
+    const ro = await call('POST', '/overlaps/1/decision', { as: 'intake', data: fixtures.requests.overlapDecision });
     expect(ro).toEqual({ status: 403, body: fixtures.errors.forbidden });
   });
 

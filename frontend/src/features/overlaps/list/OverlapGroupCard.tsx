@@ -8,7 +8,7 @@ import { diffCalendarDays } from '../../../lib/format';
 
 const { Text } = Typography;
 
-const isPermanentId = (anchor: string) => /^1-\d{6,10}$/.test(anchor);
+const isPermanentId = (anchor: string) => /^1-\d{6,11}$/.test(anchor);
 
 export const OverlapGroupCard: React.FC<{ group: OverlapGroupListItem; today?: string }> = ({ group, today }) => {
   const days = today ? Math.max(0, diffCalendarDays(group.created_at, today)) : null;

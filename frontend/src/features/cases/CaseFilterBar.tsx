@@ -37,7 +37,7 @@ export const CaseFilterBar: React.FC<CaseFilterBarProps> = ({ filters, meta, onA
       <Form layout="vertical" onFinish={search} role="search" aria-label="Search cases">
         <Row gutter={12}>
           <Col xs={24} md={8}><Form.Item label="Institution name"><Input aria-label="Institution name" allowClear value={draft.q} onChange={(e) => set({ q: e.target.value })} placeholder="Name or what was written" /></Form.Item></Col>
-          <Col xs={24} md={8}><Form.Item label="Permanent ID"><Input aria-label="Permanent ID" allowClear value={draft.permanentId} onChange={(e) => set({ permanentId: e.target.value })} placeholder="1-4812730561" /></Form.Item></Col>
+          <Col xs={24} md={8}><Form.Item label="Permanent ID"><Input aria-label="Permanent ID" allowClear value={draft.permanentId} onChange={(e) => set({ permanentId: e.target.value })} placeholder="1-43655981521" /></Form.Item></Col>
           <Col xs={24} md={8}><Form.Item label="Case reference"><Input aria-label="Case reference" allowClear value={draft.caseRef} onChange={(e) => set({ caseRef: e.target.value })} placeholder="PGRC/2026/00412" /></Form.Item></Col>
         </Row>
         <Row gutter={12}>

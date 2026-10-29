@@ -87,7 +87,7 @@ def write_name(
 ) -> Tuple[str, List[str]]:
     """The raw institution text a complainant types, and the noise tags applied to it."""
     tags: List[str] = []
-    if rng.random() < P_ACRONYM_ONLY:
+    if rng.random() < P_ACRONYM_ONLY and len(acr) >= MIN_TEXT:  # a two-letter acronym is too short to file a complaint under
         raw = acr
         tags.append("acronym_only")
     else:

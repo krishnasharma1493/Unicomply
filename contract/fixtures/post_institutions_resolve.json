@@ -4,38 +4,39 @@
     "decision": "auto",
     "candidates": [
       {
-        "permanent_id": "1-4812730561",
-        "name": "Vindhya Valley Institute of Engineering & Technology",
-        "district": "Jabalpur",
-        "state": "Madhya Pradesh",
-        "score": 0.93,
+        "permanent_id": "1-43655981521",
+        "name": "Maharaja Agrasen Institute of Technology",
+        "district": "West Delhi",
+        "state": "Delhi",
+        "score": 0.7,
         "reasons": [
-          "Name 88% similar after expanding ENGG",
-          "District Jabalpur matches",
-          "Acronym VVIET matches a confirmed alias"
+          "Name 86% similar",
+          "State Delhi matches",
+          "Description/name context similarity 0.79"
         ]
       },
       {
-        "permanent_id": "1-4812730987",
-        "name": "Vindhya Valley Institute of Management",
-        "district": "Jabalpur",
-        "state": "Madhya Pradesh",
-        "score": 0.71,
+        "permanent_id": "1-44079581354",
+        "name": "Maharaja Agrasen Institute of Management Studies",
+        "district": "North West Delhi",
+        "state": "Delhi",
+        "score": 0.49,
         "reasons": [
-          "Name 74% similar after expanding ENGG",
-          "District Jabalpur matches",
-          "Management institute; the text mentions engineering"
+          "Name 54% similar",
+          "State Delhi matches",
+          "Description/name context similarity 0.51"
         ]
       },
       {
-        "permanent_id": "1-4812744105",
-        "name": "Narmada Valley College of Engineering",
-        "district": "Jabalpur",
-        "state": "Madhya Pradesh",
-        "score": 0.58,
+        "permanent_id": "1-43662802779",
+        "name": "Maharaja Agrasen Business School",
+        "district": "North West Delhi",
+        "state": "Delhi",
+        "score": 0.42,
         "reasons": [
-          "Name 61% similar (shares VALLEY, ENGINEERING, COLLEGE)",
-          "District Jabalpur matches"
+          "Name 43% similar",
+          "State Delhi matches",
+          "Description/name context similarity 0.41"
         ]
       }
     ]
