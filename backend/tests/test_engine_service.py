@@ -29,8 +29,8 @@ from app.modules.overlaps.models import OverlapGroup, OverlapLink, OverlapPair
 from app.modules.reviews.models import MatchReview
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
-HERO = "1-4812730561"
-NARMADA = "1-4812744105"
+HERO = "1-43655981521"
+NITTTR = "1-43674307362"
 PUBLIC = ["resolve_preview", "resolve_for_intake", "apply_overlaps", "on_review_decided", "on_transfer", "rescan_since"]
 
 
@@ -51,7 +51,7 @@ def count_commits(session: Session) -> List[int]:
     return seen
 
 
-def new_case(raw_text: str, permanent_id=None, state="Madhya Pradesh", category_id=2, bureau_id=2) -> Case:
+def new_case(raw_text: str, permanent_id=None, state="Delhi", category_id=2, bureau_id=2) -> Case:
     """An intake row as #14 will build it (PRD demo step 4 by default: certificates, routed to PGRC)."""
     return Case(
         case_ref="PGRC/2026/00519",
@@ -80,21 +80,21 @@ def links_of(session: Session, group_id: int) -> List[int]:
 
 def test_hero_intake_extends_the_probable_group_without_committing(session: Session, commits: List[int]) -> None:
     """resolve_for_intake + apply_overlaps on the hero intake → one institution/probable group with 4 links."""
-    case = new_case("vindya valley engg college jabalpur")
+    case = new_case("maharaja agrsen institute of technology delhi")
     session.add(case)
     session.flush()
 
     resolution = service.resolve_for_intake(session, case)
     assert resolution.decision.value == "auto"
     assert resolution.candidates[0].permanent_id == HERO
-    assert (case.permanent_id, case.match_status, case.match_score) == (HERO, MatchStatus.auto, 0.93)
+    assert (case.permanent_id, case.match_status, case.match_score) == (HERO, MatchStatus.auto, 0.7)
 
     summaries = service.apply_overlaps(session, case)
     assert len(summaries) == 1
     summary = summaries[0]
     assert (summary.group_id, summary.level, summary.tier) == (1, OverlapLevel.institution, OverlapTier.probable)
     assert summary.banner == BANNER_PROBABLE
-    assert [c.case_ref for c in summary.cases] == ["PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"]
+    assert [c.case_ref for c in summary.cases] == ["PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"]
     assert all(not hasattr(c, "description") and not hasattr(c, "complainant_name") for c in summary.cases)
 
     groups = session.exec(
@@ -112,7 +112,7 @@ def test_hero_intake_extends_the_probable_group_without_committing(session: Sess
 def test_hero_intake_creates_the_group_when_none_exists(session: Session) -> None:
     for model in (OverlapLink, OverlapPair, OverlapGroup):
         session.exec(delete(model))  # type: ignore[call-overload]
-    case = new_case("VVIET Jabalpur")
+    case = new_case("MAIT West Delhi")
     service.resolve_for_intake(session, case)
     [summary] = service.apply_overlaps(session, case)
     group = session.get(OverlapGroup, summary.group_id)
@@ -145,8 +145,8 @@ def test_docstrings_state_writes_and_transaction_rule(name: str) -> None:
 
 def test_resolve_preview_writes_nothing(session: Session) -> None:
     before = session.exec(select(func.count()).select_from(MatchReview)).one()
-    preview = service.resolve_preview(session, "vindya valley engg college jabalpur", "Madhya Pradesh", None)
-    assert [c.permanent_id for c in preview.candidates] == [HERO, "1-4812730987", NARMADA]
+    preview = service.resolve_preview(session, "maharaja agrsen institute of technology delhi", "Delhi", None)
+    assert [c.permanent_id for c in preview.candidates] == [HERO, "1-44079581354", "1-43662802779"]
     assert len(session.new) == 0 and len(session.dirty) == 0
     assert session.exec(select(func.count()).select_from(MatchReview)).one() == before
 
@@ -162,10 +162,10 @@ def test_unknown_institution_is_queued_for_review(session: Session) -> None:
 
 
 def test_operator_supplied_permanent_id_is_provided(session: Session) -> None:
-    case = new_case("Narmada Valley College of Engineering", permanent_id=NARMADA)
+    case = new_case("National Institute of Technical Teachers' Training and Research", permanent_id=NITTTR)
     resolution = service.resolve_for_intake(session, case)
     assert resolution.decision.value == "provided"
-    assert (case.permanent_id, case.match_status, case.match_score) == (NARMADA, MatchStatus.provided, 1.0)
+    assert (case.permanent_id, case.match_status, case.match_score) == (NITTTR, MatchStatus.provided, 1.0)
     assert session.exec(select(MatchReview).where(MatchReview.case_id == case.id)).first() is None
 
 
@@ -178,7 +178,7 @@ def test_unknown_supplied_permanent_id_raises(session: Session) -> None:
 
 
 def test_dismissed_pair_is_never_re_added_or_updated(session: Session) -> None:
-    case = new_case("vindya valley engg college jabalpur")
+    case = new_case("maharaja agrsen institute of technology delhi")
     session.add(case)
     session.flush()
     assert case.id is not None
@@ -196,18 +196,18 @@ def test_new_case_reopens_a_dismissed_group(session: Session) -> None:
     assert group is not None
     group.status = OverlapGroupStatus.dismissed
     session.add(group)
-    case = new_case("VVIET Jabalpur")
+    case = new_case("MAIT West Delhi")
     service.resolve_for_intake(session, case)
     [summary] = service.apply_overlaps(session, case)
     assert summary.group_id == 1 and summary.status == OverlapGroupStatus.open
 
 
 def test_in_scope_callback_sets_card_scope(session: Session) -> None:
-    case = new_case("VVIET Jabalpur")
+    case = new_case("MAIT West Delhi")
     service.resolve_for_intake(session, case)
     [summary] = service.apply_overlaps(session, case, in_scope=lambda c: c.current_bureau_id == 2)
     assert {c.case_ref: c.in_scope for c in summary.cases} == {
-        "PGRC/2026/00412": True, "RB/2026/00087": False, "RO-CRO/2026/00133": False,
+        "PGRC/2026/00412": True, "RB/2026/00087": False, "RO-NWRO/2026/00133": False,
     }
 
 
@@ -215,18 +215,18 @@ def test_in_scope_callback_sets_card_scope(session: Session) -> None:
 
 
 def test_review_decision_learns_the_alias_and_finds_overlaps(session: Session) -> None:
-    """Matches contract/fixtures/post_reviews_id_decide.json: case 113 → Narmada, new group with RB/2026/00091."""
+    """Matches contract/fixtures/post_reviews_id_decide.json: case 113 → NITTTR Bhopal, new group with RB/2026/00091."""
     review = session.get(MatchReview, 2)
     assert review is not None
     review.decided_by = 5
-    summaries = service.on_review_decided(session, review, NARMADA)
+    summaries = service.on_review_decided(session, review, NITTTR)
 
     case = session.get(Case, 113)
     assert case is not None
-    assert (case.permanent_id, case.match_status, case.match_score) == (NARMADA, MatchStatus.reviewed, 0.76)
-    alias = session.exec(select(InstitutionAlias).where(InstitutionAlias.permanent_id == NARMADA,
+    assert (case.permanent_id, case.match_status, case.match_score) == (NITTTR, MatchStatus.reviewed, 0.76)
+    alias = session.exec(select(InstitutionAlias).where(InstitutionAlias.permanent_id == NITTTR,
                                                         InstitutionAlias.source == "review")).one()
-    assert (alias.alias_norm, alias.created_by) == ("NARMADA COLLEGE ENGINEERING", 5)
+    assert (alias.alias_norm, alias.created_by) == ("NATL INSTITUTE TECHNICAL TEACHERS TRAINING", 5)
 
     [summary] = summaries
     assert (summary.level, summary.tier) == (OverlapLevel.institution, OverlapTier.possible)

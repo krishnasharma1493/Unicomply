@@ -76,7 +76,7 @@ All personas share the password in `DEMO_PASSWORD` (`change-me-demo-pass` in `.e
 | Dr. Meera Raghavan | `senior@aicte.example` | Senior management (`senior_mgmt`, admin) | All bureaus; demo reset |
 | Anil Deshmukh | `pgrc.head@aicte.example` | Bureau head (`bureau_head`) | PGRC (bureau 2) |
 | Kavita Rao | `rb.head@aicte.example` | Bureau head (`bureau_head`) | RB (bureau 1) |
-| Rakesh Tiwari | `ro.central@aicte.example` | Regional officer (`ro_officer`) | Central RO (bureau 5) |
+| Rakesh Tiwari | `ro.nw@aicte.example` | Regional officer (`ro_officer`) | North-Western RO (bureau 9) |
 | Neha Joshi | `intake@aicte.example` | Intake operator (`intake_operator`) | Intake desk and match review |
 
 ## Demo data

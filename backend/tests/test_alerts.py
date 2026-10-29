@@ -57,7 +57,7 @@ def test_dedupe_key_is_type_recipient_entity_day(db: Session) -> None:
     [alert] = raise_sla(db, head)
     assert alert.dedupe_key.startswith(f"sla_warning:{head.id}:case-101:")
     assert service.dedupe_key(AlertType.overlap, 3, group_id=1).startswith("overlap:3:group-1:")
-    assert service.dedupe_key(AlertType.reminder, 3, permanent_id="1-4812730561").startswith("reminder:3:inst-1-4812730561:")
+    assert service.dedupe_key(AlertType.reminder, 3, permanent_id="1-43655981521").startswith("reminder:3:inst-1-43655981521:")
 
 
 def test_duplicate_recipients_get_one_alert_and_the_rest_still_get_theirs(db: Session) -> None:
@@ -82,10 +82,10 @@ def test_never_commits(db: Session) -> None:
 
 
 def test_recipient_helpers(db: Session) -> None:
-    rb_head, pgrc_head, ro = (user(db, e) for e in ("rb.head@aicte.example", "pgrc.head@aicte.example", "ro.central@aicte.example"))
+    rb_head, pgrc_head, ro = (user(db, e) for e in ("rb.head@aicte.example", "pgrc.head@aicte.example", "ro.nw@aicte.example"))
     assert [u.id for u in service.heads_of_bureaus(db, [rb_head.bureau_id, ro.bureau_id])] == sorted([ro.id, rb_head.id])  # type: ignore[type-var]
     assert service.heads_of_bureaus(db, []) == []
-    assert [u.id for u in service.ro_officers_for_region(db, Region.central)] == [ro.id]
+    assert [u.id for u in service.ro_officers_for_region(db, Region.north_western)] == [ro.id]
     assert [u.email for u in service.senior_mgmt(db)] == ["senior@aicte.example"]
     assert pgrc_head.id not in [u.id for u in service.heads_of_bureaus(db, [rb_head.bureau_id])]  # type: ignore[list-item]
 
@@ -101,7 +101,7 @@ def test_list_is_own_alerts_newest_first_with_grouping_fields(seeded_client: Tes
     assert created == sorted(created, reverse=True)
     assert all(a["recipient_id"] == 3 for a in body["data"])  # RB head's own
     first = next(a for a in body["data"] if a["case_id"] == 104)
-    assert (first["case_ref"], first["institution_name"]) == ("RB/2026/00079", "Vindhya Valley Institute of Management")
+    assert (first["case_ref"], first["institution_name"]) == ("RB/2026/00079", "Maharaja Agrasen Institute of Management Studies")
 
 
 def test_unread_only_and_pagination(seeded_client: TestClient) -> None:

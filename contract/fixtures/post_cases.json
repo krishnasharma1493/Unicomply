@@ -9,11 +9,11 @@
       "received_at": "2026-11-20",
       "complainant_type": "parent",
       "complainant_name": "Sushila Dubey",
-      "raw_institution_text": "vindya valley engg college jabalpur",
-      "raw_state": "Madhya Pradesh",
+      "raw_institution_text": "maharaja agrsen institute of technology delhi",
+      "raw_state": "Delhi",
       "raw_district": null,
-      "permanent_id": "1-4812730561",
-      "match_score": 0.93,
+      "permanent_id": "1-43655981521",
+      "match_score": 0.7,
       "match_status": "auto",
       "category_id": 2,
       "category_suggested_id": null,
@@ -34,8 +34,8 @@
       "created_by": 5,
       "created_at": "2026-11-20T09:12:04Z",
       "updated_at": "2026-11-20T09:12:04Z",
-      "institution_name": "Vindhya Valley Institute of Engineering & Technology",
-      "region": "central",
+      "institution_name": "Maharaja Agrasen Institute of Technology",
+      "region": "north_western",
       "age_days": 0,
       "beyond_sla": false,
       "in_overlap": true
@@ -44,38 +44,39 @@
       "decision": "auto",
       "candidates": [
         {
-          "permanent_id": "1-4812730561",
-          "name": "Vindhya Valley Institute of Engineering & Technology",
-          "district": "Jabalpur",
-          "state": "Madhya Pradesh",
-          "score": 0.93,
+          "permanent_id": "1-43655981521",
+          "name": "Maharaja Agrasen Institute of Technology",
+          "district": "West Delhi",
+          "state": "Delhi",
+          "score": 0.7,
           "reasons": [
-            "Name 88% similar after expanding ENGG",
-            "District Jabalpur matches",
-            "Acronym VVIET matches a confirmed alias"
+            "Name 86% similar",
+            "State Delhi matches",
+            "Description/name context similarity 0.79"
           ]
         },
         {
-          "permanent_id": "1-4812730987",
-          "name": "Vindhya Valley Institute of Management",
-          "district": "Jabalpur",
-          "state": "Madhya Pradesh",
-          "score": 0.71,
+          "permanent_id": "1-44079581354",
+          "name": "Maharaja Agrasen Institute of Management Studies",
+          "district": "North West Delhi",
+          "state": "Delhi",
+          "score": 0.49,
           "reasons": [
-            "Name 74% similar after expanding ENGG",
-            "District Jabalpur matches",
-            "Management institute; the text mentions engineering"
+            "Name 54% similar",
+            "State Delhi matches",
+            "Description/name context similarity 0.51"
           ]
         },
         {
-          "permanent_id": "1-4812744105",
-          "name": "Narmada Valley College of Engineering",
-          "district": "Jabalpur",
-          "state": "Madhya Pradesh",
-          "score": 0.58,
+          "permanent_id": "1-43662802779",
+          "name": "Maharaja Agrasen Business School",
+          "district": "North West Delhi",
+          "state": "Delhi",
+          "score": 0.42,
           "reasons": [
-            "Name 61% similar (shares VALLEY, ENGINEERING, COLLEGE)",
-            "District Jabalpur matches"
+            "Name 43% similar",
+            "State Delhi matches",
+            "Description/name context similarity 0.41"
           ]
         }
       ]
@@ -91,8 +92,8 @@
           {
             "case_id": 101,
             "case_ref": "PGRC/2026/00412",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
             "bureau_id": 2,
             "bureau_code": "PGRC",
             "status": "under_process",
@@ -109,8 +110,8 @@
           {
             "case_id": 102,
             "case_ref": "RB/2026/00087",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
             "bureau_id": 1,
             "bureau_code": "RB",
             "status": "under_process",
@@ -126,11 +127,11 @@
           },
           {
             "case_id": 103,
-            "case_ref": "RO-CRO/2026/00133",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
-            "bureau_id": 5,
-            "bureau_code": "RO-CRO",
+            "case_ref": "RO-NWRO/2026/00133",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
+            "bureau_id": 9,
+            "bureau_code": "RO-NWRO",
             "status": "received",
             "category_id": 2,
             "category_code": "certificate_withheld",
@@ -144,10 +145,10 @@
           }
         ],
         "reasons": [
-          "Same institution 1-4812730561 (Vindhya Valley Institute of Engineering & Technology)",
-          "Handled by PGRC, RB and RO-CRO",
-          "Both about original certificates being withheld (PGRC/2026/00519, RO-CRO/2026/00133)",
-          "Description similarity 0.84 with RO-CRO/2026/00133",
+          "Same institution 1-43655981521 (Maharaja Agrasen Institute of Technology)",
+          "Handled by PGRC, RB and RO-NWRO",
+          "Both about original certificates being withheld (PGRC/2026/00519, RO-NWRO/2026/00133)",
+          "Description similarity 0.84 with RO-NWRO/2026/00133",
           "Received 5 days apart"
         ],
         "coordinator_name": null

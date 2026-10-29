@@ -1,23 +1,20 @@
-"""Fictional names, geography and complaint wording for the synthetic data. No real institutions."""
+"""Geography, people and complaint wording for the synthetic data. Institutions come from aicte_registry.json; people and complaints are fictional."""
 
 from typing import Dict, List, Tuple
 
-# region -> state -> districts. Districts are real places; every institution built on them is fictional.
+# region -> state -> districts (real places). Used to place institutions that are not in the registry and for wrong-state noise.
 GEOGRAPHY: Dict[str, Dict[str, List[str]]] = {
     "central": {"Madhya Pradesh": ["Jabalpur", "Bhopal", "Indore", "Gwalior", "Sagar"], "Chhattisgarh": ["Raipur", "Bilaspur"]},
     "eastern": {"West Bengal": ["Kolkata", "Howrah", "Durgapur"], "Odisha": ["Bhubaneswar", "Cuttack"], "Bihar": ["Patna", "Gaya"]},
     "north_eastern": {"Assam": ["Guwahati", "Dibrugarh"], "Meghalaya": ["Shillong"]},
     "northern": {"Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi", "Noida"], "Uttarakhand": ["Dehradun"]},
-    "north_western": {"Punjab": ["Ludhiana", "Amritsar"], "Haryana": ["Gurugram", "Panipat"], "Himachal Pradesh": ["Shimla", "Solan"]},
+    "north_western": {"Delhi": ["New Delhi", "South Delhi", "North West Delhi"], "Punjab": ["Ludhiana", "Amritsar"], "Haryana": ["Gurugram", "Panipat"], "Himachal Pradesh": ["Shimla", "Solan"]},
     "south_central": {"Telangana": ["Hyderabad", "Warangal"]},
     "south_eastern": {"Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur"]},
     "southern": {"Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"]},
     "south_western": {"Karnataka": ["Bengaluru", "Mysuru", "Hubballi"], "Kerala": ["Kochi", "Thiruvananthapuram"]},
     "western": {"Maharashtra": ["Pune", "Nagpur", "Nashik", "Mumbai"], "Gujarat": ["Ahmedabad", "Vadodara", "Surat", "Bharuch"], "Rajasthan": ["Jaipur", "Udaipur"]},
 }
-# How many institutions each region gets, in tenths (central and western are the busiest).
-REGION_WEIGHT = {"central": 20, "eastern": 9, "north_eastern": 4, "northern": 14, "north_western": 9,
-                 "south_central": 8, "south_eastern": 7, "southern": 10, "south_western": 11, "western": 18}
 
 # One extra locality per district: what a complainant writes when they give a city instead of the district.
 # These are also district aliases in abbreviations.json, so the resolver can read them.
@@ -34,29 +31,17 @@ LOCALITIES: Dict[str, str] = {
     "Ahmedabad": "Naroda", "Vadodara": "Karjan", "Surat": "Kamrej", "Bharuch": "Ankleshwar", "Jaipur": "Sanganer", "Udaipur": "Debari",
 }
 
-# Name parts. Tiny-seed places (Vindhya, Narmada, Valley, Satpura, Sarovar, Mahakaushal, Deccan, Plateau) are left out
-# so a generated name can never be confused with the hero institutions.
-PLACE_WORDS = [
-    "Aravali", "Sahyadri", "Kaveri", "Godavari", "Mahanadi", "Shivalik", "Nilgiri", "Sundarban", "Brahmaputra", "Gangotri",
-    "Himgiri", "Ratnagiri", "Malwa", "Bundel", "Chambal", "Konkan", "Malabar", "Coromandel", "Kathiawar", "Marwar",
-    "Doaba", "Terai", "Kamrup", "Utkal", "Anga", "Magadh", "Mithila", "Awadh", "Rohilkhand", "Garhwal",
-    "Kumaon", "Dandaka", "Telangi", "Rayala", "Pandya", "Chola", "Kadamba", "Hoysala", "Vengi", "Tungabhadra",
+# Real institutions that are not AICTE-approved (they run under their own Acts or under NCHMCT), so a complaint about one cannot be
+# linked to the registry: (name, state, district).
+UNKNOWN_INSTITUTIONS = [
+    ("Indian Institute of Technology Delhi", "Delhi", "New Delhi"),
+    ("Indian Institute of Management Ahmedabad", "Gujarat", "Ahmedabad"),
+    ("Institute of Hotel Management, Catering Technology and Applied Nutrition, Pusa", "Delhi", "New Delhi"),
+    ("Indian Institute of Technology Bombay", "Maharashtra", "Mumbai"),
+    ("National Institute of Technology Tiruchirappalli", "Tamil Nadu", "Tiruchirappalli"),
+    ("Indian Institute of Management Indore", "Madhya Pradesh", "Indore"),
 ]
-FOUNDER_WORDS = [
-    "Saraswati", "Gyan", "Prabhat", "Lakshya", "Dhruv", "Kalpana", "Ananta", "Tejas", "Pragati", "Navjeevan",
-    "Siddharth", "Mitra", "Ishwar", "Surya", "Chandra", "Kiran", "Vidya", "Samarth", "Udaya", "Pratibha",
-    "Rishi", "Tapasya", "Nirmal", "Vikas", "Aarohan", "Ujjwal", "Sankalp", "Bharat", "Shakti", "Gurukul",
-    "Manthan", "Abhyudaya", "Nalanda", "Takshila", "Vaishali", "Kalyani", "Maitri", "Dharohar", "Srijan", "Pariksha",
-]
-TYPE_SUFFIX: Dict[str, List[str]] = {
-    "engineering": ["Institute of Engineering & Technology", "College of Engineering", "Institute of Technology", "Engineering College"],
-    "management": ["Institute of Management", "School of Management Studies", "Business School"],
-    "pharmacy": ["College of Pharmacy", "Institute of Pharmaceutical Sciences"],
-    "polytechnic": ["Polytechnic", "Polytechnic College", "Technical Institute"],
-    "university": ["Technical University", "University of Technology"],
-}
-DEPARTMENT_AREAS = ["Pharmacy", "Management Studies", "Computer Applications", "Architecture", "Design", "Applied Sciences", "Hotel Management", "Planning"]
-TRUST_KINDS = ["Education Trust", "Educational Society", "Foundation", "Shiksha Samiti", "Charitable Trust"]
+
 
 FIRST_NAMES = ["Aarav", "Anjali", "Deepak", "Farhan", "Geeta", "Harish", "Isha", "Jatin", "Kavya", "Lalit", "Meena", "Nitin", "Om", "Pooja",
                "Qasim", "Ritika", "Sandeep", "Tanvi", "Umesh", "Vandana", "Yash", "Zoya", "Alok", "Bhavna", "Chetan", "Divya", "Ehsan", "Gauri"]

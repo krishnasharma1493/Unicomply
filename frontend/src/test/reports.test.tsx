@@ -39,7 +39,7 @@ describe('formatCell', () => {
     expect(formatCell('disposal_rate', 0.167)).toBe('16.7%');
     expect(formatCell('reopen_rate', null)).toBe('—');
     expect(formatCell('open', 0)).toBe('0');
-    expect(formatCell('name', 'Vindhya')).toBe('Vindhya');
+    expect(formatCell('name', 'Maharaja')).toBe('Maharaja');
   });
 });
 

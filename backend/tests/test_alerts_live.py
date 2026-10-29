@@ -12,7 +12,7 @@ from app.core.fixtures import load_fixture
 from tests.conftest import DEMO_PASSWORD, SEED_AS_OF
 
 API = "/api/v1"
-VVIET = "1-4812730561"
+MAIT = "1-43655981521"
 
 
 @pytest.fixture(autouse=True)
@@ -59,7 +59,7 @@ def test_the_job_loop_raises_the_hero_sla_warning_with_the_fields_the_page_group
     alerts = all_alerts(full_client, "pgrc.head@aicte.example")
     [warning] = [a for a in alerts if a["type"] == "sla_warning" and a["case_ref"] == "PGRC/2026/00412"]
     assert warning["severity"] == "warning" and "day 19 of 21" in warning["title"]
-    assert warning["permanent_id"] == VVIET and warning["institution_name"].startswith("Vindhya Valley Institute of Engineering")
+    assert warning["permanent_id"] == MAIT and warning["institution_name"].startswith("Maharaja Agrasen Institute of Technology")
     assert warning["is_read"] is False
 
 
@@ -101,7 +101,7 @@ def test_one_institution_one_day_has_the_same_grouping_key_across_alert_types(fu
     full_client.post(f"{API}/cases", json=load_fixture("requests/post_cases"), headers=login(full_client, "intake@aicte.example"))
     tick(full_engine)
     mine = all_alerts(full_client, "pgrc.head@aicte.example")
-    about_hero = [a for a in mine if a["permanent_id"] == VVIET]
+    about_hero = [a for a in mine if a["permanent_id"] == MAIT]
     assert {a["type"] for a in about_hero} >= {"overlap", "sla_warning"}
     assert len({(a["permanent_id"], a["created_at"][:10]) for a in about_hero}) == 1
 
@@ -112,7 +112,7 @@ def test_confirming_the_hero_group_shows_the_coordinator_on_every_linked_case(fu
     group = created["overlaps"][0]["group_id"]
     assert created["overlaps"][0]["coordinator_name"] is None  # not confirmed yet
     assert full_client.post(f"{API}/overlaps/{group}/decision", json={"decision": "confirm", "coordinator_id": 6, "remark": "PGRC leads"}, headers=login(full_client, "pgrc.head@aicte.example")).status_code == 200
-    for email, case_id in (("pgrc.head@aicte.example", created["case"]["id"]), ("rb.head@aicte.example", 102), ("ro.central@aicte.example", 103)):
+    for email, case_id in (("pgrc.head@aicte.example", created["case"]["id"]), ("rb.head@aicte.example", 102), ("ro.nw@aicte.example", 103)):
         detail = full_client.get(f"{API}/cases/{case_id}", headers=login(full_client, email)).json()["data"]
         [summary] = [o for o in detail["overlaps"] if o["group_id"] == group]
         assert (summary["status"], summary["coordinator_name"]) == ("confirmed", "Sunita Mishra"), email

@@ -1,6 +1,6 @@
 """
 StubEngine: canned results for the hero story (PRD §4.7) so intake, review and overlap
-screens work before the real engine (#19–#22) exists. It knows three institutions, matches
+screens work before the real engine (#19–#22) exists. It knows three institutions (the Maharaja Agrasen family), matches
 the hero spellings with a crude token check, and returns the same candidates, scores and
 reasons as contract/fixtures/post_institutions_resolve.json. Not a matcher: never tune it.
 """
@@ -28,33 +28,34 @@ from app.matching.types import (
 )
 
 HERO = InstitutionLite(
-    permanent_id="1-4812730561",
-    name="Vindhya Valley Institute of Engineering & Technology",
-    name_norm="VINDHYA VALLEY INSTITUTE ENGINEERING TECHNOLOGY",
-    acronym="VVIET",
-    district="Jabalpur",
-    state="Madhya Pradesh",
-    region="central",
+    permanent_id="1-43655981521",
+    name="Maharaja Agrasen Institute of Technology",
+    name_norm="MAHARAJA AGRASEN INSTITUTE TECHNOLOGY",
+    acronym="MAIT",
+    district="West Delhi",
+    state="Delhi",
+    region="north_western",
     trust_id=1,
 )
 HERO_SIBLING = InstitutionLite(
-    permanent_id="1-4812730987",
-    name="Vindhya Valley Institute of Management",
-    name_norm="VINDHYA VALLEY INSTITUTE MANAGEMENT",
-    acronym="VVIM",
-    district="Jabalpur",
-    state="Madhya Pradesh",
-    region="central",
+    permanent_id="1-44079581354",
+    name="Maharaja Agrasen Institute of Management Studies",
+    name_norm="MAHARAJA AGRASEN INSTITUTE MANAGEMENT STUDIES",
+    acronym="MAIMS",
+    district="North West Delhi",
+    state="Delhi",
+    region="north_western",
     trust_id=1,
 )
 NEIGHBOUR = InstitutionLite(
-    permanent_id="1-4812744105",
-    name="Narmada Valley College of Engineering",
-    name_norm="NARMADA VALLEY COLLEGE ENGINEERING",
-    acronym="NVCE",
-    district="Jabalpur",
-    state="Madhya Pradesh",
-    region="central",
+    permanent_id="1-43662802779",
+    name="Maharaja Agrasen Business School",
+    name_norm="MAHARAJA AGRASEN BUSINESS SCHOOL",
+    acronym="MABS",
+    district="North West Delhi",
+    state="Delhi",
+    region="north_western",
+    trust_id=1,
 )
 STUB_REGISTRY: Dict[str, InstitutionLite] = {
     i.permanent_id: i for i in (HERO, HERO_SIBLING, NEIGHBOUR)
@@ -67,41 +68,13 @@ def _candidate(inst: InstitutionLite, score: float, reasons: Tuple[str, ...]) ->
 
 # Same values as contract/fixtures/post_institutions_resolve.json (a test keeps them in sync).
 HERO_CANDIDATES: Tuple[Candidate, ...] = (
-    _candidate(
-        HERO,
-        0.93,
-        (
-            "Name 88% similar after expanding ENGG",
-            "District Jabalpur matches",
-            "Acronym VVIET matches a confirmed alias",
-        ),
-    ),
-    _candidate(
-        HERO_SIBLING,
-        0.71,
-        (
-            "Name 74% similar after expanding ENGG",
-            "District Jabalpur matches",
-            "Management institute; the text mentions engineering",
-        ),
-    ),
-    _candidate(
-        NEIGHBOUR,
-        0.58,
-        ("Name 61% similar (shares VALLEY, ENGINEERING, COLLEGE)", "District Jabalpur matches"),
-    ),
+    _candidate(HERO, 0.70, ("Name 86% similar", "State Delhi matches", "Description/name context similarity 0.79")),
+    _candidate(HERO_SIBLING, 0.49, ("Name 54% similar", "State Delhi matches", "Description/name context similarity 0.51")),
+    _candidate(NEIGHBOUR, 0.42, ("Name 43% similar", "State Delhi matches", "Description/name context similarity 0.41")),
 )
 SIBLING_CANDIDATES: Tuple[Candidate, ...] = (
-    _candidate(
-        HERO_SIBLING,
-        0.91,
-        ("Name 90% similar after expanding INST and MGMT", "District Jabalpur matches"),
-    ),
-    _candidate(
-        HERO,
-        0.64,
-        ("Name 70% similar", "District Jabalpur matches", "Engineering institute; the text mentions management"),
-    ),
+    _candidate(HERO_SIBLING, 0.88, ("Name 84% similar after expanding INST and MGMT", "State Delhi matches")),
+    _candidate(HERO, 0.57, ("Name 61% similar", "State Delhi matches")),
 )
 
 # Stand-ins for thresholds.json values; the stub only needs a rough probable/possible split.
@@ -122,10 +95,10 @@ def _related(a: str, b: str) -> bool:
     return any(a in group and b in group for group in _RELATED_CATEGORIES)
 
 
-_HERO_STATES = {"MADHYA PRADESH", "MP", "M P"}
-_HERO_DISTRICTS = {"JABALPUR", "JBP"}
+_HERO_STATES = {"DELHI", "NEW DELHI", "DL"}
+_HERO_DISTRICTS = {"DELHI", "WEST", "NORTH", "ROHINI"}
 _MANAGEMENT = {"MANAGEMENT", "MGMT", "MGT"}
-_ENGINEERING = {"ENGINEERING", "ENGG", "ENG", "TECH", "TECHNOLOGY", "IET", "VVIET"}
+_ENGINEERING = {"ENGINEERING", "ENGG", "ENG", "TECH", "TECHNOLOGY", "IET", "MAIT"}
 
 
 def _clean(text: str) -> str:
@@ -136,10 +109,10 @@ def _tokens(text: str) -> Set[str]:
     return set(_clean(text).split())
 
 
-def _is_vindhya_valley(tokens: Set[str]) -> bool:
-    if "VVIET" in tokens or "VVIM" in tokens:
+def _is_maharaja_agrasen(tokens: Set[str]) -> bool:
+    if tokens & {"MAIT", "MAIMS", "MABS"}:
         return True
-    return any(t.startswith("VIND") for t in tokens) and bool(tokens & {"VALLEY", "VALLY", "VLY"})
+    return any(t.startswith("MAH") for t in tokens) and any(t.startswith("AGR") for t in tokens)
 
 
 def _location_ok(raw_state: Optional[str], raw_district: Optional[str]) -> bool:
@@ -177,7 +150,7 @@ class StubEngine:
             )
 
         tokens = _tokens(raw_text) | _tokens(raw_district or "")
-        if not _is_vindhya_valley(tokens) or not _location_ok(raw_state, raw_district):
+        if not _is_maharaja_agrasen(tokens) or not _location_ok(raw_state, raw_district):
             return ResolutionResult("unresolved", ())
 
         management_only = bool(tokens & _MANAGEMENT) and not tokens & _ENGINEERING

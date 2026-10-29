@@ -32,7 +32,7 @@ describe('Overlap detail on the mock API (Issue #28)', () => {
       </QueryClientProvider>,
     );
   }
-  const heading = () => screen.findByRole('heading', { name: /Vindhya Valley Institute of Engineering/ });
+  const heading = () => screen.findByRole('heading', { name: /Maharaja Agrasen Institute of Technology/ });
 
   it('shows the banner, the cases grouped by issue and the evidence per pair', async () => {
     renderAs('pgrc_head');
@@ -40,7 +40,7 @@ describe('Overlap detail on the mock API (Issue #28)', () => {
     expect(screen.getByText('Potential Overlapping Cases – Coordination Required')).toBeInTheDocument();
     expect(screen.getByText('Issue 1: Certificates and fee refund')).toBeInTheDocument();
     expect(screen.getByText('Issue 2: Faculty shortage')).toBeInTheDocument();
-    for (const ref of ['PGRC/2026/00412', 'RB/2026/00087', 'RO-CRO/2026/00133']) expect(screen.getAllByText(ref).length).toBeGreaterThan(0);
+    for (const ref of ['PGRC/2026/00412', 'RB/2026/00087', 'RO-NWRO/2026/00133']) expect(screen.getAllByText(ref).length).toBeGreaterThan(0);
     expect(screen.getAllByText('Pair score').length).toBe(fixtures.overlapDetail.data.pairs.length);
     expect(screen.getByRole('button', { name: 'Confirm overlap' })).toBeInTheDocument();
   });

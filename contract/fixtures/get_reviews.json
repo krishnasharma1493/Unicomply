@@ -6,24 +6,24 @@
       "case_id": 112,
       "candidates": [
         {
-          "permanent_id": "1-4870215534",
-          "name": "Satpura Institute of Technology",
+          "permanent_id": "1-43657291568",
+          "name": "Millennium Institute of Technology",
           "district": "Bhopal",
           "state": "Madhya Pradesh",
           "score": 0.83,
           "reasons": [
-            "Acronym SIT matches",
+            "Acronym MIT matches",
             "District Bhopal matches"
           ]
         },
         {
-          "permanent_id": "1-4870219908",
-          "name": "Sarovar Institute of Technology",
+          "permanent_id": "1-43658435413",
+          "name": "Mittal Institute of Technology",
           "district": "Bhopal",
           "state": "Madhya Pradesh",
           "score": 0.82,
           "reasons": [
-            "Acronym SIT matches",
+            "Acronym MIT matches",
             "District Bhopal matches",
             "Two institutions share this acronym in Bhopal"
           ]
@@ -34,7 +34,7 @@
       "decided_by": null,
       "decided_at": null,
       "case_ref": "PGRC/2026/00431",
-      "raw_institution_text": "S.I.T. Bhopal",
+      "raw_institution_text": "M.I.T. Bhopal",
       "raw_state": "Madhya Pradesh",
       "raw_district": "Bhopal",
       "subject": "Migration certificate not issued",
@@ -46,25 +46,25 @@
       "case_id": 113,
       "candidates": [
         {
-          "permanent_id": "1-4812744105",
-          "name": "Narmada Valley College of Engineering",
-          "district": "Jabalpur",
+          "permanent_id": "1-43674307362",
+          "name": "National Institute of Technical Teachers' Training and Research",
+          "district": "Bhopal",
           "state": "Madhya Pradesh",
           "score": 0.76,
           "reasons": [
-            "Name 84% similar after expanding ENGG",
+            "Name 88% similar",
             "State Madhya Pradesh matches; no district given"
           ]
         },
         {
-          "permanent_id": "1-4812730561",
-          "name": "Vindhya Valley Institute of Engineering & Technology",
-          "district": "Jabalpur",
-          "state": "Madhya Pradesh",
+          "permanent_id": "1-43658573897",
+          "name": "National Institute of Technical Teachers Training and Research",
+          "district": "Chennai",
+          "state": "Tamil Nadu",
           "score": 0.44,
           "reasons": [
-            "Name 52% similar after expanding ENGG",
-            "State Madhya Pradesh matches; no district given"
+            "Name 88% similar",
+            "State Tamil Nadu differs from Madhya Pradesh"
           ]
         }
       ],
@@ -73,7 +73,7 @@
       "decided_by": null,
       "decided_at": null,
       "case_ref": "PGRC/2026/00428",
-      "raw_institution_text": "Narmada College of Engg",
+      "raw_institution_text": "Natl Institute of Technical Teachers Training",
       "raw_state": "Madhya Pradesh",
       "raw_district": null,
       "subject": "Caution deposit not refunded after course completion",

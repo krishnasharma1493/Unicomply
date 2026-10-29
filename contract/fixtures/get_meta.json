@@ -385,6 +385,10 @@
         "name": "Polytechnic"
       },
       {
+        "code": "hotel_management",
+        "name": "Hotel management"
+      },
+      {
         "code": "university",
         "name": "University"
       },
@@ -428,6 +432,11 @@
         "id": 12,
         "name": "Farhan Qureshi",
         "bureau_id": 2
+      },
+      {
+        "id": 13,
+        "name": "Manish Bhatia",
+        "bureau_id": 9
       }
     ],
     "today": "2026-11-20"

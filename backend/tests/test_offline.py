@@ -11,7 +11,7 @@ from app.core.config import get_settings
 from app.matching import embed
 from app.matching.embed import make_embedder
 from app.matching.index import build_index
-from tests.test_intake_real import HERO_REFS, VVIET, hero_body, login
+from tests.test_intake_real import HERO_REFS, MAIT, hero_body, login
 
 
 class NoModel:
@@ -67,7 +67,7 @@ def test_the_app_started_in_model_mode_without_the_model_still_flags_the_hero(
         elapsed = time.perf_counter() - started
     assert res.status_code == 201, res.text
     data = res.json()["data"]
-    assert (data["case"]["permanent_id"], data["resolution"]["decision"]) == (VVIET, "auto")
+    assert (data["case"]["permanent_id"], data["resolution"]["decision"]) == (MAIT, "auto")
     [group] = data["overlaps"]
     assert {c["case_ref"] for c in group["cases"]} == HERO_REFS
     assert elapsed < 2.0  # includes building the index from scratch

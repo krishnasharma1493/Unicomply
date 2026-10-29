@@ -23,7 +23,7 @@ SENIOR, PGRC, RB, RO, INTAKE = (
     "senior@aicte.example",
     "pgrc.head@aicte.example",
     "rb.head@aicte.example",
-    "ro.central@aicte.example",
+    "ro.nw@aicte.example",
     "intake@aicte.example",
 )
 TODAY = date(2026, 11, 20)  # what the tiny seed and the contract fixtures are dated for

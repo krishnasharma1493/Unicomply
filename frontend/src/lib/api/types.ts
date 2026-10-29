@@ -233,7 +233,7 @@ export type CaseCreate = {
   raw_state?: string | null;
   /** max 60 */
   raw_district?: string | null;
-  /** `^1-\d{6,10}$`, if the operator already knows it */
+  /** `^1-\d{6,11}$`, if the operator already knows it */
   permanent_id?: PermanentId | null;
   category_id: number;
   /** 3–200 */

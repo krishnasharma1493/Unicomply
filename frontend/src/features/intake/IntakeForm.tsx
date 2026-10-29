@@ -45,17 +45,17 @@ export const IntakeForm: React.FC<IntakeFormProps> = ({ control, errors, meta, s
     <Form layout="vertical" onFinish={onSubmit} noValidate>
       {formError && <Alert type="error" showIcon title={formError} style={{ marginBottom: 16 }} />}
       <Field {...shared} name="raw_institution_text" label="Institution name, as written in the complaint" required
-        render={(v, onChange, id) => text(v, onChange, id, 'e.g. vindya valley engg college jabalpur')} />
+        render={(v, onChange, id) => text(v, onChange, id, 'e.g. maharaja agrsen institute of technology delhi')} />
       <Row gutter={12}>
         <Col xs={24} sm={12}>
-          <Field {...shared} name="raw_state" label="State" render={(v, onChange, id) => text(v, onChange, id, 'e.g. Madhya Pradesh')} />
+          <Field {...shared} name="raw_state" label="State" render={(v, onChange, id) => text(v, onChange, id, 'e.g. Delhi')} />
         </Col>
         <Col xs={24} sm={12}>
           <Field {...shared} name="raw_district" label="District" render={(v, onChange, id) => text(v, onChange, id)} />
         </Col>
       </Row>
       <Field {...shared} name="permanent_id" label="AICTE Permanent ID (if known)"
-        render={(v, onChange, id) => text(v, onChange, id, '1-4812730561')} />
+        render={(v, onChange, id) => text(v, onChange, id, '1-43655981521')} />
       <Row gutter={12}>
         <Col xs={24} sm={12}>
           <Field {...shared} name="source_channel" label="Received through" required

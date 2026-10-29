@@ -1,6 +1,7 @@
 """The synthetic data generator (#23): determinism, spec counts and rates, integrity, ground truth."""
 
 import json
+import re
 import subprocess
 import sys
 import time
@@ -74,7 +75,7 @@ def test_full_seed_loads_in_under_ten_seconds(out: Path) -> None:
     with Session(engine) as session:
         counts = load_seed(session, out, today=SEED_AS_OF)
     assert time.perf_counter() - started < 10
-    assert counts["cases"] == 1500 and counts["institutions"] == 500
+    assert counts["cases"] == 1500 and counts["institutions"] == len(json.loads((out / "institutions.json").read_text())["institutions"])
 
 
 def within(actual: float, target: float, tolerance: float = 0.10) -> bool:
@@ -83,8 +84,10 @@ def within(actual: float, target: float, tolerance: float = 0.10) -> bool:
 
 def test_counts_are_within_ten_percent_of_the_spec(data: Dict[str, Any]) -> None:
     institutions = data["institutions"]["institutions"]
-    assert within(len(institutions), 500) and within(len(data["institutions"]["trusts"]), 60)
-    assert within(sum(i["inst_type"] == "university" for i in institutions), 15)
+    with_cases = {c["permanent_id"] for c in data["cases"]["cases"] if c["permanent_id"]}
+    assert within(len(with_cases), 500)  # the institutions that have cases; the rest of the registry is what the matcher searches
+    assert len(institutions) > 3000 and len(data["institutions"]["trusts"]) >= 40
+    assert sum(i["inst_type"] == "university" for i in institutions) >= 15
     assert within(len(data["cases"]["cases"]), 1500)
     assert len(data["bureaus"]["bureaus"]) == 14  # RB, PGRC, AB, ACAD and the 10 Regional Offices
     clusters = Counter(c["level"] for c in data["ground_truth"]["overlap_clusters"] if c["group_id"] > 4)
@@ -111,19 +114,22 @@ def test_hero_story_is_the_hand_written_one(data: Dict[str, Any]) -> None:
     tiny = read(TINY_SEED_DIR, "cases")["cases"]
     assert data["cases"]["cases"][: len(tiny)] == tiny
     refs = {c["case_ref"]: c for c in tiny}
-    assert refs["PGRC/2026/00412"]["raw_institution_text"] == "VVIET Jabalpur"
+    assert refs["PGRC/2026/00412"]["raw_institution_text"] == "MAIT Delhi"
     assert refs["RB/2026/00079"]["status"] == "escalated"
     assert [a for a in data["alerts"]["alerts"]] == read(TINY_SEED_DIR, "alerts")["alerts"]
 
 
-def test_every_name_is_fictional_and_unique_except_the_deliberate_twins(data: Dict[str, Any]) -> None:
-    names = Counter(i["name"] for i in data["institutions"]["institutions"])
-    twins = {n for n, c in names.items() if c > 1}
-    expected = {"Narmada Valley College of Engineering"}  # the tiny seed's own same-name pair (Madhya Pradesh / Gujarat)
-    assert len(twins - expected) == 10
-    for row in data["institutions"]["institutions"]:
-        assert "Vindhya" not in row["name"] or row["permanent_id"] in {"1-4812730561", "1-4812730987"}
-        assert row["permanent_id"].startswith("1-") and len(row["permanent_id"]) == 12
+def test_every_institution_is_a_real_aicte_record_with_a_unique_permanent_id(data: Dict[str, Any]) -> None:
+    registry = {i["permanent_id"]: i for i in json.loads((SEED_DIR / "aicte_registry.json").read_text())["institutions"]}
+    rows = data["institutions"]["institutions"]
+    assert len({r["permanent_id"] for r in rows}) == len(rows)
+    for row in rows:
+        assert re.fullmatch(r"1-\d{6,11}", row["permanent_id"])
+        assert row["permanent_id"] in registry, f"{row['name']} is not in the AICTE list"
+        assert (row["name"], row["district"], row["state"]) == (registry[row["permanent_id"]]["name"], registry[row["permanent_id"]]["district"], registry[row["permanent_id"]]["state"])
+    names = Counter(r["name_norm"] for r in rows)
+    twins = [n for n, c in names.items() if c > 1 and len({r["state"] for r in rows if r["name_norm"] == n}) > 1]
+    assert len(twins) >= 10  # the same name in two states: the location veto has real cases to prove itself on
 
 
 # ── Integrity ────────────────────────────────────────────────────────────
@@ -285,7 +291,7 @@ def test_hero_intake_still_resolves_and_flags_the_overlap_among_500_institutions
     res = full_client.post("/api/v1/cases", json=load_fixture("requests/post_cases"), headers={"Authorization": f"Bearer {token}"})
     assert res.status_code == 201, res.text
     data = res.json()["data"]
-    assert (data["case"]["permanent_id"], data["resolution"]["decision"]) == ("1-4812730561", "auto")
+    assert (data["case"]["permanent_id"], data["resolution"]["decision"]) == ("1-43655981521", "auto")
     [group] = data["overlaps"]
     assert group["level"] == "institution"
-    assert {c["case_ref"] for c in group["cases"]} == {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"}
+    assert {c["case_ref"] for c in group["cases"]} == {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"}

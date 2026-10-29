@@ -404,7 +404,7 @@ export function intakeHeroCase() {
 
 const normalizeText = (raw: string) => raw.toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim();
 
-/** A seeded review whose raw text the intake repeats (e.g. the ambiguous "S.I.T. Bhopal"). */
+/** A seeded review whose raw text the intake repeats (e.g. the ambiguous "M.I.T. Bhopal"). */
 export const reviewForText = (raw: string) =>
   fixtures.reviews.data.find((r) => normalizeText(r.raw_institution_text) === normalizeText(raw));
 

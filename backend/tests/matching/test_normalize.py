@@ -15,23 +15,24 @@ from app.matching.thresholds import load_thresholds
 
 def test_abbreviations_and_punctuation_normalize_to_registry_form():
     abbreviations = load_abbreviations()
-    messy = normalize_name("Vindhya Valley Inst. of Engg. & Tech.", abbreviations)
-    registry = normalize_name("Vindhya Valley Institute of Engineering & Technology", abbreviations)
-    assert messy == registry == "VINDHYA VALLEY INSTITUTE ENGINEERING TECHNOLOGY"
+    messy = normalize_name("Maharaja Agrasen Inst. of Engg. & Tech.", abbreviations)
+    registry = normalize_name("Maharaja Agrasen Institute of Engineering & Technology", abbreviations)
+    assert messy == registry == "MAHARAJA AGRASEN INSTITUTE ENGINEERING TECHNOLOGY"
 
 
 def test_acronym_district_alias_and_token_helpers():
     abbreviations = load_abbreviations()
-    text = "VVIET Jabalpur"
-    assert "VVIET" in tokens(normalize_name(text, abbreviations))
-    assert extract_district_hint(text, {"JABALPUR": "JABALPUR", "JBP": "JABALPUR"}) == "JABALPUR"
-    assert extract_district_hint("VVIET JBP", {"JABALPUR": "JABALPUR", "JBP": "JABALPUR"}) == "JABALPUR"
-    assert acronym_of("VINDHYA VALLEY INSTITUTE ENGINEERING TECHNOLOGY") == "VVIET"
+    text = "MAIT Rohini"
+    hints = {"WEST DELHI": "WEST DELHI", "ROHINI": "WEST DELHI", "ROH": "WEST DELHI"}
+    assert "MAIT" in tokens(normalize_name(text, abbreviations))
+    assert extract_district_hint(text, hints) == "WEST DELHI"
+    assert extract_district_hint("MAIT ROH", hints) == "WEST DELHI"
+    assert acronym_of("MAHARAJA AGRASEN INSTITUTE TECHNOLOGY") == "MAIT"
 
 
 def test_permanent_id_extraction_is_bounded():
-    assert extract_permanent_id("please review 1-4812730561 urgently") == "1-4812730561"
-    assert extract_permanent_id("id 2-4812730561") is None
+    assert extract_permanent_id("please review 1-43655981521 urgently") == "1-43655981521"
+    assert extract_permanent_id("id 2-43655981521") is None
     assert extract_permanent_id("1-12345") is None
 
 

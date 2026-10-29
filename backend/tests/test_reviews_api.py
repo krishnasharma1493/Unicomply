@@ -11,7 +11,7 @@ Headers = Callable[[str], Dict[str, str]]
 INTAKE = "intake@aicte.example"
 SENIOR = "senior@aicte.example"
 RB = "rb.head@aicte.example"
-RO = "ro.central@aicte.example"
+RO = "ro.nw@aicte.example"
 
 
 def test_queue_is_paginated_oldest_first_and_role_gated(seeded_client: TestClient, auth_headers: Headers):
@@ -26,18 +26,18 @@ def test_queue_is_paginated_oldest_first_and_role_gated(seeded_client: TestClien
 
 def test_permanent_id_decision_updates_case_and_closes_queue(seeded_client, auth_headers, seeded_engine):
     response = seeded_client.post("/api/v1/reviews/1/decide", headers=auth_headers(INTAKE),
-                                  json={"permanent_id": "1-4870215534"})
+                                  json={"permanent_id": "1-43657291568"})
     assert response.status_code == 200, response.text
     body = response.json()["data"]
     assert body["review"]["status"] == "resolved"
-    assert body["case"]["permanent_id"] == "1-4870215534"
+    assert body["case"]["permanent_id"] == "1-43657291568"
     assert body["case"]["match_status"] == "reviewed"
     assert body["alias"]["source"] == "review"
     with Session(seeded_engine) as session:
         assert session.get(MatchReview, 1).status == ReviewStatus.resolved
         assert session.get(Case, 112).match_status == MatchStatus.reviewed
     again = seeded_client.post("/api/v1/reviews/1/decide", headers=auth_headers(INTAKE),
-                               json={"permanent_id": "1-4870215534"})
+                               json={"permanent_id": "1-43657291568"})
     assert again.status_code == 409 and again.json()["error"]["code"] == "ALREADY_DECIDED"
 
 

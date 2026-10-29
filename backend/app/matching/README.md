@@ -43,11 +43,11 @@ The signature feature (PRD §4.4–4.5): resolve a messy institution mention to 
 
 | Function | Inputs → output | Owner |
 | --- | --- | --- |
-| `normalize.extract_permanent_id(text)` | str → first `1-\d{6,10}` in the text, or None | done (#5) |
+| `normalize.extract_permanent_id(text)` | str → first `1-\d{6,11}` in the text, or None | done (#5) |
 | `normalize.load_abbreviations(path=None)` | → short form → expansion, from `seed_data/abbreviations.json` | #19 |
 | `normalize.normalize_name(text, abbreviations)` | → uppercase, no punctuation, abbreviations expanded, stopwords dropped | #19 |
 | `normalize.tokens(text_norm)` | → list of tokens | #19 |
-| `normalize.acronym_of(name_norm)` | → e.g. `VVIET` | #19 |
+| `normalize.acronym_of(name_norm)` | → e.g. `MAIT` | #19 |
 | `normalize.extract_district_hint(text, districts)` | → canonical district (JBP → JABALPUR) or None | #19 |
 | `thresholds.load_thresholds(path=None, overrides=None)` | → validated `Thresholds` (file + non-None env overrides) | #19 |
 | `embed.make_embedder(mode, model_name)` | → `Embedder` (`fit(corpus)`, `encode(texts)` → L2-normalized array) | #20 |
