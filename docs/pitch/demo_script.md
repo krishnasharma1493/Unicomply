@@ -13,7 +13,7 @@ State the script assumes (the numbers below were checked against the full seed o
 | Item | Value |
 | --- | --- |
 | Data | Full demo seed (real AICTE institutions, fabricated cases), loaded by `python -m app.seed --reset` or Admin → reset, with `DEMO_TODAY=2026-11-20` |
-| Dashboard before the live intake | 1,500 cases, 740 pending, 630 beyond SLA, 39 open overlaps |
+| Overview before the live intake | 1,500 cases, 740 pending, 630 beyond SLA, 39 open overlaps |
 | Hero case | PGRC/2026/00412: "Day 19 of 21" (due 2026-11-22), in an overlap |
 | Hero intake result | New case `PGRC/2026/00698` in PGRC, three linked cases (PGRC/2026/00412, RB/2026/00087, RO-NWRO/2026/00133). With the real model: red **Probable** banner, scores 0.72 / 0.61 / 0.56. With the offline TF-IDF fallback: amber **Possible** banner, scores 0.68 / 0.58 / 0.52 (see F-2) |
 | Embeddings | `EMBEDDINGS_MODE=model` with the model **already downloaded** (`paraphrase-multilingual-MiniLM-L12-v2`; run the hero once with network before the event). If the model cannot load, the app falls back to TF-IDF by itself and logs one line; the demo still works but shows the Possible tier |
@@ -36,7 +36,7 @@ Personas (all one click on the login page or in the header switcher): **Senior o
 | # | Time | Driver (on screen) | Narrator says (adapt, keep it short) | If it breaks |
 | --- | --- | --- | --- | --- |
 | 1 | 0:00–0:30 | Problem slide: one institution, four complaints, three units, no shared view. | "Today the same college can face a fee-refund case in PGRC, a show-cause notice from the Regulation Bureau and a Regional Office complaint. None of them knows about the others, so AICTE can act twice, or contradict itself." | None needed. |
-| 2 | 0:30–0:55 | Log in as the **Senior officer**. Dashboard opens. Point at the *beyond SLA* and *open overlaps* cards, then the bureau workload chart. | "One screen for all of AICTE: what is pending, what is past the 21-day limit, and where the work sits. This card is the new part: overlaps, cases about the same institution handled in different places." | Show the Dashboard screenshot slide. |
+| 2 | 0:30–0:55 | Log in as the **Senior officer**. Today opens; open **Overview** from the sidebar. Point at the *beyond SLA* and *open overlaps* cards, then the bureau workload chart. | "One screen for all of AICTE: what is pending, what is past the 21-day limit, and where the work sits. This card is the new part: overlaps, cases about the same institution handled in different places." | Show the Overview screenshot (docs/pitch/fallbacks/step-2-overview.png). |
 | 3 | 0:55–1:20 | Switch persona to **Intake operator** → **Case Intake**. Paste the values from `hero_intake.txt`, institution name first. The candidates panel fills. | "A parent emails us. The name is misspelt, abbreviated, there is no ID. Unicomply expands the short forms, checks the district, finds the right Permanent ID and tells us why." | F-1 (use the Review queue), or open the seeded hero case PGRC/2026/00412 and continue from step 4. |
 | 4 | 1:20–2:00 | Submit. The result panel shows `PGRC/2026/00698` and the red **Potential Overlapping Cases – Coordination Required** banner with three linked cases (PGRC, RB, North-Western RO). Read two reasons aloud, for example *Same institution 1-43655981521* and *Both about certificate withheld*. (Amber **Possible Overlapping Cases – Review Suggested** instead: see F-2.) Optional, 10 seconds: open **Institutions** in the sidebar, search `Agrasen`, and show the **Institution 360** page with the three bureaus' cases side by side. | "Three units are already acting on this college. Without this, PGRC might close a refund while RB is issuing a show-cause. And every flag shows its reasons: same institution, related issues." | Open **Overlap Center** → the Vindhya Valley group. Failing that, play the backup video from 1:20. |
 | 5 | 2:00–2:25 | Switch to **PGRC head**. **Cases** → type `00412` in the search box → open **PGRC/2026/00412**. Show the SLA badge *Day 19 of 21* and the action timeline. Choose **Dispose** → the open-overlap warning appears. Close it. | "Full history: who did what, and when. And nobody can quietly close a case another unit is still working on." | Open the case from the banner's linked-case card instead. |
@@ -71,7 +71,7 @@ The step windows above are the budget (PRD §10A): 4:30 in total. The Narrator l
 | 1. Institution registry and Institution 360 | Step 4 (optional detour via the sidebar); screen **Institutions** |
 | 2. Case intake and tracking fields | Steps 3, 4 and 5 |
 | 3. Cross-bureau overlap detection | Steps 3, 4 and 6; screens **Overlap Center** and **Match Review** |
-| 4. Dashboard | Step 2 |
+| 4. Dashboard (the Overview page) | Step 2 |
 | 5. Workflow and action history | Steps 5 and 6 |
 | 6. Search and filters | Step 5 (search `00412`); screen **Cases** |
 | 7. Alerts and SLA | Step 7 (alert) and step 5 (SLA badge) |
