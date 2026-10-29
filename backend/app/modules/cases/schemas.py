@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field as PydanticField, field_validator
 from sqlmodel import Field, SQLModel
@@ -100,7 +100,7 @@ class CaseListParams(PageParams):
     """Search & filters for GET /cases (PS feature 6)."""
 
     q: Optional[str] = PydanticField(default=None, max_length=300, description="Institution name or raw text")
-    permanent_id: Optional[str] = PydanticField(default=None, max_length=12)
+    permanent_id: Optional[str] = PydanticField(default=None, max_length=13)
     case_ref: Optional[str] = PydanticField(default=None, max_length=30)
     bureau_id: Optional[int] = None
     region: Optional[Region] = None
@@ -113,6 +113,9 @@ class CaseListParams(PageParams):
     to: Optional[date] = None
     beyond_sla: Optional[bool] = None
     in_overlap: Optional[bool] = None
+    sort: Literal["received_desc", "sla_due_asc"] = PydanticField(
+        default="received_desc", description="received_desc (newest first, default) or sla_due_asc (soonest SLA due first)"
+    )
 
     model_config = {"populate_by_name": True}
 

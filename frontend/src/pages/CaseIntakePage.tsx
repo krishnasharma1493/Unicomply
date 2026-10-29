@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Col, Row } from 'antd';
+import { AnimatePresence, motion } from 'motion/react';
 import { useForm, useWatch } from 'react-hook-form';
 import { PageHeader } from '../components/layout/PageHeader';
 import { QueryBoundary } from '../components/states';
@@ -11,11 +12,14 @@ import { IntakeForm } from '../features/intake/IntakeForm';
 import { IntakeResult } from '../features/intake/IntakeResult';
 import { ResolutionPanel } from '../features/intake/ResolutionPanel';
 import { intakeSchema, toCaseCreate, type IntakeFormValues } from '../features/intake/schema';
+import { DuplicateNotice } from '../features/intake/DuplicateNotice';
+import { checkDuplicate, resolvedPid } from '../features/intake/useDuplicateCheck';
 import { useResolvePreview } from '../features/intake/useResolvePreview';
 import { client } from '../lib/api/client';
-import type { CaseIntakeResult, Envelope, Meta } from '../lib/api/types';
+import type { Candidate, CaseIntakeResult, Envelope, Meta } from '../lib/api/types';
 import { apiErrorMessage } from '../lib/format';
-
+import { useMotionPrefs } from '../lib/motion';
+import '../styles/intake.css';
 
 const blank = (meta: Meta): IntakeFormValues => ({
   source_channel: 'email',
@@ -35,9 +39,13 @@ const blank = (meta: Meta): IntakeFormValues => ({
 
 const IntakeWorkspace: React.FC<{ meta: Meta }> = ({ meta }) => {
   const queryClient = useQueryClient();
+  const motionPrefs = useMotionPrefs();
   const [result, setResult] = useState<CaseIntakeResult | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const { control, handleSubmit, reset, setValue, setError, formState } = useForm<IntakeFormValues>({
+  const [reachedDetails, setReachedDetails] = useState(false);
+  const [warnedId, setWarnedId] = useState<number | null>(null);
+  const restored = useRef(false);
+  const { control, handleSubmit, reset, setValue, setError } = useForm<IntakeFormValues>({
     resolver: zodResolver(intakeSchema),
     defaultValues: blank(meta),
     mode: 'onTouched',
@@ -48,13 +56,27 @@ const IntakeWorkspace: React.FC<{ meta: Meta }> = ({ meta }) => {
   });
   const preview = useResolvePreview({ rawText, state, district });
 
+  const { refetch } = preview;
+  const retryPreview = useCallback(() => void refetch(), [refetch]);
+  const selectCandidate = useCallback(
+    (c: Candidate) => setValue('permanent_id', c.permanent_id, { shouldValidate: true }),
+    [setValue],
+  );
+  const clearCandidate = useCallback(() => setValue('permanent_id', ''), [setValue]);
+
+  const onReachDetails = useCallback(() => setReachedDetails(true), []);
+  const duplicateNotice = useMemo(
+    () => <DuplicateNotice control={control} resolution={preview.data} armed={reachedDetails} today={meta.today} onSeen={setWarnedId} />,
+    [control, preview.data, reachedDetails, meta.today],
+  );
+
   const create = useMutation({
     mutationFn: async (values: IntakeFormValues) =>
       (await client.post<Envelope<CaseIntakeResult>>('/cases', toCaseCreate(values))).data.data,
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       setResult(data);
       setFormError(null);
-      await queryClient.invalidateQueries({ queryKey: ['cases'] });
+      void queryClient.invalidateQueries({ queryKey: ['cases'] });
     },
     onError: (error) => {
       const { fields, rest } = splitApiFieldErrors(error);
@@ -65,46 +87,95 @@ const IntakeWorkspace: React.FC<{ meta: Meta }> = ({ meta }) => {
     },
   });
 
-  if (result) {
-    return (
-      <IntakeResult
-        result={result}
-        meta={meta}
-        onNewCase={() => {
-          setResult(null);
-          reset(blank(meta));
-        }}
-      />
-    );
-  }
+  const register = handleSubmit(async (values) => {
+    setReachedDetails(true);
+    const hit = await checkDuplicate(queryClient, {
+      permanentId: resolvedPid(values.permanent_id, preview.data),
+      receivedAt: values.received_at,
+      categoryId: values.category_id,
+      subject: values.subject,
+    });
+    if (hit && hit.case.id !== warnedId) {
+      setWarnedId(hit.case.id); // the notice shows it now; the next press registers
+      return;
+    }
+    create.mutate(values);
+  }, () => {
+    // Take the operator to the first field that needs fixing (fields mark themselves aria-invalid).
+    window.setTimeout(() => (document.querySelector('.uc-intake-form [aria-invalid="true"]') as HTMLElement | null)?.focus(), 0);
+  });
+  // The form is memoised; it gets one stable submit handler that always runs the latest `register`.
+  const latestRegister = useRef(register);
+  latestRegister.current = register;
+  const onSubmit = useCallback(() => void latestRegister.current(), []);
+
+  // "Register another": the form comes back, and focus goes to its first field.
+  useEffect(() => {
+    if (result || !restored.current) return;
+    restored.current = false;
+    document.getElementById('intake-raw_institution_text')?.focus();
+  }, [result]);
+
+  const exit = motionPrefs.reduce ? { opacity: 0 } : { opacity: 0, y: -12, scale: 0.99 };
 
   return (
-    <Row gutter={[24, 24]}>
-      <Col xs={24} lg={14}>
-        <div className="uc-section uc-section-body" style={{ paddingTop: 20 }}>
-        <IntakeForm
-          control={control}
-          errors={formState.errors}
-          meta={meta}
-          submitting={create.isPending}
-          formError={formError}
-          onSubmit={handleSubmit((values) => create.mutate(values))}
-        />
-        </div>
-      </Col>
-      <Col xs={24} lg={10} className="uc-sticky-col">
-        <ResolutionPanel
-          tooShort={preview.tooShort}
-          loading={preview.isFetching}
-          error={preview.error}
-          onRetry={() => void preview.refetch()}
-          resolution={preview.data}
-          selectedId={permanentId || null}
-          onSelect={(c) => setValue('permanent_id', c.permanent_id, { shouldValidate: true })}
-          onClear={() => setValue('permanent_id', '')}
-        />
-      </Col>
-    </Row>
+    <div className="uc-intake-stage">
+      <AnimatePresence mode="popLayout" initial={false}>
+        {result ? (
+          <motion.div key={`result-${result.case.id}`} exit={{ opacity: 0 }} transition={motionPrefs.quick}>
+            <IntakeResult
+              result={result}
+              meta={meta}
+              onNewCase={() => {
+                restored.current = true;
+                setResult(null);
+                setReachedDetails(false);
+                setWarnedId(null);
+                reset(blank(meta));
+              }}
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="form"
+            initial={motionPrefs.enter(8)}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={exit}
+            transition={motionPrefs.spring}
+            style={{ transformOrigin: 'top center' }}
+          >
+            <Row gutter={[24, 24]} align="top">
+              <Col xs={24} lg={14}>
+                <section className="uc-section uc-intake-form-section" aria-label="New case">
+                  <IntakeForm
+                    control={control}
+                    meta={meta}
+                    submitting={create.isPending}
+                    formError={formError}
+                    beforeSubmit={duplicateNotice}
+                    onReachDetails={onReachDetails}
+                    onSubmit={onSubmit}
+                  />
+                </section>
+              </Col>
+              <Col xs={24} lg={10} className="uc-sticky-col">
+                <ResolutionPanel
+                  tooShort={preview.tooShort}
+                  loading={preview.isFetching}
+                  error={preview.error}
+                  onRetry={retryPreview}
+                  resolution={preview.data}
+                  rawText={preview.text}
+                  selectedId={permanentId || null}
+                  onSelect={selectCandidate}
+                  onClear={clearCandidate}
+                />
+              </Col>
+            </Row>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 

@@ -105,7 +105,12 @@ def filter_cases(stmt: SelectOfScalar[Case], p: CaseListParams) -> SelectOfScala
         like = f"%{_escaped(p.q)}%"
         named = select(Institution.permanent_id).where(col(Institution.name).ilike(like, escape="\\"))
         stmt = stmt.where(
-            or_(col(Case.raw_institution_text).ilike(like, escape="\\"), col(Case.permanent_id).in_(named))
+            or_(
+                col(Case.raw_institution_text).ilike(like, escape="\\"),
+                col(Case.permanent_id).in_(named),
+                # A reference or its serial ("00412") finds the case, so search can jump straight to it.
+                col(Case.case_ref).ilike(like, escape="\\"),
+            )
         )
     if p.permanent_id:
         stmt = stmt.where(Case.permanent_id == p.permanent_id)

@@ -6,23 +6,23 @@
 
 :root {
   /* Colour */
-  --uc-canvas: #f5f5f7;
+  --uc-canvas: #f2f3f1;
   --uc-surface: #ffffff;
-  --uc-text: #1d1d1f;
-  --uc-text-2: #636366;
+  --uc-text: #1b1f1d;
+  --uc-text-2: #5b625e;
   --uc-hairline: rgba(0, 0, 0, 0.08);
-  --uc-border: #d2d2d7;
+  --uc-border: #cfd3d0;
   --uc-fill: rgba(0, 0, 0, 0.05);
-  --uc-accent: #0071e3;
-  --uc-accent-text: #0066cc;
-  --uc-accent-tint: rgba(0, 113, 227, 0.1);
-  --uc-focus: rgba(0, 113, 227, 0.5);
-  --uc-red: #d70015;
-  --uc-red-text: #b3000c;
-  --uc-red-tint: #fff2f2;
+  --uc-accent: #0b5e6b;
+  --uc-accent-text: #0b5e6b;
+  --uc-accent-tint: rgba(11, 94, 107, 0.1);
+  --uc-focus: #0b5e6b;
+  --uc-red: #b42318;
+  --uc-red-text: #b42318;
+  --uc-red-tint: #fdf1ef;
   --uc-amber: #9a5300;
   --uc-amber-text: #8a4b00;
-  --uc-amber-tint: #fff7e8;
+  --uc-amber-tint: #fdf5e7;
   --uc-green: #1d7a34;
 
   /* Space: 4 px base, in rem so it scales with the user's text size */
@@ -36,8 +36,8 @@
   --uc-s12: 3rem;
 
   /* Shape */
-  --uc-radius: 0.875rem;
-  --uc-radius-sm: 0.5rem;
+  --uc-radius: 0.5rem;
+  --uc-radius-sm: 0.375rem;
 
   /* Materials: the floating control layer only */
   --uc-glass-thin: rgba(250, 250, 252, 0.72);
@@ -90,12 +90,38 @@ body {
 }
 
 ::selection {
-  background: rgba(0, 113, 227, 0.2);
+  background: rgba(11, 94, 107, 0.2);
 }
 
 :focus-visible {
-  outline: 3px solid var(--uc-focus);
+  outline: 2px solid var(--uc-focus);
   outline-offset: 2px;
+}
+
+/* Keyboard users can jump past the sidebar and toolbar */
+.uc-skip {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1000;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.375rem;
+  background: var(--uc-text);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+.uc-skip:focus {
+  transform: none;
+  color: #fff;
+}
+main h1:focus {
+  outline: none;
+}
+main h1:focus-visible {
+  outline: 2px solid var(--uc-focus);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 a {
@@ -275,7 +301,7 @@ body h5.ant-typography {
   max-width: 75rem;
   margin: 0 auto;
 }
-.uc-page--narrow {
+.uc-page--narrow > * {
   max-width: 56rem;
 }
 .uc-page--wide {
@@ -392,20 +418,27 @@ body h5.ant-typography {
   color: var(--uc-text-2);
 }
 
-/* Small inline labels: bureau codes, IDs */
+/* Codes and identifiers are set like a register: tabular, tracked, outlined, never filled */
 .uc-label {
   display: inline-flex;
   align-items: center;
   height: 1.375rem;
-  padding: 0 0.4375rem;
-  border-radius: 0.3125rem;
-  background: #f0f0f3;
-  color: #3a3a3c;
+  padding: 0 0.375rem;
+  border-radius: 0.25rem;
+  box-shadow: inset 0 0 0 1px var(--uc-border);
+  color: var(--uc-text);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+.uc-ref {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  font-weight: 600;
 }
 
 /* Status: dot + word */
@@ -423,7 +456,7 @@ body h5.ant-typography {
   width: 0.4375rem;
   height: 0.4375rem;
   border-radius: 50%;
-  background: var(--uc-status-dot, #aeaeb2);
+  background: var(--uc-status-dot, #9aa19d);
   flex: none;
 }
 
@@ -474,23 +507,23 @@ body .ant-tag {
   font-weight: 500;
   margin-inline-end: 0;
 }
-body .ant-tag.ant-tag-warning,
-body .ant-tag.ant-tag-gold {
+body .ant-tag.ant-tag-warning.ant-tag-filled:not(.ant-tag-disabled),
+body .ant-tag.ant-tag-gold.ant-tag-filled:not(.ant-tag-disabled) {
   background: var(--uc-amber-tint);
   color: var(--uc-amber-text);
 }
-body .ant-tag.ant-tag-error,
-body .ant-tag.ant-tag-red {
+body .ant-tag.ant-tag-error.ant-tag-filled:not(.ant-tag-disabled),
+body .ant-tag.ant-tag-red.ant-tag-filled:not(.ant-tag-disabled) {
   background: var(--uc-red-tint);
   color: var(--uc-red-text);
 }
-body .ant-tag.ant-tag-success,
-body .ant-tag.ant-tag-green {
+body .ant-tag.ant-tag-success.ant-tag-filled:not(.ant-tag-disabled),
+body .ant-tag.ant-tag-green.ant-tag-filled:not(.ant-tag-disabled) {
   background: #eef8f0;
   color: var(--uc-green);
 }
-body .ant-tag.ant-tag-blue,
-body .ant-tag.ant-tag-processing {
+body .ant-tag.ant-tag-blue.ant-tag-filled:not(.ant-tag-disabled),
+body .ant-tag.ant-tag-processing.ant-tag-filled:not(.ant-tag-disabled) {
   background: var(--uc-accent-tint);
   color: var(--uc-accent-text);
 }
@@ -546,7 +579,7 @@ body .ant-alert-warning {
   background: var(--uc-amber-tint);
 }
 body .ant-alert-info {
-  background: #f0f6fd;
+  background: #edf4f5;
 }
 body .ant-alert-success {
   background: #eef8f0;
@@ -619,7 +652,7 @@ body .ant-btn:not(:disabled):active {
   transform: scale(0.97);
 }
 body .ant-btn-primary:not(:disabled):active {
-  background: #0062c4;
+  background: #084a54;
 }
 body .ant-menu-item:active,
 .uc-pressable:active {
@@ -643,8 +676,34 @@ body .ant-btn:focus-visible,
 body .ant-menu-item:focus-visible,
 body .ant-tabs-tab-btn:focus-visible,
 body .ant-pagination-item:focus-visible {
-  outline: 3px solid var(--uc-focus);
+  outline: 2px solid var(--uc-focus);
   outline-offset: 2px;
+}
+
+/* Keyboard users can jump past the sidebar and toolbar */
+.uc-skip {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1000;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.375rem;
+  background: var(--uc-text);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+.uc-skip:focus {
+  transform: none;
+  color: #fff;
+}
+main h1:focus {
+  outline: none;
+}
+main h1:focus-visible {
+  outline: 2px solid var(--uc-focus);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 /* ---------- Floating control layer: glass ---------- */
@@ -658,7 +717,7 @@ body .ant-message-notice-content {
   backdrop-filter: var(--uc-glass-blur);
   -webkit-backdrop-filter: var(--uc-glass-blur);
   box-shadow: var(--uc-glass-edge), var(--uc-shadow-pop);
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
 }
 body .ant-popover .ant-popover-arrow {
   display: none;
@@ -677,7 +736,7 @@ body .ant-drawer .ant-drawer-content {
   box-shadow: var(--uc-glass-edge), var(--uc-shadow-dialog);
 }
 body .ant-modal .ant-modal-container {
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   padding: var(--uc-s6);
 }
 body .ant-modal-mask,
@@ -780,7 +839,7 @@ body .ant-zoom-leave.ant-zoom-leave-active {
 
 @media (prefers-reduced-transparency: reduce) {
   :root {
-    --uc-glass-thin: #ececf0;
+    --uc-glass-thin: #e9ebe8;
     --uc-glass-regular: #ffffff;
     --uc-glass-thick: #ffffff;
     --uc-glass-blur: none;
@@ -790,25 +849,25 @@ body .ant-zoom-leave.ant-zoom-leave-active {
 
 @media (prefers-contrast: more) {
   :root {
-    --uc-text-2: #3a3a3c;
+    --uc-text-2: #2e3431;
     --uc-hairline: rgba(0, 0, 0, 0.3);
-    --uc-glass-thin: #ececf0;
+    --uc-glass-thin: #e9ebe8;
     --uc-glass-regular: #ffffff;
     --uc-glass-thick: #ffffff;
     --uc-glass-blur: none;
     --uc-glass-blur-thick: none;
-    --uc-glass-edge: 0 0 0 1px #1d1d1f;
+    --uc-glass-edge: 0 0 0 1px #1b1f1d;
   }
   .uc-sidebar-col {
-    box-shadow: inset -1px 0 0 #1d1d1f;
+    box-shadow: inset -1px 0 0 #1b1f1d;
   }
   .uc-toolbar,
   .uc-toolbar[data-scrolled='true'] {
-    box-shadow: 0 1px 0 #1d1d1f;
+    box-shadow: 0 1px 0 #1b1f1d;
   }
   .uc-section,
   body .ant-card {
-    box-shadow: 0 0 0 1px #6e6e73;
+    box-shadow: 0 0 0 1px #646b67;
   }
 }
 
@@ -834,7 +893,7 @@ body .ant-zoom-leave.ant-zoom-leave-active {
   cursor: pointer;
 }
 .uc-kpi--link:hover {
-  background: #fafafc;
+  background: #f9faf8;
 }
 .uc-kpi-label {
   display: flex;
@@ -873,7 +932,7 @@ body .ant-zoom-leave.ant-zoom-leave-active {
   align-items: center;
   height: 2rem;
   padding-left: var(--uc-s3);
-  border-radius: 999px;
+  border-radius: 0.375rem;
   background: var(--uc-fill);
 }
 .uc-persona-label {
@@ -908,8 +967,8 @@ body .uc-avatar.ant-avatar {
   width: 1.75rem;
   height: 1.75rem;
   border-radius: 50%;
-  background: #e5e5ea;
-  color: #3a3a3c;
+  background: #e3e6e3;
+  color: #2e3431;
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -927,7 +986,7 @@ body .uc-avatar.ant-avatar {
   min-height: 2rem;
   padding: 0.1875rem var(--uc-s2) 0.1875rem 0.1875rem;
   border: 0;
-  border-radius: 999px;
+  border-radius: 0.375rem;
   background: transparent;
   font: inherit;
   color: inherit;
@@ -1017,14 +1076,14 @@ body .uc-fields .ant-descriptions-item-content {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--uc-s3);
-  padding: var(--uc-s4) var(--uc-s5);
-  border-radius: 0.75rem;
+  padding: var(--uc-s4) 0 var(--uc-s3);
+  border-top: 2px solid var(--uc-tier, var(--uc-text));
 }
 .uc-banner--probable {
-  background: var(--uc-red-tint);
+  --uc-tier: var(--uc-red);
 }
 .uc-banner--possible {
-  background: var(--uc-amber-tint);
+  --uc-tier: #b26b00;
 }
 .uc-banner-icon {
   font-size: 1.125rem;
@@ -1040,9 +1099,9 @@ body .uc-fields .ant-descriptions-item-content {
 }
 .uc-banner-title {
   display: block;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.012em;
   line-height: 1.35rem;
 }
 .uc-banner-meta {
@@ -1051,9 +1110,6 @@ body .uc-fields .ant-descriptions-item-content {
   align-items: center;
   gap: 0.375rem;
   margin-top: 0.375rem;
-}
-.uc-banner .uc-label {
-  background: rgba(255, 255, 255, 0.75);
 }
 .uc-banner-link {
   align-self: center;
@@ -1085,9 +1141,9 @@ body .uc-fields .ant-descriptions-item-content {
 .uc-reasons > li {
   padding: 0.125rem 0.5rem;
   border-radius: 0.375rem;
-  background: #f2f2f5;
+  background: #eef0ed;
   font-size: 0.8125rem;
-  color: #3a3a3c;
+  color: #2e3431;
 }
 .uc-score {
   display: grid;
@@ -1297,7 +1353,7 @@ body .uc-fields .ant-descriptions-item-content {
 }
 .uc-group-row:hover {
   text-decoration: none;
-  background: #f7f7f9;
+  background: #f6f7f5;
 }
 .uc-group-name {
   font-weight: 600;
@@ -1349,7 +1405,7 @@ body .uc-queue-item.ant-list-item {
   transition: background-color 0.15s ease;
 }
 body .uc-queue-item.ant-list-item:hover {
-  background: #f7f7f9;
+  background: #f6f7f5;
 }
 body .uc-queue-item--selected.ant-list-item,
 body .uc-queue-item--selected.ant-list-item:hover {
@@ -1419,7 +1475,7 @@ code {
   font-size: 0.8125em;
   padding: 0.0625rem 0.3125rem;
   border-radius: 0.25rem;
-  background: #f0f0f3;
+  background: #eceeeb;
 }
 
 /* ---------- Login ---------- */
@@ -1437,10 +1493,6 @@ code {
 .uc-login-head {
   text-align: center;
   margin-bottom: var(--uc-s8);
-}
-.uc-login-head .uc-brand-name {
-  color: var(--uc-text-2);
-  font-size: 0.9375rem;
 }
 .uc-login-head h1 {
   margin: var(--uc-s1) 0 0;
@@ -1491,7 +1543,7 @@ code {
   cursor: pointer;
 }
 .uc-persona-row:hover:not(:disabled) {
-  background: #f5f5f7;
+  background: #f2f3f1;
 }
 .uc-persona-row:disabled {
   cursor: progress;
@@ -1524,6 +1576,12 @@ code {
 }
 
 @media (max-width: 600px) {
+  .uc-account-name {
+    display: none;
+  }
+  .uc-account-trigger {
+    padding-right: 0.1875rem;
+  }
   .uc-persona-label {
     display: none;
   }
@@ -1547,4 +1605,560 @@ body .ant-table-wrapper .ant-table-sticky-scroll {
   .uc-content {
     padding-inline: var(--uc-s6);
   }
+}
+
+
+/* ---------- Evidence Line: the SLA track, the resolution line, lanes, the ledger ---------- */
+
+.uc-sla {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+.uc-sla-track .off {
+  fill: #e3e6e3;
+}
+.uc-sla-track .notch {
+  fill: var(--uc-surface);
+}
+.uc-sla-track .on {
+  fill: #8a918d;
+}
+.uc-sla-track--warning .on {
+  fill: #b26b00;
+}
+.uc-sla-track--error .on {
+  fill: var(--uc-red);
+}
+body .ant-tag.uc-sla-plain {
+  background: transparent;
+  padding-inline: 0;
+  color: var(--uc-text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.uc-resline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.625rem;
+  line-height: 1.45;
+}
+.uc-resline-raw {
+  color: var(--uc-text-2);
+}
+.uc-resline-arrow {
+  flex: none;
+  color: var(--uc-text-2);
+  align-self: center;
+}
+.uc-resline-to {
+  color: var(--uc-text-2);
+}
+.uc-resline-hit {
+  color: var(--uc-accent-text);
+  font-weight: 600;
+}
+.uc-resline-note {
+  flex-basis: 100%;
+}
+
+.uc-lanes {
+  margin: 0;
+  padding: var(--uc-s2) 0 0;
+}
+.uc-lane {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  align-items: center;
+  height: 2.25rem;
+}
+.uc-lane-code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--uc-text-2);
+}
+.uc-lane-track {
+  position: relative;
+  height: 100%;
+}
+.uc-lane-track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--uc-border);
+}
+.uc-lane-case {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 1.5rem;
+  translate: -0.3125rem -50%;
+  white-space: nowrap;
+}
+.uc-lane-case a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: inherit;
+}
+.uc-lane-case.is-flipped,
+.uc-lane-case.is-flipped a {
+  flex-direction: row-reverse;
+}
+.uc-lane-case.is-flipped {
+  translate: calc(-100% + 0.3125rem) -50%;
+}
+.uc-lane-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--uc-surface);
+  box-shadow: inset 0 0 0 2px var(--uc-text-2);
+  flex: none;
+}
+.uc-lane-case.is-current .uc-lane-dot {
+  background: var(--uc-accent);
+  box-shadow: 0 0 0 3px var(--uc-surface), 0 0 0 4px var(--uc-accent);
+}
+.uc-lane-label {
+  font-size: 0.75rem;
+  color: var(--uc-text);
+}
+.uc-lane-label a.is-current,
+.uc-lane-case.is-current .uc-lane-label > a.is-current {
+  color: var(--uc-accent-text);
+}
+.uc-lane-sep {
+  color: var(--uc-text-2);
+}
+.uc-lane-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 4.5rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--uc-hairline);
+  font-size: 0.75rem;
+  color: var(--uc-text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.uc-ledger {
+  margin: 0;
+}
+.uc-ledger-row {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: var(--uc-s3);
+  padding: 0.4375rem 0;
+  border-top: 1px solid var(--uc-hairline);
+}
+.uc-ledger-row:first-child {
+  border-top: 0;
+}
+.uc-ledger dt {
+  color: var(--uc-text-2);
+  font-size: 0.8125rem;
+}
+.uc-ledger dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+
+.uc-grid-scroll {
+  overflow-x: auto;
+}
+.uc-evidence-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+.uc-evidence-grid th,
+.uc-evidence-grid td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  border-top: 1px solid var(--uc-hairline);
+}
+.uc-evidence-grid thead th {
+  border-top: 0;
+  font-size: 0.75rem;
+}
+.uc-evidence-grid tbody th {
+  font-weight: 400;
+  color: var(--uc-text-2);
+  width: 8.5rem;
+}
+
+/* ---------- Command bar ---------- */
+
+.uc-search-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uc-s2);
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 var(--uc-s2) 0 var(--uc-s3);
+  margin-left: var(--uc-s2);
+  border: 0;
+  border-radius: 0.375rem;
+  background: var(--uc-fill);
+  color: var(--uc-text-2);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.uc-search-trigger:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+@media (min-width: 900px) {
+  .uc-search-trigger {
+    min-width: 17rem;
+  }
+  .uc-search-trigger kbd {
+    margin-left: auto;
+  }
+}
+kbd {
+  display: inline-block;
+  min-width: 1.25rem;
+  padding: 0 0.3125rem;
+  border-radius: 0.25rem;
+  box-shadow: inset 0 0 0 1px var(--uc-border);
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.125rem;
+  text-align: center;
+  color: var(--uc-text-2);
+  background: var(--uc-surface);
+}
+body .uc-command .ant-modal-container {
+  padding: var(--uc-s2);
+}
+body .uc-command .ant-input-affix-wrapper {
+  font-size: 1rem;
+  padding: var(--uc-s2) var(--uc-s3);
+}
+.uc-command-list {
+  list-style: none;
+  margin: var(--uc-s1) 0 0;
+  padding: var(--uc-s1) 0 0;
+  border-top: 1px solid var(--uc-hairline);
+  max-height: min(60vh, 26rem);
+  overflow-y: auto;
+}
+.uc-command-group {
+  padding: var(--uc-s2) var(--uc-s3) var(--uc-s1);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--uc-text-2);
+}
+.uc-command-item {
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--uc-s3);
+  min-height: 2.5rem;
+  padding: 0.375rem var(--uc-s3);
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+.uc-command-item.is-active {
+  background: var(--uc-accent-tint);
+}
+.uc-command-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.uc-command-text .uc-meta {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.uc-command-icon,
+.uc-command-go {
+  color: var(--uc-text-2);
+}
+.uc-command-go {
+  font-size: 0.6875rem;
+  opacity: 0;
+}
+.uc-command-item.is-active .uc-command-go {
+  opacity: 1;
+}
+.uc-command-empty {
+  padding: var(--uc-s4) var(--uc-s3);
+  color: var(--uc-text-2);
+}
+.uc-command-foot {
+  display: flex;
+  gap: var(--uc-s4);
+  padding: var(--uc-s2) var(--uc-s3) var(--uc-s1);
+  border-top: 1px solid var(--uc-hairline);
+  margin-top: var(--uc-s1);
+}
+.uc-link-button {
+  display: inline-flex;
+  align-items: center;
+  height: 2.125rem;
+  padding: 0 1rem;
+  border-radius: 0.375rem;
+  background: var(--uc-accent);
+  color: #fff;
+  font-weight: 500;
+}
+.uc-link-button:hover {
+  color: #fff;
+  text-decoration: none;
+  background: #084a54;
+}
+
+
+/* ---------- Review fixes: words beside the SLA track are plain, tier chips are outlined ---------- */
+
+/* The SLA words sit beside the track as text, not in a tinted chip (the Tag keeps its status classes) */
+body .uc-sla .ant-tag.ant-tag-filled:not(.ant-tag-disabled) {
+  background: transparent;
+  padding-inline: 0;
+  font-variant-numeric: tabular-nums;
+}
+body .uc-sla .ant-tag.ant-tag-warning.ant-tag-filled:not(.ant-tag-disabled) {
+  color: var(--uc-amber-text);
+}
+body .uc-sla .ant-tag.ant-tag-error.ant-tag-filled:not(.ant-tag-disabled) {
+  color: var(--uc-red-text);
+}
+/* Tier: outlined in its colour, no fill */
+body .ant-tag.uc-tier.ant-tag-filled:not(.ant-tag-disabled) {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px currentColor;
+  font-weight: 600;
+}
+
+/* Pair-score meters keep their length inside narrow grid cells */
+.uc-evidence-grid .uc-score {
+  grid-template-columns: minmax(4rem, 8rem) auto;
+  gap: var(--uc-s2);
+}
+.uc-evidence-grid .ant-progress {
+  min-width: 4rem;
+}
+@media (max-width: 600px) {
+  /* The pair grid scrolls inside its own edge rather than being cut off */
+  .uc-grid-scroll {
+    margin-inline: calc(-1 * var(--uc-s5));
+    padding-inline: var(--uc-s5);
+  }
+  .uc-evidence-grid {
+    min-width: 34rem;
+    table-layout: auto !important;
+  }
+  .uc-lane-track {
+    margin-right: 2.5rem;
+  }
+  body .uc-persona .ant-select {
+    max-width: 7rem;
+  }
+}
+
+
+/* ---------- Choreography: content arrives in reading order, fast, never blocking ---------- */
+/*
+ * Entrances run once when content mounts (a page, a refreshed list, a changed filter), finish in
+ * under half a second, and never gate input: everything is clickable from the first frame.
+ */
+@keyframes uc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes uc-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes uc-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Sections of a page settle top to bottom */
+  .uc-stack > *,
+  .uc-today-col > *,
+  .uc-grid-2 > *,
+  .uc-grid-split > *,
+  .uc-kpis,
+  .ins-layout > *,
+  .uc-page-header {
+    animation: uc-rise 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .uc-today-col:nth-child(2) > *,
+  .uc-grid-2 > :nth-child(2),
+  .uc-grid-split > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+  .uc-stack > :nth-child(2),
+  .uc-today-col > :nth-child(2) {
+    animation-delay: 70ms;
+  }
+  .uc-stack > :nth-child(3),
+  .uc-today-col > :nth-child(3) {
+    animation-delay: 140ms;
+  }
+  .uc-stack > :nth-child(n + 4),
+  .uc-today-col > :nth-child(n + 4) {
+    animation-delay: 200ms;
+  }
+
+  /* Rows inside a list follow, a beat apart, for the first screenful only */
+  .uc-rows > li,
+  .uc-today-rows > li,
+  .uc-group-list > li,
+  .uc-split-rows > li,
+  .uc-candidates > li,
+  .uc-ledger-row,
+  .uc-evidence-grid tbody tr,
+  .uc-command-item {
+    animation: uc-rise 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .uc-rows > li:nth-child(2), .uc-today-rows > li:nth-child(2), .uc-group-list > li:nth-child(2), .uc-split-rows > li:nth-child(2), .uc-candidates > li:nth-child(2), .uc-ledger-row:nth-child(2), .uc-evidence-grid tbody tr:nth-child(2) { animation-delay: 35ms; }
+  .uc-rows > li:nth-child(3), .uc-today-rows > li:nth-child(3), .uc-group-list > li:nth-child(3), .uc-split-rows > li:nth-child(3), .uc-candidates > li:nth-child(3), .uc-ledger-row:nth-child(3), .uc-evidence-grid tbody tr:nth-child(3) { animation-delay: 70ms; }
+  .uc-rows > li:nth-child(4), .uc-today-rows > li:nth-child(4), .uc-group-list > li:nth-child(4), .uc-split-rows > li:nth-child(4), .uc-ledger-row:nth-child(4), .uc-evidence-grid tbody tr:nth-child(4) { animation-delay: 105ms; }
+  .uc-rows > li:nth-child(5), .uc-today-rows > li:nth-child(5), .uc-group-list > li:nth-child(5), .uc-split-rows > li:nth-child(5), .uc-ledger-row:nth-child(5), .uc-evidence-grid tbody tr:nth-child(5) { animation-delay: 140ms; }
+  .uc-rows > li:nth-child(6), .uc-today-rows > li:nth-child(6), .uc-group-list > li:nth-child(6), .uc-split-rows > li:nth-child(6), .uc-evidence-grid tbody tr:nth-child(6) { animation-delay: 170ms; }
+  .uc-rows > li:nth-child(7), .uc-today-rows > li:nth-child(7), .uc-group-list > li:nth-child(7), .uc-split-rows > li:nth-child(7) { animation-delay: 200ms; }
+  .uc-rows > li:nth-child(n + 8), .uc-today-rows > li:nth-child(n + 8), .uc-group-list > li:nth-child(n + 8), .uc-split-rows > li:nth-child(n + 8) { animation-delay: 230ms; }
+
+  /* Table rows on the Cases and report tables arrive the same way */
+  body .ant-table-tbody > tr.ant-table-row {
+    animation: uc-fade 0.36s ease-out both;
+  }
+
+  /* The overlap lanes draw themselves left to right, lane by lane, before the cases land on them */
+  .uc-lane-track::before {
+    transform-origin: left center;
+    animation: uc-draw 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .uc-lane:nth-child(2) .uc-lane-track::before { animation-delay: 70ms; }
+  .uc-lane:nth-child(3) .uc-lane-track::before { animation-delay: 140ms; }
+  .uc-lane:nth-child(n + 4) .uc-lane-track::before { animation-delay: 200ms; }
+  .uc-lane-axis {
+    animation: uc-fade 0.4s ease-out 0.25s both;
+  }
+  /* The tier rule over an overlap banner draws in from where the eye starts reading */
+  .uc-banner {
+    position: relative;
+  }
+
+  /* Hover is felt, not announced: rows lift their trailing detail a few pixels */
+  .uc-today-row,
+  .uc-group-row,
+  .uc-split-row {
+    transition: background-color 0.18s ease, transform 0.09s ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uc-stack > *,
+  .uc-today-col > *,
+  .uc-kpis,
+  .uc-rows > li,
+  .uc-today-rows > li,
+  .uc-group-list > li,
+  .uc-split-rows > li {
+    animation: uc-fade 0.15s ease-out both;
+  }
+}
+
+/* ---------- Accessibility re-audit fixes ---------- */
+
+/* Our ink focus ring wins over Ant Design's tinted one on every control */
+body .ant-btn:focus-visible,
+body .ant-menu-item:focus-visible,
+body .ant-segmented-item:focus-within,
+body .ant-pagination-item:focus-visible,
+body a:focus-visible {
+  outline: 2px solid var(--uc-focus) !important;
+  outline-offset: 2px !important;
+}
+/* The command bar's field shows where typing goes */
+body .uc-command .ant-input-affix-wrapper-focused {
+  box-shadow: inset 0 -2px 0 var(--uc-focus) !important;
+}
+
+/* 2.5.8 targets: the password toggle and chart drill-down links */
+body .ant-input-password .ant-input-suffix {
+  margin-inline-start: 0.25rem;
+}
+body .ant-input-password-icon.anticon {
+  padding: 0.25rem;
+  margin: -0.25rem;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  cursor: pointer;
+}
+body .uc-chart-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding-block: 0.125rem;
+}
+
+/* 1.4.10 reflow at 320 px: the toolbar never pushes the account off-screen */
+.uc-toolbar-group {
+  min-width: 0;
+}
+.uc-toolbar .ant-btn-icon-only {
+  flex-shrink: 0;
+  min-width: 1.75rem;
+}
+.uc-account-trigger {
+  flex-shrink: 0;
+}
+@media (max-width: 380px) {
+  .uc-persona {
+    display: none;
+  }
+  .uc-toolbar {
+    padding-inline: var(--uc-s2);
+  }
+}
+/* Long meta on Today rows wraps instead of spilling at narrow widths */
+@media (max-width: 420px) {
+  .uc-today-row,
+  .uc-today-row * {
+    white-space: normal;
+  }
+}
+
+.uc-countup::after {
+  content: attr(data-v);
 }

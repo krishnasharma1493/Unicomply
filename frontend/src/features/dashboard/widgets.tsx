@@ -54,7 +54,7 @@ const ClickableBars: React.FC<{
   const navigate = useNavigate();
   return (
     <>
-      <div style={{ width: '100%', height: 240 }} aria-hidden="true">
+      <div style={{ width: '100%', height: 240 }} aria-hidden="true" inert>
         <ResponsiveContainer>
           <BarChart data={data} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
             <CartesianGrid vertical={false} stroke="rgba(0, 0, 0, 0.07)" />
@@ -143,6 +143,7 @@ export const TopInstitutions: React.FC = () => {
     <Section title="Institutions needing attention" flush>
       <QueryBoundary query={rows} loadingTip="Loading institutions" emptyDescription="No institutions with cases yet.">
         {(data) => (
+          <div className="uc-grid-scroll">
           <Table<InstitutionStatusRow>
             size="small"
             rowKey="permanent_id"
@@ -152,7 +153,8 @@ export const TopInstitutions: React.FC = () => {
               { title: 'Institution', dataIndex: 'name', width: '34%', render: (name: string, r) => <Link to={`/institutions/${r.permanent_id}`}>{name}</Link> },
               { title: 'Open', dataIndex: 'open', width: 70 },
               { title: 'Beyond SLA', dataIndex: 'beyond_sla', width: 110 },
-              { title: 'Overlaps', dataIndex: 'open_overlap_groups', width: 90 },
+              // A column of zeros says nothing; it appears only when some institution has an open group.
+              ...(data.some((r) => r.open_overlap_groups > 0) ? [{ title: 'Overlaps', dataIndex: 'open_overlap_groups' as const, width: 90 }] : []),
               {
                 title: 'By status',
                 key: 'status',
@@ -164,6 +166,7 @@ export const TopInstitutions: React.FC = () => {
               },
             ]}
           />
+          </div>
         )}
       </QueryBoundary>
     </Section>

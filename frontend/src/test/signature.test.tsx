@@ -36,7 +36,7 @@ describe('Signature components (Issue #24)', () => {
 
   describe('WhyFlagged', () => {
     it('lists reasons and labels the score instead of showing a bare percentage', () => {
-      render(<WhyFlagged reasons={['Name 88% similar', 'District Jabalpur matches']} score={0.93} />);
+      render(<WhyFlagged reasons={['Name 88% similar', 'District West Delhi matches']} score={0.93} />);
       expect(screen.getByText('Name 88% similar')).toBeInTheDocument();
       expect(screen.getByText('Match score')).toBeInTheDocument();
       expect(screen.getByLabelText('Match score 93 out of 100')).toBeInTheDocument();

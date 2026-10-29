@@ -16,8 +16,8 @@ from app.modules.overlaps.models import OverlapGroup, OverlapLink, OverlapPair
 from app.modules.reviews.models import MatchReview
 from tests.conftest import DEMO_PASSWORD
 
-VVIET = "1-4812730561"
-HERO_REFS = {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"}
+MAIT = "1-43655981521"
+HERO_REFS = {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"}
 
 
 @pytest.fixture(name="probable_thresholds")
@@ -47,9 +47,9 @@ def test_hero_intake_resolves_and_links_the_three_cases_with_reasons(full_client
     res = full_client.post("/api/v1/cases", json=hero_body(), headers=login(full_client, "intake@aicte.example"))
     assert res.status_code == 201, res.text
     data = res.json()["data"]
-    assert (data["case"]["permanent_id"], data["case"]["match_status"], data["resolution"]["decision"]) == (VVIET, "auto", "auto")
+    assert (data["case"]["permanent_id"], data["case"]["match_status"], data["resolution"]["decision"]) == (MAIT, "auto", "auto")
     top = data["resolution"]["candidates"][0]
-    assert top["permanent_id"] == VVIET and top["reasons"]
+    assert top["permanent_id"] == MAIT and top["reasons"]
     [group] = data["overlaps"]
     assert (group["level"], group["status"]) == ("institution", "open")
     assert {c["case_ref"] for c in group["cases"]} == HERO_REFS
@@ -73,7 +73,7 @@ def test_the_live_preview_ranks_the_right_institution_first(full_client: TestCli
     res = full_client.post("/api/v1/institutions/resolve", json=load_fixture("requests/post_institutions_resolve"), headers=login(full_client, "intake@aicte.example"))
     assert res.status_code == 200
     data = res.json()["data"]
-    assert data["decision"] == "auto" and data["candidates"][0]["permanent_id"] == VVIET
+    assert data["decision"] == "auto" and data["candidates"][0]["permanent_id"] == MAIT
     scores = [c["score"] for c in data["candidates"]]
     assert scores == sorted(scores, reverse=True) and scores[0] - scores[1] >= 0.05
 
@@ -94,9 +94,9 @@ def test_probable_overlap_alerts_the_involved_heads_and_senior_management_as_cri
     since = last_alert_id(full_engine)
     full_client.post("/api/v1/cases", json=hero_body(), headers=login(full_client, "intake@aicte.example"))
     new = new_overlap_alerts(full_engine, since)
-    assert {a.recipient_id for a in new} == {1, 2, 3, 4}  # senior, PGRC head, RB head, central RO officer
+    assert {a.recipient_id for a in new} == {1, 2, 3, 4}  # senior, PGRC head, RB head, North-Western RO officer
     assert {a.severity.value for a in new} == {"critical"}
-    assert all(a.group_id == 1 and a.permanent_id == VVIET for a in new)
+    assert all(a.group_id == 1 and a.permanent_id == MAIT for a in new)
     assert all(a.title.startswith("Potential overlapping cases") for a in new)
 
 
@@ -158,18 +158,18 @@ def test_median_intake_is_under_two_seconds_on_the_full_seed(full_client: TestCl
 
 # ── #42: the live hero intake in both embeddings modes, and the ambiguous name ──
 
-NARMADA = "Narmada Valley College of Engineering"  # seeded in Madhya Pradesh and in Gujarat
+NITTTR = "National Institute of Technical Teachers' Training and Research"  # real AICTE institutions in Madhya Pradesh (Bhopal) and Tamil Nadu (Chennai)
 
 
 def test_the_same_name_in_two_states_without_a_state_is_registered_for_review(full_client: TestClient) -> None:
     res = full_client.post(
-        "/api/v1/cases", json=hero_body(raw_institution_text=NARMADA, raw_state=None, raw_district=None),
+        "/api/v1/cases", json=hero_body(raw_institution_text=NITTTR, raw_state=None, raw_district=None),
         headers=login(full_client, "intake@aicte.example"),
     )
     assert res.status_code == 201, res.text
     data = res.json()["data"]
     assert (data["resolution"]["decision"], data["case"]["match_status"], data["case"]["permanent_id"]) == ("pending_review", "pending_review", None)
-    assert {"Madhya Pradesh", "Gujarat"} <= {c["state"] for c in data["resolution"]["candidates"]}
+    assert {"Madhya Pradesh", "Tamil Nadu"} <= {c["state"] for c in data["resolution"]["candidates"]}
     assert data["overlaps"] == []
     queue = full_client.get("/api/v1/reviews", params={"status": "pending", "limit": 100}, headers=login(full_client, "intake@aicte.example"))
     assert data["case"]["id"] in {r["case_id"] for r in queue.json()["data"]}
@@ -193,7 +193,7 @@ def model_mode_fixture(test_settings, monkeypatch: pytest.MonkeyPatch) -> None:
 def test_hero_intake_is_probable_with_the_ps_banner_in_model_mode(full_client: TestClient, model_mode: None) -> None:
     res = full_client.post("/api/v1/cases", json=hero_body(), headers=login(full_client, "intake@aicte.example"))
     data = res.json()["data"]
-    assert data["resolution"]["decision"] == "auto" and data["case"]["permanent_id"] == VVIET
+    assert data["resolution"]["decision"] == "auto" and data["case"]["permanent_id"] == MAIT
     [group] = data["overlaps"]
     assert (group["level"], group["tier"]) == ("institution", "probable")
     assert group["banner"] == "Potential Overlapping Cases – Coordination Required"

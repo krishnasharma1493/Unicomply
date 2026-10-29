@@ -22,8 +22,8 @@ from app.modules.reviews.models import MatchReview
 from app.seed import SEED_DIR
 from tests.conftest import DEMO_PASSWORD, SEED_AS_OF
 
-VVIET = "1-4812730561"
-HERO_REFS = {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"}
+MAIT = "1-43655981521"
+HERO_REFS = {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"}
 CYCLES = 10  # PRD §10 / #54: ten consecutive resets and hero intakes must agree
 
 
@@ -80,7 +80,7 @@ def test_offline_the_hero_still_resolves_and_flags_the_overlap(
     assert res.status_code == 201, res.text
     data = res.json()["data"]
     assert embedder_mode(full_engine) == "tfidf"  # the offline fallback, not a pretend model
-    assert (data["case"]["permanent_id"], data["resolution"]["decision"]) == (VVIET, "auto")
+    assert (data["case"]["permanent_id"], data["resolution"]["decision"]) == (MAIT, "auto")
     [group] = data["overlaps"]
     assert {c["case_ref"] for c in group["cases"]} == HERO_REFS and group["reasons"]
     if offline == "model-unavailable":
@@ -188,10 +188,10 @@ def test_ten_resets_and_hero_intakes_give_identical_results(cycles: List[Dict[st
         assert snap == cycles[0], f"cycle {i} differs from cycle 1 ({offline})"
     # ... and the identical result is the demo's: a wrong answer ten times over would also be "identical"
     first = cycles[0]
-    assert first["case"]["permanent_id"] == VVIET and first["case"]["match_status"] == "auto"
+    assert first["case"]["permanent_id"] == MAIT and first["case"]["match_status"] == "auto"
     assert first["resolution"]["decision"] == first["preview"]["decision"] == "auto"
     names = [c["permanent_id"] for c in first["preview"]["candidates"]]
-    assert names[0] == VVIET and len(set(names)) == len(names)
+    assert names[0] == MAIT and len(set(names)) == len(names)
     [group] = first["overlaps"]
     assert (group["level"], group["status"]) == ("institution", "open")
     assert group["cases"] == sorted(HERO_REFS)

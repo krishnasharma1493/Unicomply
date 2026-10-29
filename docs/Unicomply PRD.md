@@ -46,7 +46,7 @@ Complaints about the same institution reach AICTE through several channels (CPGR
 | Senior officer (`senior@aicte.example`, also `is_admin` for demo reset) | `senior_mgmt` | All-India KPIs, overlaps, SLA breaches, monthly/quarterly reports |
 | PGRC head (`pgrc.head@aicte.example`) | `bureau_head` | PGRC workload, CPGRAMS cases near the 21-day limit, overlaps involving PGRC |
 | RB head (`rb.head@aicte.example`) | `bureau_head` | RB workload + every overlap that involves RB |
-| Central RO officer (`ro.central@aicte.example`) | `ro_officer` | Cases of institutions in the Central region |
+| North-Western RO officer (`ro.nw@aicte.example`) | `ro_officer` | Cases of institutions in the North-Western region |
 | Intake operator (`intake@aicte.example`) | `intake_operator` | Register email/letter cases; resolve uncertain institution matches |
 
 Case officers are **not** logins in the demo: `assigned_officer_id` stays a data field with seeded officer names, and the bureau head acts for the bureau. Production adds per-officer logins (§12A).
@@ -68,7 +68,7 @@ Student-facing complaint portal, real CPGRAMS/email integration, real AICTE data
 | A3 | Auth is demo-grade: a one-click persona switcher logs in through the base blueprint login (one shared demo password, one 12-hour JWT), plus the `AUTH_DISABLED` switch (base blueprint) | Judges score role-based workflows, not login hardening; a user identity is still needed for the audit trail and bureau-scoped views |
 | A4 | **Scoping is by role, bureau and region**, not by owner. Out-of-scope records return 404 | PS: authorized officials, bureau/cell-wise views |
 | A5 | Officials are the only users. Complaints enter via an intake API that stands in for CPGRAMS/portal/email feeds; the demo uses an intake form | Target users in the PS are all AICTE officials |
-| A6 | **All data is synthetic**, including institution names and Permanent IDs (format `1-XXXXXXXXXX`, mimicking real AICTE IDs). No real institution is named in any complaint | No real complaints or personal data; avoids defaming real colleges |
+| A6 | **Institutions are real, everything else is synthetic.** Institution names, districts, addresses and Permanent IDs (format `1-` followed by 6 to 11 digits) come from AICTE's public approved-institution list. Cases, complaint text, complainants, officers and all case history are fabricated for the demo | No real complaints or personal data exist in the system; the registry the matcher searches is realistic |
 | A7 | Default SLA = **21 days**, matching the CPGRAMS limit; an interim reply records a revised expected date but the case still counts as beyond the prescribed timeline after day 21 | DARPG reduced the CPGRAMS limit from 30 to 21 days (Aug 2024) |
 | A8 | The embedding model is downloaded once before the event; `EMBEDDINGS_MODE=tfidf` is the offline fallback with no download | The signature feature must never fail on stage |
 | A9 | JSON is snake\_case; ids are integers except `permanent_id` (string) and `case_ref` (human-readable, e.g. `PGRC/2026/00412`) | Base blueprint A6 + real-looking references |
@@ -128,7 +128,7 @@ The data is relational at its core (institution ↔ trust ↔ parent, case ↔ a
 
 | # | Feature | PS feature | Done when |
 | --- | --- | --- | --- |
-| M1 | Persona switcher + role-scoped views | Target users | 5 persona cards log in with one click (JWT per persona); PGRC head sees PGRC cases, RB head RB cases, Central RO officer only Central-region cases; out-of-scope ids return 404 |
+| M1 | Persona switcher + role-scoped views | Target users | 5 persona cards log in with one click (JWT per persona); PGRC head sees PGRC cases, RB head RB cases, North-Western RO officer only North-Western-region cases; out-of-scope ids return 404 |
 | M2 | Institution registry + **Institution 360** page | 1 | Search by name or Permanent ID; profile shows address, region, trust, parent/departments, and every case grouped by bureau with status |
 | M3 | **Case intake** with live institution resolution | 2, 3 | Intake form (channel, raw institution text, state/district, category, description) shows top-3 candidate institutions with scores while typing; submit creates a case with a `case_ref` |
 | M4 | **Overlap Engine** (signature) | 3, Innovation | On every new or re-matched case: resolve → find related open cases at institution/parent/trust level → score → create or extend an overlap group → alert. Works with `EMBEDDINGS_MODE=tfidf` offline |
@@ -293,7 +293,7 @@ Every list query goes through `scope_cases(stmt, user)`; every by-id load goes t
 | --- | --- | --- | --- |
 | `senior_mgmt` | Senior officer (`is_admin=true`) | Everything | Overlap decisions, escalate, remark, all reports, demo reset |
 | `bureau_head` | PGRC head, RB head | Cases whose `current_bureau_id` = own bureau | Every case action on own-bureau cases (set assigned officer, transfer, escalate, interim reply, dispose, reopen); decide overlaps involving own bureau |
-| `ro_officer` | Central RO officer | Cases of institutions in own region (any bureau) | Case actions where `current_bureau_id` = own RO |
+| `ro_officer` | North-Western RO officer | Cases of institutions in own region (any bureau) | Case actions where `current_bureau_id` = own RO |
 | `intake_operator` | Intake operator | Cases they created + review queue | Create cases, decide match reviews |
 
 **Permission checks are one dependency**, `require_roles(*roles)`, on case actions, overlap decisions and review decisions; no permission matrix. Wherever §5 or §7 says `admin`, read: the senior officer persona with `is_admin=true`. Authentication is demo-grade by design; the production plan is in §12A.
@@ -356,9 +356,9 @@ ALLOWED = {
 `resolve_institution(raw_text, raw_state, raw_district)` maps a messy name to a Permanent ID with a tiered, registry-anchored pipeline: exact first, fuzzy only on the leftovers, location as a veto. This is the pattern that reached 0.97 precision / 0.93 recall against an official registry, while unconstrained fuzzy matching inflated false positives (Kang et al., 2026).
 
 1. **Normalize:** uppercase, strip punctuation, collapse spaces; expand abbreviations from `abbreviations.json` (ENGG/ENGG./ENG → ENGINEERING, INST/INSTT → INSTITUTE, TECH → TECHNOLOGY, COLL → COLLEGE, MGMT/MGT → MANAGEMENT, UNIV → UNIVERSITY, POLY → POLYTECHNIC, & → AND); drop stopwords (OF, AND, THE, FOR); pull out a district hint by matching known district names and their short forms (JBP → JABALPUR).
-2. **Exact tier:** a Permanent ID in the text (regex `\b1-\d{6,10}\b`) → linked, score 1.0. An exact `name_norm` or confirmed `alias_norm` match → score 0.99.
+2. **Exact tier:** a Permanent ID in the text (regex `\b1-\d{6,11}\b`) → linked, score 1.0. An exact `name_norm` or confirmed `alias_norm` match → score 0.99.
 3. **Blocking + location veto:** compare only with institutions in `raw_state` (all states, with a penalty, if missing). If a district is known and a candidate's district differs, the candidate is **removed**, however similar the name.
-4. **Score** each remaining candidate (formula below): fuzzy name similarity (RapidFuzz token-set and partial ratio), semantic similarity (embedding cosine of name + district), acronym match (query token equals the candidate's acronym, e.g. VVIET; Smash-style handling of acronyms, abbreviations and typos together, Wu et al., 2024), and location agreement.
+4. **Score** each remaining candidate (formula below): fuzzy name similarity (RapidFuzz token-set and partial ratio), semantic similarity (embedding cosine of name + district), acronym match (query token equals the candidate's acronym, e.g. MAIT; Smash-style handling of acronyms, abbreviations and typos together, Wu et al., 2024), and location agreement.
 5. **Decide:** top score ≥ `T_auto` **and** a margin ≥ 0.05 over the runner-up → `auto` link. Top score ≥ `T_review` → `pending_review` with the top-k in the review queue. Below → `unresolved`, also queued (operator searches manually).
 6. **Learn:** a reviewer's choice saves `institution_alias(alias_norm → permanent_id, source='review')`, so the same spelling resolves exactly next time.
 
@@ -368,7 +368,7 @@ ALLOWED = {
 
 Weights are starting values; tune them once on the synthetic dev split with `python -m app.eval --tune`, then freeze. Thresholds come from a 2-component Gaussian mixture fitted on unlabeled score distributions (ZeroER approach, Wu et al., 2019), written to `thresholds.json`.
 
-Every candidate carries plain-language **reasons** shown in the UI: "Name 92% similar", "Acronym VVIET matches", "District Jabalpur matches", "Spelling previously confirmed by a reviewer". Embeddings only **retrieve** candidates; the decision is the score plus thresholds, because better embeddings raise candidate recall but barely move final accuracy (Qi et al., 2026).
+Every candidate carries plain-language **reasons** shown in the UI: "Name 92% similar", "Acronym MAIT matches", "District West Delhi matches", "Spelling previously confirmed by a reviewer". Embeddings only **retrieve** candidates; the decision is the score plus thresholds, because better embeddings raise candidate recall but barely move final accuracy (Qi et al., 2026).
 
 ### 4.5 Overlap engine (signature, part 2)
 
@@ -395,7 +395,7 @@ Resolution decides which institution a case is about; only then does overlap det
 
 - `s_text` = cosine similarity of description embeddings (text alone is not enough, so it is fused with category and time; Chen et al., 2025). `s_category` = 1 same category, 0.5 related (fee refund \~ certificate withheld \~ scholarship; faculty shortage \~ infrastructure \~ unapproved course; ragging \~ harassment), else 0. Δt = days between `received_at`. `w_level` = institution / parent / trust.
 - **Issue clusters inside a group** use complete linkage: a case joins a cluster only if it passes `T_possible` with **every** member (Mamun et al., 2016). The side-by-side view groups cases by cluster.
-- **Reasons** (stored in `overlap_pair.reasons`): "Same institution 1-48XXXXXXXX", "Handled by PGRC and RB", "Both about certificates being withheld", "Description similarity 0.81", "Received 9 days apart", "Both run by Vindhya Valley Education Trust".
+- **Reasons** (stored in `overlap_pair.reasons`): "Same institution 1-4XXXXXXXXXX", "Handled by PGRC and RB", "Both about certificates being withheld", "Description similarity 0.81", "Received 9 days apart", "Both run by Vindhya Valley Education Trust".
 - **Banner text** for Probable groups is exactly the PS's wording: **"Potential Overlapping Cases – Coordination Required"**.
 
 **Human decision (always required for linking):**
@@ -456,17 +456,17 @@ Alerts for one institution on one day are **grouped** into a single card in the 
 | Descriptions | Templated per category with paraphrase variants; \~10% Hinglish when N7 |
 | `ground_truth.json` | `case_id → true permanent_id`; true overlap clusters with level. Split 50/50 dev/test by institution |
 
-**Hero story (hand-written, identical after every reset).** "Vindhya Valley Institute of Engineering & Technology", Jabalpur, Madhya Pradesh, Central region; run by "Vindhya Valley Education Trust", which also runs "Vindhya Valley Institute of Management". Days are relative to `DEMO_TODAY`.
+**Hero story (hand-written, identical after every reset).** "Maharaja Agrasen Institute of Technology" (MAIT), West Delhi, Delhi, North-Western region (AICTE Permanent ID 1-43655981521); the Maharaja Agrasen group also runs "Maharaja Agrasen Institute of Management Studies" and "Maharaja Agrasen Business School" in Delhi. Days are relative to `DEMO_TODAY`.
 
 | Case | Bureau | Received | Raw name as written | Issue | Status |
 | --- | --- | --- | --- | --- | --- |
-| PGRC/2026/00412 | PGRC (via CPGRAMS) | day −19 | "VVIET Jabalpur" | Fee refund refused after withdrawal; original certificates withheld | Under process — SLA warning |
-| RB/2026/00087 | RB (inspection) | day −10 | "Vindhya Valley Inst. of Engg. & Tech." | Faculty shortage; show-cause notice issued | Under process |
-| RO-CRO/2026/00133 | Central RO (email) | day −5 | "Vindhya Vally Engineering College, JBP" | Certificates of 4 students withheld | Received |
-| RB/2026/00079 | RB | day −30 | "Vindhya Valley Inst. of Management" | MBA students' certificates withheld (trust sibling) | Escalated |
-| *(typed live)* | Intake → PGRC | today | "vindya valley engg college jabalpur" | Not returning 10th/12th originals; demanding full fees | Created in demo |
+| PGRC/2026/00412 | PGRC (via CPGRAMS) | day −19 | "MAIT Delhi" | Fee refund refused after withdrawal; original certificates withheld | Under process — SLA warning |
+| RB/2026/00087 | RB (inspection) | day −10 | "Maharaja Agrasen Inst. of Tech." | Faculty shortage; show-cause notice issued | Under process |
+| RO-NWRO/2026/00133 | North-Western RO (email) | day −5 | "Maharaja Agrasan Engineering College, Delhi" | Certificates of 4 students withheld | Received |
+| RB/2026/00079 | RB | day −30 | "Maharaja Agrasen Inst. of Management Studies" | MBA students' certificates withheld (trust sibling) | Escalated |
+| *(typed live)* | Intake → PGRC | today | "maharaja agrsen institute of technology delhi" | Not returning 10th/12th originals; demanding full fees | Created in demo |
 
-Names are fictional; before the event, check them against AICTE's public approved-institution search and rename if a real match exists.
+Institution names are AICTE's own; the complaints, complainants and officers are fabricated.
 
 ## §5 API Contract
 
@@ -513,7 +513,7 @@ class CaseCreate(SQLModel):
     raw_institution_text: str = Field(min_length=3, max_length=300)
     raw_state: str | None = Field(default=None, max_length=60)
     raw_district: str | None = Field(default=None, max_length=60)
-    permanent_id: str | None = Field(default=None, pattern=r"^1-\d{6,10}$")  # if the operator already knows it
+    permanent_id: str | None = Field(default=None, pattern=r"^1-\d{6,11}$")  # if the operator already knows it
     category_id: int
     subject: str = Field(min_length=3, max_length=200)
     description: str = Field(min_length=10, max_length=4000)
@@ -558,7 +558,7 @@ class CaseActionIn(SQLModel):
 
 ### Example: `POST /api/v1/cases` (demo step 4)
 
-Request: channel `email`, raw name `vindya valley engg college jabalpur`, state Madhya Pradesh, category certificate\_withheld. Response 201: `case.case_ref = "PGRC/2026/00519"`, `resolution.decision = "auto"` with the Vindhya Valley IET candidate at the top and reasons ("Name 88% similar after expanding ENGG", "District Jabalpur matches", "Acronym VVIET matches a confirmed alias"), and one `overlaps[]` item: level institution, tier probable, banner "Potential Overlapping Cases – Coordination Required", cases PGRC/2026/00412, RB/2026/00087, RO-CRO/2026/00133. Scores in this example are illustrative; the real values come from the engine.
+Request: channel `email`, raw name `maharaja agrsen institute of technology delhi`, state Delhi, category certificate\_withheld. Response 201: `case.case_ref = "PGRC/2026/00519"`, `resolution.decision = "auto"` with the Maharaja Agrasen Institute of Technology candidate at the top and reasons ("Name 86% similar", "State Delhi matches", "Description/name context similarity 0.79"), and one `overlaps[]` item: level institution, tier probable, banner "Potential Overlapping Cases – Coordination Required", cases PGRC/2026/00412, RB/2026/00087, RO-NWRO/2026/00133. Scores in this example are illustrative; the real values come from the engine.
 
 ## §6 Backend Security Checklist
 
@@ -596,7 +596,7 @@ The base blueprint frontend (Axios client, token store, AuthProvider, RequireAut
 
 | Route | Page | What it shows | Roles | PS feature |
 | --- | --- | --- | --- | --- |
-| `/login` | Login | Persona switcher: 5 one-click cards (Senior officer, PGRC head, RB head, Central RO, Intake); pre-filled login form below as fallback | all | — |
+| `/login` | Login | Persona switcher: 5 one-click cards (Senior officer, PGRC head, RB head, North-Western RO, Intake); pre-filled login form below as fallback | all | — |
 | `/` | **Dashboard** | KPI cards (total, pending, under process, disposed, transferred, escalated, beyond SLA, open overlaps); bureau workload bar chart; ageing buckets chart; top institutions by open cases with status; latest Probable overlaps | all (scoped) | 4 |
 | `/cases` | Cases | Filter bar (institution name, Permanent ID, case ref, bureau, region, category, status, date range, beyond SLA, in overlap); paginated table with SLA badge and overlap icon | all (scoped) | 2, 6 |
 | `/cases/new` | **Intake** | Form; as the institution text is typed (debounced 300 ms) a panel shows top-3 candidates with score bars and reasons; category suggestion (N1); on submit, a result panel shows the case ref and any overlap banner | intake, heads, admin | 2, 3 |
@@ -661,7 +661,7 @@ Three layers: the smoke test proves the demo path works, unit tests pin the matc
 5. Log in as `pgrc.head@aicte.example` → `GET /overlaps?tier=probable` → `POST /overlaps/{id}/decision` confirm
 6. Log in as `rb.head@aicte.example` → `GET /alerts?unread_only=true` → overlap alert present
 7. `POST /cases/{id}/actions` dispose without `confirm_open_overlap` → 409 `OPEN_OVERLAP`
-8. Log in as `ro.central@aicte.example` → `GET /cases/{id}` of a Western-region case → 404 (out of scope)
+8. Log in as `ro.nw@aicte.example` → `GET /cases/{id}` of a Western-region case → 404 (out of scope)
 9. `GET /reports/bureau?format=csv` → CSV
 10. `POST /demo/reset` as `senior@aicte.example` → clean state
 
@@ -670,7 +670,7 @@ Three layers: the smoke test proves the demo path works, unit tests pin the matc
 | File | Covers |
 | --- | --- |
 | `tests/test_smoke.py` | The run order above end to end with `EMBEDDINGS_MODE=tfidf` (no download in CI) |
-| `tests/test_matching.py` | Abbreviation expansion (ENGG → ENGINEERING); acronym hit (VVIET); typo tolerance (Vindhya → Vindya); **location veto** (same name, other district → never linked); Permanent ID in text → exact; alias learned after review → exact next time; overlap tiers; dismissed pair never re-alerts; trust-level pair only above `T_probable` |
+| `tests/test_matching.py` | Abbreviation expansion (ENGG → ENGINEERING); acronym hit (MAIT); typo tolerance (Agrasen → Agrsen); **location veto** (same name, other district → never linked); Permanent ID in text → exact; alias learned after review → exact next time; overlap tiers; dismissed pair never re-alerts; trust-level pair only above `T_probable` |
 | `tests/test_workflow.py` | Every row of `ALLOWED`; illegal transition → `INVALID_TRANSITION`; remarks required; transfer keeps SLA date; reopen resets it; audit rows written |
 | `tests/test_scope.py` | Hero path in all 5 personas: each sees what §10A needs, out-of-scope ids return 404; summary cards hide description and complainant name |
 
@@ -700,14 +700,14 @@ Output is one table printed to the terminal and saved to `docs/pitch/eval_result
 
 ## §10A Demo Script
 
-The demo tells one story: a fourth complaint about Vindhya Valley IET arrives misspelt, Unicomply links it in under 2 seconds, and PGRC and RB coordinate instead of acting blind. Two roles: **Driver** clicks, **Narrator** talks.
+The demo tells one story: a fourth complaint about Maharaja Agrasen Institute of Technology arrives misspelt, Unicomply links it in under 2 seconds, and PGRC and RB coordinate instead of acting blind. Two roles: **Driver** clicks, **Narrator** talks.
 
 | # | Time | On screen (Driver) | Narrator says (adapt) | If it breaks |
 | --- | --- | --- | --- | --- |
 | 1 | 0:00–0:30 | Problem slide: one institution, four complaints, three units, no shared view | "Today the same college can face a PGRC refund case, an RB show-cause and a Regional Office complaint, and none of them knows about the others." | — |
 | 2 | 0:30–0:55 | Log in as **senior officer** → Dashboard | "One screen for all of AICTE: pending, beyond the 21-day limit, and bureau workload." Point at the open-overlaps card | Screenshot slide |
 | 3 | 0:55–1:20 | Switch persona to **intake operator** → Intake; paste "vindya valley engg college jabalpur" from the prepared text file; candidates panel fills | "Misspelt, abbreviated, no ID. Unicomply expands the short forms, checks the district and finds the right Permanent ID, and tells you why." | Use the seeded hero case instead |
-| 4 | 1:20–2:00 | Submit → red **"Potential Overlapping Cases – Coordination Required"** banner with 3 linked cases (PGRC, RB, Central RO) + trust sibling | The wow line: "Three units are already acting on this college. Without this, PGRC might close a refund while RB is issuing a show-cause." Read two reasons aloud | Open Overlap Center → seeded group; else backup video at 1:20 |
+| 4 | 1:20–2:00 | Submit → red **"Potential Overlapping Cases – Coordination Required"** banner with 3 linked cases (PGRC, RB, North-Western RO) + trust sibling | The wow line: "Three units are already acting on this college. Without this, PGRC might close a refund while RB is issuing a show-cause." Read two reasons aloud | Open Overlap Center → seeded group; else backup video at 1:20 |
 | 5 | 2:00–2:35 | Persona **PGRC head** → Overlap detail (side-by-side) → Confirm, coordinator = PGRC head | "An official always decides. Confirming notifies every unit involved." | Skip to step 6 |
 | 6 | 2:35–2:55 | *(N2)* Second window as **RB head**: alert pops; open the case → linked cases visible | "RB sees it instantly, with the coordinator's name." | Show the alert page instead |
 | 7 | 2:55–3:20 | Case Detail of PGRC/2026/00412: SLA badge "Day 19 of 21", action timeline; try Dispose → open-overlap warning | "Full history: who did what, when. And you can't silently close a case another unit is still acting on." | — |
@@ -819,7 +819,7 @@ Output institutions.json, bureaus.json, users.json, categories.json, cases.json 
 ground_truth.json, abbreviations.json. Include ~500 fictional institutions, ~60 trusts, ~15
 universities with departments (parent_id), 10 Regional Offices, ~1,500 cases over 9 months to
 DEMO_TODAY with the channel mix, the name-noise rates and the planted overlap scenarios + hard
-negatives listed in §4.7. Hand-write the Vindhya Valley hero story exactly as in the §4.7 table.
+negatives listed in §4.7. Hand-write the Maharaja Agrasen hero story exactly as in the §4.7 table.
 Update app/seed.py to load these files; python -m app.seed --reset must finish in under 10 s.
 ```
 
@@ -829,7 +829,7 @@ Update app/seed.py to load these files; python -m app.seed --reset must finish i
 Implement backend/app/matching per docs/UNICOMPLY_PRD.md §4.4–4.5. Pure Python: no FastAPI,
 no DB sessions; dataclasses in, dataclasses out.
 - normalize.py: uppercase, strip punctuation, abbreviation expansion from abbreviations.json,
-  stopwords, district-hint extraction, acronym of a name, Permanent-ID regex \b1-\d{6,10}\b.
+  stopwords, district-hint extraction, acronym of a name, Permanent-ID regex \b1-\d{6,11}\b.
 - embed.py: Embedder with mode "model" (sentence-transformers, EMBEDDING_MODEL_NAME, loaded once)
   and "tfidf" (char 3-5 grams, fitted on institution names + case descriptions at startup).
 - index.py: MatchIndex built in lifespan: institutions grouped by state, name vectors, aliases,

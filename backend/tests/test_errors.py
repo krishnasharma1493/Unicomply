@@ -51,7 +51,7 @@ def create_error_test_app() -> FastAPI:
 
     @router.get("/trigger-open-overlap")
     def trigger_open_overlap():
-        raise OpenOverlapError(details=["RB/2026/00087", "RO-CRO/2026/00133"])
+        raise OpenOverlapError(details=["RB/2026/00087", "RO-NWRO/2026/00133"])
 
     @router.get("/trigger-already-decided")
     def trigger_already_decided():

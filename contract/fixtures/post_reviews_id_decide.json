@@ -6,34 +6,34 @@
       "case_id": 113,
       "candidates": [
         {
-          "permanent_id": "1-4812744105",
-          "name": "Narmada Valley College of Engineering",
-          "district": "Jabalpur",
+          "permanent_id": "1-43674307362",
+          "name": "National Institute of Technical Teachers' Training and Research",
+          "district": "Bhopal",
           "state": "Madhya Pradesh",
           "score": 0.76,
           "reasons": [
-            "Name 84% similar after expanding ENGG",
+            "Name 88% similar",
             "State Madhya Pradesh matches; no district given"
           ]
         },
         {
-          "permanent_id": "1-4812730561",
-          "name": "Vindhya Valley Institute of Engineering & Technology",
-          "district": "Jabalpur",
-          "state": "Madhya Pradesh",
+          "permanent_id": "1-43658573897",
+          "name": "National Institute of Technical Teachers Training and Research",
+          "district": "Chennai",
+          "state": "Tamil Nadu",
           "score": 0.44,
           "reasons": [
-            "Name 52% similar after expanding ENGG",
-            "State Madhya Pradesh matches; no district given"
+            "Name 88% similar",
+            "State Tamil Nadu differs from Madhya Pradesh"
           ]
         }
       ],
       "status": "resolved",
-      "decided_permanent_id": "1-4812744105",
+      "decided_permanent_id": "1-43674307362",
       "decided_by": 5,
       "decided_at": "2026-11-20T09:31:10Z",
       "case_ref": "PGRC/2026/00428",
-      "raw_institution_text": "Narmada College of Engg",
+      "raw_institution_text": "Natl Institute of Technical Teachers Training",
       "raw_state": "Madhya Pradesh",
       "raw_district": null,
       "subject": "Caution deposit not refunded after course completion",
@@ -48,10 +48,10 @@
       "received_at": "2026-11-17",
       "complainant_type": "parent",
       "complainant_name": "Lakshmi Iyer",
-      "raw_institution_text": "Narmada College of Engg",
+      "raw_institution_text": "Natl Institute of Technical Teachers Training",
       "raw_state": "Madhya Pradesh",
       "raw_district": null,
-      "permanent_id": "1-4812744105",
+      "permanent_id": "1-43674307362",
       "match_score": 0.76,
       "match_status": "reviewed",
       "category_id": 1,
@@ -73,7 +73,7 @@
       "created_by": 5,
       "created_at": "2026-11-17T10:40:00Z",
       "updated_at": "2026-11-17T10:40:00Z",
-      "institution_name": "Narmada Valley College of Engineering",
+      "institution_name": "National Institute of Technical Teachers' Training and Research",
       "region": "central",
       "age_days": 3,
       "beyond_sla": false,
@@ -81,7 +81,7 @@
     },
     "alias": {
       "id": 41,
-      "permanent_id": "1-4812744105",
+      "permanent_id": "1-43674307362",
       "alias_norm": "NARMADA COLLEGE ENGINEERING",
       "source": "review",
       "created_by": 5,
@@ -98,8 +98,8 @@
           {
             "case_id": 114,
             "case_ref": "RB/2026/00091",
-            "permanent_id": "1-4812744105",
-            "institution_name": "Narmada Valley College of Engineering",
+            "permanent_id": "1-43674307362",
+            "institution_name": "National Institute of Technical Teachers' Training and Research",
             "bureau_id": 1,
             "bureau_code": "RB",
             "status": "under_process",
@@ -115,7 +115,7 @@
           }
         ],
         "reasons": [
-          "Same institution 1-4812744105",
+          "Same institution 1-43674307362",
           "Handled by PGRC and RB",
           "Received 5 days apart"
         ],

@@ -23,7 +23,7 @@ PERSONAS = [
     ("senior@aicte.example", "senior_mgmt", None, None, True),
     ("pgrc.head@aicte.example", "bureau_head", 2, None, False),
     ("rb.head@aicte.example", "bureau_head", 1, None, False),
-    ("ro.central@aicte.example", "ro_officer", 5, "central", False),
+    ("ro.nw@aicte.example", "ro_officer", 9, "north_western", False),
     ("intake@aicte.example", "intake_operator", None, None, False),
 ]
 
@@ -59,8 +59,8 @@ def test_login_and_me_match_the_contract_fixtures(seeded_client: TestClient) -> 
     expected = json.loads((FIXTURES / "post_auth_login_senior.json").read_text())
     assert set(body["data"]) == set(expected["data"])
     assert body["data"]["user"] == expected["data"]["user"]
-    me_expected = json.loads((FIXTURES / "get_users_me_ro_central.json").read_text())
-    token = login(seeded_client, "ro.central@aicte.example").json()["data"]["access_token"]
+    me_expected = json.loads((FIXTURES / "get_users_me_ro_nw.json").read_text())
+    token = login(seeded_client, "ro.nw@aicte.example").json()["data"]["access_token"]
     me = seeded_client.get("/api/v1/users/me", headers={"Authorization": f"Bearer {token}"})
     assert me.json() == me_expected
 

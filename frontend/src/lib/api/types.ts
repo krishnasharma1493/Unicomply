@@ -233,7 +233,7 @@ export type CaseCreate = {
   raw_state?: string | null;
   /** max 60 */
   raw_district?: string | null;
-  /** `^1-\d{6,10}$`, if the operator already knows it */
+  /** `^1-\d{6,11}$`, if the operator already knows it */
   permanent_id?: PermanentId | null;
   category_id: number;
   /** 3–200 */
@@ -302,6 +302,8 @@ export type CaseListParams = PageParams & {
   to?: IsoDate;
   beyond_sla?: boolean;
   in_overlap?: boolean;
+  /** `received_desc` (newest first, default) or `sla_due_asc` (soonest SLA due first). */
+  sort?: 'received_desc' | 'sla_due_asc';
 };
 
 /** One `case_action` row: the action history / timeline. */

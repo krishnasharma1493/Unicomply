@@ -8,10 +8,12 @@ import { RequireAuth } from './components/RequireAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppShell } from './components/layout';
 import { buildTheme } from './theme';
+import { ANNOUNCER_ID } from './lib/announce';
 
 // Pages
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { TodayPage } from './pages/TodayPage';
 import { CasesPage } from './pages/CasesPage';
 import { CaseIntakePage } from './pages/CaseIntakePage';
 import { CaseDetailPage } from './pages/CaseDetailPage';
@@ -51,10 +53,13 @@ export const AppRoutes: React.FC = () => {
           </RequireAuth>
         }
       >
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/cases" element={<CasesPage />} />
+        <Route path="/" element={<TodayPage />} />
+        <Route path="/overview" element={<DashboardPage />} />
+        {/* The list is a layout: at the split width the open case sits beside it; below, :id renders full page. */}
+        <Route path="/cases" element={<CasesPage />}>
+          <Route path=":id" element={<CaseDetailPage />} />
+        </Route>
         <Route path="/cases/new" element={<CaseIntakePage />} />
-        <Route path="/cases/:id" element={<CaseDetailPage />} />
         <Route path="/reviews" element={<MatchReviewPage />} />
         <Route path="/overlaps" element={<OverlapCenterPage />} />
         <Route path="/overlaps/:id" element={<OverlapDetailPage />} />
@@ -90,6 +95,7 @@ export const App: React.FC = () => {
             <BrowserRouter>
               <AppRoutes />
             </BrowserRouter>
+            <div id={ANNOUNCER_ID} className="uc-sr" role="status" aria-live="polite" aria-atomic="true" />
           </AuthProvider>
         </QueryClientProvider>
       </ConfigProvider>

@@ -20,15 +20,16 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
   });
 
   it.each([
-    ['/', 'Dashboard'],
+    ['/', 'Today'],
+    ['/overview', 'Overview'],
     ['/cases', 'Cases'],
     ['/cases/new', 'Register a case'],
     ['/cases/101', 'PGRC/2026/00412'],
     ['/reviews', 'Match Review'],
     ['/overlaps', 'Overlap Center'],
-    ['/overlaps/1', 'Vindhya Valley Institute of Engineering'],
+    ['/overlaps/1', 'Maharaja Agrasen Institute of Technology'],
     ['/institutions', 'Institutions'],
-    ['/institutions/1-4812730561', 'Vindhya Valley Institute of Engineering'],
+    ['/institutions/1-43655981521', 'Maharaja Agrasen Institute of Technology'],
     ['/alerts', 'Alerts'],
     ['/reports', 'Reports'],
     ['/admin', 'Admin'],

@@ -193,7 +193,7 @@ describe('Frontend Freeze Audit: Backend Stopped / Network Error & 500 Failure T
   });
 
   const routesWithData: Array<{ path: string; name: string }> = [
-    { path: '/', name: 'Dashboard' },
+    { path: '/', name: 'Today' },
     { path: '/cases', name: 'Cases' },
     { path: '/cases/new', name: 'Case Intake' },
     { path: '/cases/101', name: 'Case Detail' },
@@ -201,7 +201,7 @@ describe('Frontend Freeze Audit: Backend Stopped / Network Error & 500 Failure T
     { path: '/overlaps', name: 'Overlap Center' },
     { path: '/overlaps/1', name: 'Overlap Detail' },
     { path: '/institutions', name: 'Institutions Search' },
-    { path: '/institutions/1-4812730561', name: 'Institution 360' },
+    { path: '/institutions/1-43655981521', name: 'Institution 360' },
     { path: '/alerts', name: 'Alerts' },
     { path: '/reports', name: 'Reports' },
   ];

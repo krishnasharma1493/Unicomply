@@ -10,6 +10,7 @@ import {
   BranchesOutlined,
   BankOutlined,
   BellOutlined,
+  InboxOutlined,
   BarChartOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
@@ -30,25 +31,14 @@ interface NavItemDef {
   visible: (role?: string, isAdmin?: boolean) => boolean;
 }
 
-const NAV_ITEMS: NavItemDef[] = [
-  {
-    key: '/',
-    path: '/',
-    label: 'Dashboard',
-    icon: <DashboardOutlined />,
-    visible: () => true,
-  },
-  {
-    key: '/cases',
-    path: '/cases',
-    label: 'Cases',
-    icon: <FolderOutlined />,
-    visible: () => true,
-  },
+/** Every destination, with who may see it. The command bar reuses this list. */
+export const NAV_ITEMS: NavItemDef[] = [
+  { key: '/', path: '/', label: 'Today', icon: <InboxOutlined />, visible: () => true },
+  { key: '/cases', path: '/cases', label: 'Cases', icon: <FolderOutlined />, visible: () => true },
   {
     key: '/cases/new',
     path: '/cases/new',
-    label: 'Case Intake',
+    label: 'New case',
     icon: <PlusCircleOutlined />,
     visible: (role) => role === 'intake_operator' || role === 'bureau_head' || role === 'senior_mgmt',
   },
@@ -63,24 +53,13 @@ const NAV_ITEMS: NavItemDef[] = [
   {
     key: '/overlaps',
     path: '/overlaps',
-    label: 'Overlap Center',
+    label: 'Overlaps',
     icon: <BranchesOutlined />,
     visible: (role) => role === 'bureau_head' || role === 'senior_mgmt',
   },
-  {
-    key: '/institutions',
-    path: '/institutions',
-    label: 'Institutions',
-    icon: <BankOutlined />,
-    visible: () => true,
-  },
-  {
-    key: '/alerts',
-    path: '/alerts',
-    label: 'Alerts',
-    icon: <BellOutlined />,
-    visible: () => true,
-  },
+  { key: '/alerts', path: '/alerts', label: 'Alerts', icon: <BellOutlined />, visible: () => true },
+  { key: '/institutions', path: '/institutions', label: 'Institutions', icon: <BankOutlined />, visible: () => true },
+  { key: '/overview', path: '/overview', label: 'Overview', icon: <DashboardOutlined />, visible: (role) => role !== 'intake_operator' },
   {
     key: '/reports',
     path: '/reports',
@@ -91,16 +70,18 @@ const NAV_ITEMS: NavItemDef[] = [
   {
     key: '/admin',
     path: '/admin',
-    label: 'System Admin',
+    label: 'Admin',
     icon: <SettingOutlined />,
     visible: (role, isAdmin) => role === 'senior_mgmt' && Boolean(isAdmin),
   },
 ];
 
+/** Grouped by the job, not by the kind of record. */
 const GROUPS: { label: string; keys: string[] }[] = [
-  { label: 'Casework', keys: ['/', '/cases', '/cases/new', '/reviews', '/overlaps'] },
-  { label: 'Records', keys: ['/institutions', '/alerts', '/reports'] },
-  { label: 'Administration', keys: ['/admin'] },
+  { label: 'Work', keys: ['/', '/cases', '/cases/new', '/reviews'] },
+  { label: 'Decide', keys: ['/overlaps', '/alerts'] },
+  { label: 'Look up', keys: ['/institutions'] },
+  { label: 'Report', keys: ['/overview', '/reports', '/admin'] },
 ];
 
 /** The nav item that owns a path: the longest matching prefix, so /cases/new is Case Intake, not Cases. */
@@ -126,7 +107,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed = false, onNav
   const menuItems: ItemType[] = GROUPS.map((group) => {
     const children = visible
       .filter((item) => group.keys.includes(item.path))
-      .map((item) => ({ key: item.path, icon: item.icon, label: item.label, title: item.label }));
+      .map((item) => ({
+        key: item.path,
+        icon: item.icon,
+        label: item.label,
+        title: item.label,
+        // Screen readers hear which page is current, not only see the tint.
+        'aria-current': item.path === selectedKey ? ('page' as const) : undefined,
+      }));
     return children.length ? { type: 'group' as const, key: group.label, label: collapsed ? null : group.label, children } : null;
   }).filter((g): g is NonNullable<typeof g> => g !== null);
 

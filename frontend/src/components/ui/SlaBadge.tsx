@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Tag } from 'antd';
 import type { CaseStatus } from '../../lib/api/enums';
 import { diffCalendarDays } from '../../lib/format';
@@ -20,7 +21,41 @@ export interface SlaBadgeProps {
   today?: string | Date;
   className?: string;
   style?: React.CSSProperties;
+  /** Draw the SLA as a track of days beside the words (default). Off where space is tight. */
+  track?: boolean;
 }
+
+/**
+ * The SLA clock: one rule the length of the SLA, the elapsed share filled, with a notch at each week.
+ * It reads as proportion at a glance; the words beside it carry the meaning, so colour is never alone.
+ */
+const SlaTrack: React.FC<{ age: number; total: number; tone: 'normal' | 'warning' | 'error' }> = ({ age, total, tone }) => {
+  const w = 56;
+  const days = Math.max(total, 1);
+  const filled = tone === 'error' ? w : Math.min(Math.max(age, 0) / days, 1) * w;
+  const reduce = useReducedMotion();
+  const notches = Array.from({ length: Math.floor((days - 1) / 7) }, (_, i) => Math.round(((i + 1) * 7 * w) / days));
+  return (
+    <svg className={`uc-sla-track uc-sla-track--${tone}`} width={w} height="6" viewBox={`0 0 ${w} 6`} aria-hidden="true">
+      <rect x="0" y="1" width={w} height="4" className="off" />
+      {filled > 0 && (
+        // The clock fills to today's position as it appears, so the elapsed share is read as motion.
+        <motion.rect
+          x="0"
+          y="1"
+          height="4"
+          className="on"
+          initial={{ width: reduce ? Math.round(Math.max(filled, 2)) : 0 }}
+          animate={{ width: Math.round(Math.max(filled, 2)) }}
+          transition={{ type: 'spring', bounce: 0, duration: 0.6, delay: 0.1 }}
+        />
+      )}
+      {notches.map((x) => (
+        <rect key={x} x={x} y="0" width="1" height="6" className="notch" />
+      ))}
+    </svg>
+  );
+};
 
 export const SlaBadge: React.FC<SlaBadgeProps> = ({
   ageDays,
@@ -32,6 +67,7 @@ export const SlaBadge: React.FC<SlaBadgeProps> = ({
   today,
   className,
   style,
+  track = true,
 }) => {
   // Disposed cases are closed; SLA clock is stopped
   if (status === 'disposed') {
@@ -73,38 +109,35 @@ export const SlaBadge: React.FC<SlaBadgeProps> = ({
   if (isOverdue) {
     const overdueDays = Math.max(1, age - totalDays);
     return (
-      <Tag
-        color="error"
-        className={className}
-        style={{ fontWeight: 600, ...style }}
-      >
-        Beyond SLA +{overdueDays}
-      </Tag>
+      <span className="uc-sla">
+        {track && <SlaTrack age={age} total={totalDays} tone="error" />}
+        <Tag color="error" className={className} style={{ fontWeight: 600, ...style }}>
+          Beyond SLA +{overdueDays}
+        </Tag>
+      </span>
     );
   }
 
   // Warning threshold (day 17 to totalDays e.g. day 21) is amber
   if (age >= warnThreshold) {
     return (
-      <Tag
-        color="warning"
-        className={className}
-        style={{ fontWeight: 600, ...style }}
-      >
-        Day {age} of {totalDays}
-      </Tag>
+      <span className="uc-sla">
+        {track && <SlaTrack age={age} total={totalDays} tone="warning" />}
+        <Tag color="warning" className={className} style={{ fontWeight: 600, ...style }}>
+          Day {age} of {totalDays}
+        </Tag>
+      </span>
     );
   }
 
   // Normal within SLA (< warnThreshold) is neutral
   return (
-    <Tag
-      color="default"
-      className={className}
-      style={{ fontWeight: 500, ...style }}
-    >
-      Day {age} of {totalDays}
-    </Tag>
+    <span className="uc-sla">
+      {track && <SlaTrack age={age} total={totalDays} tone="normal" />}
+      <Tag color="default" className={['uc-sla-plain', className].filter(Boolean).join(' ')} style={{ fontWeight: 500, ...style }}>
+        Day {age} of {totalDays}
+      </Tag>
+    </span>
   );
 };
 

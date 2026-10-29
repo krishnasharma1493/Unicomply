@@ -5,13 +5,13 @@ import type { OverlapGroupListItem } from '../../../lib/api/types';
 import { BureauChip, TierChip } from '../../../components/ui';
 import { diffCalendarDays } from '../../../lib/format';
 
-const isPermanentId = (anchor: string) => /^1-\d{6,10}$/.test(anchor);
+const isPermanentId = (anchor: string) => /^1-\d{6,11}$/.test(anchor);
 
 export const OverlapGroupCard: React.FC<{ group: OverlapGroupListItem; today?: string }> = ({ group, today }) => {
   const days = today ? Math.max(0, diffCalendarDays(group.created_at, today)) : null;
   const decided = group.status !== 'open';
   return (
-    <Link to={`/overlaps/${group.id}`} aria-label={`Overlap group: ${group.anchor_name}`} className="uc-group-row uc-pressable">
+    <Link to={`/overlaps/${group.id}`} aria-label={`Overlap group: ${group.anchor_name}`} className={`uc-group-row uc-pressable ov-row ov-row--${group.tier}`}>
       <div className="uc-group-main">
         <div className="uc-title-line" style={{ gap: 8 }}>
           <TierChip tier={group.tier} />
@@ -21,7 +21,7 @@ export const OverlapGroupCard: React.FC<{ group: OverlapGroupListItem; today?: s
         <div className="uc-meta" style={{ marginTop: 4 }}>
           {OVERLAP_LEVEL_LABELS[group.level]}
           {isPermanentId(group.anchor_key) && <> · <span className="uc-num">{group.anchor_key}</span></>}
-          {group.coordinator_name ? ` · Coordinator: ${group.coordinator_name}` : ''}
+          {group.coordinator_name ? <> · Coordinator: <span className="ov-row-coordinator">{group.coordinator_name}</span></> : ''}
         </div>
       </div>
       <div className="uc-group-bureaus">

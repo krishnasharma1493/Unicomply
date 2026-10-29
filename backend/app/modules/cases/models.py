@@ -28,7 +28,7 @@ class CaseBase(SQLModel):
     raw_state: Optional[str] = Field(default=None, max_length=60)
     raw_district: Optional[str] = Field(default=None, max_length=60)
     permanent_id: Optional[str] = Field(
-        default=None, foreign_key="institution.permanent_id", index=True, max_length=12
+        default=None, foreign_key="institution.permanent_id", index=True, max_length=13
     )
     category_id: int = Field(foreign_key="category.id")
     subject: str = Field(min_length=3, max_length=200)

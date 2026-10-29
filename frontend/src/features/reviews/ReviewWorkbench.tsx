@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Alert, Button, Card, Input, List, Space, Spin, Typography } from 'antd';
-import { CandidateList } from '../../components/signature';
+import { Alert, Button, Input } from 'antd';
+import { CheckCircleFilled } from '@ant-design/icons';
+import { CandidateList, ResolutionLine } from '../../components/signature';
 import { ErrorState } from '../../components/states';
 import { client } from '../../lib/api/client';
 import type { ApiError, Envelope, ReviewDecideIn, ReviewDecideResult, ReviewItem } from '../../lib/api/types';
 import { apiErrorMessage, formatDate } from '../../lib/format';
 import { reviewsKey, SEARCH_MIN_CHARS, useRegistrySearch } from './useReviews';
 
-const { Text, Title } = Typography;
-
 interface Choice {
   permanent_id: string;
   name: string;
 }
 
-/** One review: the complaint's own words, the engine's candidates, a registry search, or "not in registry". */
+/**
+ * One review: the complaint's own words and, once a choice is made, the line from them to the registry
+ * institution; then the engine's candidates, a registry search, and the decision.
+ */
 export const ReviewWorkbench: React.FC<{
   review: ReviewItem;
   onDecided: (result: ReviewDecideResult, choice: Choice | null) => void;
@@ -51,85 +53,117 @@ export const ReviewWorkbench: React.FC<{
   });
 
   const where = [review.raw_district, review.raw_state].filter(Boolean).join(', ');
+  const fromSuggestions = choice && review.candidates.some((c) => c.permanent_id === choice.permanent_id);
 
   return (
-    <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-      <Card size="small">
-        <Space orientation="vertical" size={2}>
-          <Text type="secondary">{review.case_ref} · received {formatDate(review.received_at)}</Text>
-          <Title level={3} style={{ margin: '2px 0' }}>{review.raw_institution_text}</Title>
-          <Text type="secondary">{where || 'No state or district given'}</Text>
-          <Text>{review.subject}</Text>
-        </Space>
-      </Card>
+    <section className="uc-section uc-review-work" aria-labelledby="review-work-title">
+      <div className="uc-section-head">
+        <h2 className="uc-section-title" id="review-work-title">
+          Review <span className="uc-ref">{review.case_ref}</span>
+        </h2>
+        <Link to={`/cases/${review.case_id}`} className="uc-meta-link">Open the case</Link>
+      </div>
+      <div className="uc-section-body">
+        <header className="uc-review-head">
+          <span className="uc-meta">As written in the complaint, received {formatDate(review.received_at)}</span>
+          <h3 className="uc-review-raw">{review.raw_institution_text}</h3>
+          <p className="uc-meta uc-review-where">{where || 'No state or district given'}</p>
+          <p className="uc-review-subject">{review.subject}</p>
+          <div className="uc-review-resline">
+            {choice ? (
+              <ResolutionLine
+                raw={review.raw_institution_text}
+                name={choice.name}
+                permanentId={choice.permanent_id}
+                note={fromSuggestions ? 'Your choice from the suggestions' : 'Your choice from the registry search'}
+              />
+            ) : review.candidates[0] ? (
+              // Before a choice, show what the engine's best guess would mean, labelled as not yet linked.
+              <ResolutionLine
+                raw={review.raw_institution_text}
+                name={review.candidates[0].name}
+                permanentId={review.candidates[0].permanent_id}
+                note="Best suggestion, not linked yet. Pick it below, choose another, or search the registry."
+              />
+            ) : (
+              <p className="uc-meta" style={{ margin: 0 }}>Not linked yet. Pick a suggested institution or search the registry.</p>
+            )}
+          </div>
+        </header>
 
-      {error && <Alert type="error" showIcon title={error} />}
+        {error && <Alert type="error" showIcon title={error} style={{ marginTop: 16 }} />}
 
-      <Card size="small" title="Suggested institutions">
-        {review.candidates.length === 0 ? (
-          <Text type="secondary">The engine found no candidates. Search the registry below.</Text>
-        ) : (
-          <CandidateList
-            candidates={review.candidates}
-            selectedId={choice?.permanent_id ?? null}
-            onSelect={(c) => setChoice({ permanent_id: c.permanent_id, name: c.name })}
-          />
-        )}
-      </Card>
-
-      <Card size="small" title="Search the registry">
-        <Input.Search
-          aria-label="Search the registry"
-          placeholder="Institution name or Permanent ID"
-          allowClear
-          value={term}
-          onChange={(e) => setTerm(e.target.value)}
-        />
-        <div style={{ marginTop: 12 }}>
-          {term.trim().length < SEARCH_MIN_CHARS ? null : search.isFetching ? (
-            <div role="status" aria-label="Searching" style={{ textAlign: 'center' }}><Spin /></div>
-          ) : search.isError ? (
-            <ErrorState message={apiErrorMessage(search.error)} onRetry={() => void search.refetch()} style={{ padding: 0 }} />
+        <div className="uc-review-part">
+          <h3 className="uc-subhead">Suggested institutions</h3>
+          {review.candidates.length === 0 ? (
+            <p className="uc-muted" style={{ margin: 0 }}>The engine found no candidates. Search the registry below.</p>
           ) : (
-            <List
-              locale={{ emptyText: 'No institution matches that search.' }}
-              dataSource={search.data?.data ?? []}
-              renderItem={(inst) => (
-                <List.Item
-                  actions={[
-                    <Button
-                      key="pick"
-                      size="small"
-                      aria-label={`Pick ${inst.name}`}
-                      type={choice?.permanent_id === inst.permanent_id ? 'primary' : 'default'}
-                      onClick={() => setChoice({ permanent_id: inst.permanent_id, name: inst.name })}
-                    >
-                      {choice?.permanent_id === inst.permanent_id ? 'Picked' : 'Pick'}
-                    </Button>,
-                  ]}
-                >
-                  <List.Item.Meta title={inst.name} description={`${inst.permanent_id} · ${inst.district}, ${inst.state}`} />
-                </List.Item>
-              )}
+            <CandidateList
+              candidates={review.candidates}
+              selectedId={choice?.permanent_id ?? null}
+              onSelect={(c) => setChoice({ permanent_id: c.permanent_id, name: c.name })}
             />
           )}
         </div>
-      </Card>
 
-      <Space wrap>
-        <Button
-          type="primary"
-          disabled={!choice}
-          loading={decide.isPending}
-          onClick={() => choice && decide.mutate({ permanent_id: choice.permanent_id })}
-        >
-          {choice ? `Link this case to ${choice.name}` : 'Choose an institution to link'}
-        </Button>
-        <Button danger loading={decide.isPending} onClick={() => decide.mutate({ none: true })}>
-          Not in the registry
-        </Button>
-        <Link to={`/cases/${review.case_id}`}>Open the case</Link>
-      </Space>
-    </Space>
+        <div className="uc-review-part">
+          <h3 className="uc-subhead" id="review-search-title">Search the registry</h3>
+          <Input.Search
+            aria-label="Search the registry"
+            placeholder="Institution name or Permanent ID"
+            allowClear
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+          />
+          <div className="uc-review-results">
+            {term.trim().length < SEARCH_MIN_CHARS ? null : search.isFetching && !search.data ? (
+              <p role="status" className="uc-meta" style={{ margin: 0 }}>Searching</p>
+            ) : search.isError ? (
+              <ErrorState message={apiErrorMessage(search.error)} onRetry={() => void search.refetch()} style={{ padding: 0 }} />
+            ) : (search.data?.data ?? []).length === 0 ? (
+              <p className="uc-muted" style={{ margin: 0 }}>No institution matches that search.</p>
+            ) : (
+              <ul className="uc-rows" aria-label="Registry results">
+                {(search.data?.data ?? []).map((inst) => {
+                  const picked = choice?.permanent_id === inst.permanent_id;
+                  return (
+                    <li key={inst.permanent_id} className="uc-review-hit">
+                      <div>
+                        <strong>{inst.name}</strong>
+                        <div className="uc-meta">{inst.permanent_id} · {inst.district}, {inst.state}</div>
+                      </div>
+                      <Button
+                        size="small"
+                        aria-label={`Pick ${inst.name}`}
+                        aria-pressed={picked}
+                        type={picked ? 'primary' : 'default'}
+                        icon={picked ? <CheckCircleFilled /> : undefined}
+                        onClick={() => setChoice({ permanent_id: inst.permanent_id, name: inst.name })}
+                      >
+                        {picked ? 'Picked' : 'Pick'}
+                      </Button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </div>
+
+        <div className="uc-review-decide">
+          <Button
+            type="primary"
+            disabled={!choice}
+            loading={decide.isPending}
+            onClick={() => choice && decide.mutate({ permanent_id: choice.permanent_id })}
+          >
+            {choice ? `Link this case to ${choice.name}` : 'Choose an institution to link'}
+          </Button>
+          <Button danger loading={decide.isPending} onClick={() => decide.mutate({ none: true })}>
+            Not in the registry
+          </Button>
+        </div>
+      </div>
+    </section>
   );
 };

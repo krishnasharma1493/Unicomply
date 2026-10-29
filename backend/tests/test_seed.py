@@ -30,7 +30,7 @@ FIXTURES = REPO / "contract" / "fixtures"
 HERO = {
     101: ("PGRC/2026/00412", 19, "under_process"),
     102: ("RB/2026/00087", 10, "under_process"),
-    103: ("RO-CRO/2026/00133", 5, "received"),
+    103: ("RO-NWRO/2026/00133", 5, "received"),
     104: ("RB/2026/00079", 30, "escalated"),
 }
 
@@ -45,7 +45,7 @@ def test_seed_loads_every_table() -> None:
     with Session(fresh_engine()) as session:
         counts = load_seed(session, TINY_SEED_DIR, today=SEED_AS_OF)
     assert counts == {
-        "bureaus": 14, "categories": 12, "users": 12, "trusts": 3, "institutions": 10, "aliases": 5,
+        "bureaus": 14, "categories": 12, "users": 13, "trusts": 2, "institutions": 11, "aliases": 5,
         "cases": 13, "case_actions": 19, "match_reviews": 2, "overlap_groups": 4, "overlap_links": 9,
         "overlap_pairs": 6, "alerts": 6,
     }
@@ -124,7 +124,7 @@ def test_unique_constraints_hold(seeded_engine) -> None:
             session.commit()
         session.rollback()
 
-        session.add(InstitutionAlias(permanent_id="1-4812730561", alias_norm="VVIET", source="seed"))
+        session.add(InstitutionAlias(permanent_id="1-43655981521", alias_norm="MAIT", source="seed"))
         with pytest.raises(IntegrityError):
             session.commit()
         session.rollback()
@@ -139,8 +139,8 @@ def test_permanent_id_pattern_is_enforced_by_schemas() -> None:
     base = dict(source_channel="email", received_at="2026-11-20", complainant_type="parent",
                 raw_institution_text="vindya valley engg college", category_id=2, subject="Certificates",
                 description="Certificates withheld by the college.")
-    assert CaseCreate.model_validate({**base, "permanent_id": "1-4812730561"}).permanent_id == "1-4812730561"
-    for bad in ("2-4812730561", "1-123", "VVIET"):
+    assert CaseCreate.model_validate({**base, "permanent_id": "1-43655981521"}).permanent_id == "1-43655981521"
+    for bad in ("2-43655981521", "1-123", "MAIT"):
         with pytest.raises(ValidationError):
             CaseCreate.model_validate({**base, "permanent_id": bad})
     with pytest.raises(ValidationError):

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Col, DatePicker, Form, Input, Row, Select, Space } from 'antd';
+import { Button, Col, DatePicker, Form, Input, Row, Select, Space } from 'antd';
 import dayjs from 'dayjs';
 import { CASE_STATUS_LABELS, CASE_STATUSES, REGION_LABELS, REGIONS } from '../../lib/api/enums';
 import type { Meta } from '../../lib/api/types';
@@ -17,27 +17,28 @@ export interface CaseFilterBarProps {
   filters: CaseFilters;
   meta: Meta;
   onApply: (next: CaseFilters) => void;
+  id?: string;
 }
 
 /**
  * The search form. Edits stay in a draft until "Search" so that typing does not fire a request per key;
  * the URL (and so the request) only changes on Search or Clear.
  */
-export const CaseFilterBar: React.FC<CaseFilterBarProps> = ({ filters, meta, onApply }) => {
+export const CaseFilterBar: React.FC<CaseFilterBarProps> = ({ filters, meta, onApply, id }) => {
   const [draft, setDraft] = useState(filters);
   const set = (patch: Partial<CaseFilters>) => setDraft((d) => ({ ...d, ...patch }));
   const search = () => onApply({ ...draft, page: 1 });
   const clear = () => {
-    setDraft({ ...emptyFilters, limit: filters.limit });
-    onApply({ ...emptyFilters, limit: filters.limit });
+    setDraft({ ...emptyFilters, limit: filters.limit, sort: filters.sort });
+    onApply({ ...emptyFilters, limit: filters.limit, sort: filters.sort });
   };
 
   return (
-    <Card size="small" className="uc-filterbar" style={{ marginBottom: 16 }}>
+    <div className="uc-section uc-filterbar" id={id}>
       <Form layout="vertical" onFinish={search} role="search" aria-label="Search cases">
         <Row gutter={12}>
           <Col xs={24} md={8}><Form.Item label="Institution name"><Input aria-label="Institution name" allowClear value={draft.q} onChange={(e) => set({ q: e.target.value })} placeholder="Name or what was written" /></Form.Item></Col>
-          <Col xs={24} md={8}><Form.Item label="Permanent ID"><Input aria-label="Permanent ID" allowClear value={draft.permanentId} onChange={(e) => set({ permanentId: e.target.value })} placeholder="1-4812730561" /></Form.Item></Col>
+          <Col xs={24} md={8}><Form.Item label="Permanent ID"><Input aria-label="Permanent ID" allowClear value={draft.permanentId} onChange={(e) => set({ permanentId: e.target.value })} placeholder="1-43655981521" /></Form.Item></Col>
           <Col xs={24} md={8}><Form.Item label="Case reference"><Input aria-label="Case reference" allowClear value={draft.caseRef} onChange={(e) => set({ caseRef: e.target.value })} placeholder="PGRC/2026/00412" /></Form.Item></Col>
         </Row>
         <Row gutter={12}>
@@ -91,6 +92,6 @@ export const CaseFilterBar: React.FC<CaseFilterBarProps> = ({ filters, meta, onA
           </Col>
         </Row>
       </Form>
-    </Card>
+    </div>
   );
 };

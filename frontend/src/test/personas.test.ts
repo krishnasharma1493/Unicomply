@@ -11,7 +11,7 @@ describe('Demo Personas (#11)', () => {
     expect(PERSONAS).toHaveLength(5);
 
     const ids = PERSONAS.map((p) => p.id);
-    expect(ids).toEqual(['senior_mgmt', 'pgrc_head', 'rb_head', 'ro_central', 'intake']);
+    expect(ids).toEqual(['senior_mgmt', 'pgrc_head', 'rb_head', 'ro_nw', 'intake']);
 
     const senior = findPersonaById('senior_mgmt')!;
     expect(senior.email).toBe('senior@aicte.example');
@@ -40,13 +40,13 @@ describe('Demo Personas (#11)', () => {
     expect(rb.bureauId).toBe(1);
     expect(rb.initials).toBe('KR');
 
-    const ro = findPersonaById('ro_central')!;
-    expect(ro.email).toBe('ro.central@aicte.example');
+    const ro = findPersonaById('ro_nw')!;
+    expect(ro.email).toBe('ro.nw@aicte.example');
     expect(ro.name).toBe('Rakesh Tiwari');
-    expect(ro.title).toBe('Central RO Officer');
+    expect(ro.title).toBe('North-Western RO Officer');
     expect(ro.role).toBe('ro_officer');
-    expect(ro.region).toBe('central');
-    expect(ro.bureauId).toBe(5);
+    expect(ro.region).toBe('north_western');
+    expect(ro.bureauId).toBe(9);
     expect(ro.initials).toBe('RT');
 
     const intake = findPersonaById('intake')!;

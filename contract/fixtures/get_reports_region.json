@@ -32,18 +32,26 @@
       {
         "region": "central",
         "region_name": "Central",
-        "total": 9,
-        "open": 8,
+        "total": 3,
+        "open": 2,
         "disposed": 1,
-        "beyond_sla": 3
+        "beyond_sla": 1
+      },
+      {
+        "region": "north_western",
+        "region_name": "North-Western",
+        "total": 4,
+        "open": 4,
+        "disposed": 0,
+        "beyond_sla": 1
       },
       {
         "region": "western",
         "region_name": "Western",
-        "total": 2,
-        "open": 2,
+        "total": 4,
+        "open": 4,
         "disposed": 0,
-        "beyond_sla": 0
+        "beyond_sla": 1
       },
       {
         "region": null,

@@ -4,6 +4,7 @@ import { Descriptions } from 'antd';
 import { SOURCE_CHANNEL_LABELS, COMPLAINANT_TYPE_LABELS } from '../../lib/api/enums';
 import type { CaseDetail, Meta } from '../../lib/api/types';
 import { formatDate } from '../../lib/format';
+import { ResolutionLine } from '../../components/signature/ResolutionLine';
 
 /** Every tracking field of PRD §4.1 (the PS's "Complaint / Case Tracking" list). */
 export const TrackingFields: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ detail, meta }) => {
@@ -22,19 +23,18 @@ export const TrackingFields: React.FC<{ detail: CaseDetail; meta: Meta }> = ({ d
         {c.complainant_name ? `: ${c.complainant_name}` : ''}
       </Descriptions.Item>
       <Descriptions.Item label="Category">{category?.name ?? c.category_id}</Descriptions.Item>
-      <Descriptions.Item label="Institution (as written)">
-        {c.raw_institution_text}
-        {c.raw_district || c.raw_state ? ` (${[c.raw_district, c.raw_state].filter(Boolean).join(', ')})` : ''}
-      </Descriptions.Item>
-      <Descriptions.Item label="Institution (resolved)">
-        <span>
-        {institution ? (
-          <Link to={`/institutions/${institution.permanent_id}`}>{institution.name}</Link>
-        ) : (
-          'Not resolved yet'
+      <Descriptions.Item label="Institution" span="filled">
+        <ResolutionLine
+          raw={`${c.raw_institution_text}${c.raw_district || c.raw_state ? ` (${[c.raw_district, c.raw_state].filter(Boolean).join(', ')})` : ''}`}
+          name={institution?.name ?? null}
+          permanentId={institution?.permanent_id ?? null}
+          note={c.match_score !== null ? `Match ${c.match_status}` : undefined}
+        />
+        {institution && (
+          <Link to={`/institutions/${institution.permanent_id}`} className="uc-meta">
+            Open the institution record
+          </Link>
         )}
-        {c.match_score !== null && ` · match ${c.match_status}`}
-        </span>
       </Descriptions.Item>
       <Descriptions.Item label="Permanent ID">{c.permanent_id ?? '—'}</Descriptions.Item>
       <Descriptions.Item label="Trust">{institution?.trust_name ?? '—'}</Descriptions.Item>

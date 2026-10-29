@@ -85,7 +85,7 @@ def test_sla_warning_on_pgrc_00412_appears_exactly_once_across_many_ticks(
         mine = fresh(session, seed_ids, AlertType.sla_warning, "PGRC/2026/00412")
         assert len(mine) == 1
         assert mine[0].recipient_id == user_id(session, PGRC_HEAD)
-        assert mine[0].severity.value == "warning" and mine[0].permanent_id == "1-4812730561"
+        assert mine[0].severity.value == "warning" and mine[0].permanent_id == "1-43655981521"
         assert "day 19 of 21" in mine[0].title and "Assigned officer:" in mine[0].body
 
 
@@ -133,14 +133,14 @@ def test_breach_alerts_agree_with_the_seeded_ones(seeded_engine: Engine, test_se
     with Session(seeded_engine) as session:
         rb = user_id(session, RB_HEAD)
         titles = [a.title for a in session.exec(select(Alert).where(Alert.type == AlertType.sla_breach, Alert.recipient_id == rb)).all()]
-        assert sorted(titles) == ["Beyond SLA: RB/2026/00079", "Beyond SLA: RO-CRO/2026/00121"]
+        assert sorted(titles) == ["Beyond SLA: RB/2026/00079", "Beyond SLA: RO-WRO/2026/00121"]
 
 
 def test_digest_lists_the_longest_overdue_first(seeded_engine: Engine, test_settings: Settings, seed_ids: Set[int]) -> None:
     ticks(seeded_engine, 1, test_settings)
     with Session(seeded_engine) as session:
         body = next(a.body for a in fresh(session, seed_ids, AlertType.sla_breach) if a.recipient_id == user_id(session, SENIOR))
-        refs = ["RB/2026/00079", "PGRC/2026/00398", "RO-CRO/2026/00121"]
+        refs = ["RB/2026/00079", "PGRC/2026/00398", "RO-WRO/2026/00121"]
         assert all(r in body for r in refs)
         due = {r: case_by_ref(session, r).sla_due_on for r in refs}
         assert sorted(refs, key=body.index) == sorted(refs, key=lambda r: due[r])

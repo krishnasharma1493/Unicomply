@@ -71,7 +71,7 @@ def resolve_institution(
         semantic_score = float(semantic.get(inst.permanent_id, 0.0))
         acronym_score = 1.0 if (inst.acronym and inst.acronym.upper() in query_tokens) else 0.0
         if acronym_score and set(name_query.split()) <= {(inst.acronym or "").upper()}:
-            fuzzy_score = 1.0  # the complaint IS the acronym (VVIET Jabalpur): that is the whole name, not a missing one
+            fuzzy_score = 1.0  # the complaint IS the acronym (MAIT Delhi): that is the whole name, not a missing one
         location_score = _location_score(inst, raw_state, district_hint)
         score = min(1.0, max(0.0,
             weights.fuzzy * fuzzy_score + weights.semantic * semantic_score
@@ -114,7 +114,8 @@ def _correct_spelling(token: str, idx: MatchIndex) -> str:
     """A word that is not in any registered name, but is one slip away from one that is (VINDYA -> VINDHYA)."""
     if token in idx.vocabulary or len(token) < SPELLING_MIN_LENGTH or token.isdigit():
         return token
-    hit = process.extractOne(token, idx.vocabulary, scorer=fuzz.ratio, score_cutoff=SPELLING_CUTOFF)
+    # Sorted, so that two registry words equally close to the token always give the same answer (a frozenset iterates in hash order).
+    hit = process.extractOne(token, sorted(idx.vocabulary), scorer=fuzz.ratio, score_cutoff=SPELLING_CUTOFF)
     return str(hit[0]) if hit else token
 
 

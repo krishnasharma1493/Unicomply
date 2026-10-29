@@ -22,7 +22,7 @@ class MatchReview(MatchReviewBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     status: ReviewStatus = Field(default=ReviewStatus.pending, index=True)
     decided_permanent_id: Optional[str] = Field(
-        default=None, foreign_key="institution.permanent_id", max_length=12
+        default=None, foreign_key="institution.permanent_id", max_length=13
     )
     decided_by: Optional[int] = Field(default=None, foreign_key="user.id")
     decided_at: Optional[datetime] = None

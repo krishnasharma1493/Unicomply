@@ -54,6 +54,7 @@ export const INST_TYPES = [
   'management',
   'pharmacy',
   'polytechnic',
+  'hotel_management',
   'university',
   'university_department',
 ] as const;
@@ -63,6 +64,7 @@ export const INST_TYPE_LABELS: Record<InstType, string> = {
   management: 'Management',
   pharmacy: 'Pharmacy',
   polytechnic: 'Polytechnic',
+  hotel_management: 'Hotel management',
   university: 'University',
   university_department: 'University department',
 };

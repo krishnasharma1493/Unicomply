@@ -20,10 +20,10 @@ SENIOR, PGRC, RB, RO, INTAKE = (
     "senior@aicte.example",
     "pgrc.head@aicte.example",
     "rb.head@aicte.example",
-    "ro.central@aicte.example",
+    "ro.nw@aicte.example",
     "intake@aicte.example",
 )
-VINDHYA = "1-4812730561"
+MAIT = "1-43655981521"
 
 
 @pytest.fixture(autouse=True)
@@ -47,20 +47,34 @@ def test_default_sort_is_received_desc_and_senior_sees_all(seeded_client: TestCl
     assert body["pagination"]["total"] == 13 and received == sorted(received, reverse=True)
 
 
+def test_sort_by_sla_due_puts_the_soonest_first(seeded_client: TestClient, auth_headers: Headers) -> None:
+    body = seeded_client.get("/api/v1/cases?limit=100&pending=true&sort=sla_due_asc", headers=auth_headers(SENIOR)).json()
+    due = [c["sla_due_on"] for c in body["data"]]
+    assert due and due == sorted(due)
+    assert body["pagination"]["total"] == seeded_client.get("/api/v1/cases?limit=1&pending=true", headers=auth_headers(SENIOR)).json()["pagination"]["total"]
+
+
+def test_sort_keeps_scope_and_rejects_unknown_values(seeded_client: TestClient, auth_headers: Headers) -> None:
+    pgrc = set(refs(seeded_client, auth_headers(PGRC), "sort=sla_due_asc"))
+    assert pgrc == set(refs(seeded_client, auth_headers(PGRC)))
+    assert seeded_client.get("/api/v1/cases?sort=newest", headers=auth_headers(SENIOR)).status_code == 400
+
+
 @pytest.mark.parametrize(
     "query, expected",
     [
-        ("q=vindhya", {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133", "RB/2026/00079"}),  # name, via Permanent ID
-        ("q=VVIET", {"PGRC/2026/00412"}),  # raw text
-        (f"permanent_id={VINDHYA}", {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"}),
+        ("q=agrasen", {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133", "RB/2026/00079"}),  # name, via Permanent ID
+        ("q=MAIT", {"PGRC/2026/00412"}),  # raw text
+        ("q=00412", {"PGRC/2026/00412"}),  # a reference's serial
+        (f"permanent_id={MAIT}", {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"}),
         ("case_ref=rb/2026/00087", {"RB/2026/00087"}),
         ("bureau_id=3", {"AB/2026/00056"}),
-        ("category=certificate_withheld", {"RO-CRO/2026/00133", "RB/2026/00079", "PGRC/2026/00431"}),
+        ("category=certificate_withheld", {"RO-NWRO/2026/00133", "RB/2026/00079", "PGRC/2026/00431"}),
         ("status=escalated", {"RB/2026/00079"}),
         ("from=2026-11-12&to=2026-11-12", {"RB/2026/00091"}),
-        ("beyond_sla=true", {"RB/2026/00079", "PGRC/2026/00398", "RO-CRO/2026/00121"}),
+        ("beyond_sla=true", {"RB/2026/00079", "PGRC/2026/00398", "RO-WRO/2026/00121"}),
         ("in_overlap=true&region=western", {"PGRC/2026/00377", "RO-WRO/2026/00204"}),
-        ("region=western", {"PGRC/2026/00377", "RO-WRO/2026/00204"}),
+        ("region=western", {"PGRC/2026/00377", "RO-WRO/2026/00204", "RO-WRO/2026/00121", "AB/2026/00056"}),
     ],
 )
 def test_each_filter_alone(seeded_client: TestClient, auth_headers: Headers, query: str, expected: set) -> None:
@@ -70,8 +84,8 @@ def test_each_filter_alone(seeded_client: TestClient, auth_headers: Headers, que
 
 def test_filters_combine_and_exclude(seeded_client: TestClient, auth_headers: Headers) -> None:
     h = auth_headers(SENIOR)
-    assert refs(seeded_client, h, f"permanent_id={VINDHYA}&bureau_id=1") == ["RB/2026/00087"]
-    assert refs(seeded_client, h, f"permanent_id={VINDHYA}&bureau_id=3") == []
+    assert refs(seeded_client, h, f"permanent_id={MAIT}&bureau_id=1") == ["RB/2026/00087"]
+    assert refs(seeded_client, h, f"permanent_id={MAIT}&bureau_id=3") == []
     inside = set(refs(seeded_client, h, "in_overlap=true"))
     outside = set(refs(seeded_client, h, "in_overlap=false"))
     assert inside and outside and not inside & outside and len(inside | outside) == 13
@@ -83,8 +97,8 @@ def test_filters_combine_and_exclude(seeded_client: TestClient, auth_headers: He
 def test_derived_fields(seeded_client: TestClient, auth_headers: Headers) -> None:
     rows = {c["case_ref"]: c for c in seeded_client.get("/api/v1/cases?limit=100", headers=auth_headers(SENIOR)).json()["data"]}
     hero = rows["PGRC/2026/00412"]
-    assert (hero["age_days"], hero["beyond_sla"], hero["in_overlap"], hero["region"]) == (19, False, True, "central")
-    assert hero["institution_name"] == "Vindhya Valley Institute of Engineering & Technology"
+    assert (hero["age_days"], hero["beyond_sla"], hero["in_overlap"], hero["region"]) == (19, False, True, "north_western")
+    assert hero["institution_name"] == "Maharaja Agrasen Institute of Technology"
     assert rows["RB/2026/00079"]["beyond_sla"] is True and rows["PGRC/2026/00431"]["institution_name"] is None
 
 
@@ -131,7 +145,7 @@ def test_detail_out_of_scope_is_404(seeded_client: TestClient, auth_headers: Hea
 
 def test_detail_cards_hide_text(seeded_client: TestClient, auth_headers: Headers) -> None:
     group = seeded_client.get("/api/v1/cases/102", headers=auth_headers(RB)).json()["data"]["overlaps"][0]
-    assert {c["case_ref"]: c["in_scope"] for c in group["cases"]} == {"PGRC/2026/00412": False, "RO-CRO/2026/00133": False}
+    assert {c["case_ref"]: c["in_scope"] for c in group["cases"]} == {"PGRC/2026/00412": False, "RO-NWRO/2026/00133": False}
     assert all("description" not in c and "complainant_name" not in c for c in group["cases"])
 
 
@@ -156,11 +170,11 @@ def test_hero_intake(seeded_client: TestClient, auth_headers: Headers) -> None:
     assert (case["case_ref"], case["current_bureau_id"], case["sla_due_on"], case["status"]) == (
         "PGRC/2026/00432", 2, "2026-12-11", "received",
     )  # next PGRC number; certificates → PGRC; received + 21 days
-    assert (case["permanent_id"], case["match_status"], case["created_by"], case["in_overlap"]) == (VINDHYA, "auto", 5, True)
-    assert data["resolution"]["decision"] == "auto" and data["resolution"]["candidates"][0]["permanent_id"] == VINDHYA
+    assert (case["permanent_id"], case["match_status"], case["created_by"], case["in_overlap"]) == (MAIT, "auto", 5, True)
+    assert data["resolution"]["decision"] == "auto" and data["resolution"]["candidates"][0]["permanent_id"] == MAIT
     [overlap] = data["overlaps"]
     assert (overlap["level"], overlap["tier"], overlap["banner"]) == ("institution", "probable", load_fixture("post_cases")["data"]["overlaps"][0]["banner"])
-    assert {c["case_ref"] for c in overlap["cases"]} == {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"}
+    assert {c["case_ref"] for c in overlap["cases"]} == {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"}
     # committed: the operator can read it back, and it is listed
     assert seeded_client.get(f"/api/v1/cases/{case['id']}", headers=auth_headers(INTAKE)).status_code == 200
     assert case["case_ref"] in refs(seeded_client, auth_headers(SENIOR))
@@ -174,7 +188,7 @@ def test_case_refs_increment(seeded_client: TestClient, auth_headers: Headers) -
 
 
 def test_routing_override_and_supplied_permanent_id(seeded_client: TestClient, auth_headers: Headers) -> None:
-    res = post(seeded_client, auth_headers(SENIOR), hero_body(route_to_bureau_id=1, permanent_id="1-4812744105"))
+    res = post(seeded_client, auth_headers(SENIOR), hero_body(route_to_bureau_id=1, permanent_id="1-43674307362"))
     data = res.json()["data"]
     assert data["case"]["case_ref"].startswith("RB/2026/") and data["case"]["match_status"] == "provided"
     assert data["resolution"]["decision"] == "provided"

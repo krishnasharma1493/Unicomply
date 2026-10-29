@@ -2,11 +2,11 @@
   "success": true,
   "data": {
     "id": 4,
-    "email": "ro.central@aicte.example",
+    "email": "ro.nw@aicte.example",
     "name": "Rakesh Tiwari",
     "role": "ro_officer",
-    "bureau_id": 5,
-    "region": "central",
+    "bureau_id": 9,
+    "region": "north_western",
     "is_admin": false
   }
 }

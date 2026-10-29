@@ -89,6 +89,10 @@ function viewerOf(config: AxiosRequestConfig): UserMe | null {
 
 // ── Routes ───────────────────────────────────────────────────────────────
 
+/** GET /cases `sort`: the backend's two orders (newest received, or soonest SLA due). */
+const sortCases = (rows: CaseRead[], sort: string | null): CaseRead[] =>
+  sort === 'sla_due_asc' ? [...rows].sort((a, b) => a.sla_due_on.localeCompare(b.sla_due_on) || a.id - b.id) : rows;
+
 const routes: Route[] = [
   { method: 'GET', pattern: /^\/health$/, public: true, handle: () => [200, fixtures.health] },
 
@@ -152,7 +156,7 @@ const routes: Route[] = [
     pattern: /^\/cases$/,
     handle: ({ query, viewer }) =>
       paged(
-        where<CaseRead>(
+        sortCases(where<CaseRead>(
           db.world.cases.filter((c) => db.inScope(viewer, c)),
           query,
           [
@@ -170,7 +174,7 @@ const routes: Route[] = [
             ['beyond_sla', (c, v) => c.beyond_sla === (v === 'true')],
             ['in_overlap', (c, v) => c.in_overlap === (v === 'true')],
           ],
-        ),
+        ), query.get('sort')),
         query,
       ),
   },
@@ -181,7 +185,7 @@ const routes: Route[] = [
       if (!role(viewer, 'intake_operator', 'bureau_head')) throw forbidden();
       validateCaseCreate(body);
       const create = body as CaseCreate;
-      // A name the engine would not guess (a seeded review's text, e.g. "S.I.T. Bhopal") is queued
+      // A name the engine would not guess (a seeded review's text, e.g. "M.I.T. Bhopal") is queued
       // for review; anything else replays the hero intake.
       const seeded = create.permanent_id ? undefined : db.reviewForText(create.raw_institution_text);
       return ok(seeded ? db.intakePendingCase(create, seeded, viewer) : db.intakeHeroCase(), 201);
@@ -330,8 +334,8 @@ function validateCaseCreate(body: Record<string, unknown>) {
     if (body[key] === undefined || body[key] === null) fields[key] = ['Field required'];
   }
   text('raw_institution_text', 3, 300);
-  if (typeof body.permanent_id === 'string' && !/^1-\d{6,10}$/.test(body.permanent_id)) {
-    fields.permanent_id = ["String should match pattern '^1-\\d{6,10}$'"];
+  if (typeof body.permanent_id === 'string' && !/^1-\d{6,11}$/.test(body.permanent_id)) {
+    fields.permanent_id = ["String should match pattern '^1-\\d{6,11}$'"];
   }
   text('subject', 3, 200);
   text('description', 10, 4000);

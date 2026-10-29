@@ -12,10 +12,10 @@ export interface StatusChipProps {
  * states that need a second look (escalated, reopened) and the closed one from the rest.
  */
 const DOT: Record<CaseStatus, string> = {
-  received: '#aeaeb2',
-  under_process: '#0071e3',
-  interim_reply: '#0071e3',
-  transferred: '#aeaeb2',
+  received: '#9aa19d',
+  under_process: '#0b5e6b',
+  interim_reply: '#0b5e6b',
+  transferred: '#9aa19d',
   escalated: '#c26a00',
   reopened: '#c26a00',
   disposed: '#1d7a34',
@@ -24,7 +24,7 @@ const DOT: Record<CaseStatus, string> = {
 export const StatusChip: React.FC<StatusChipProps> = ({ status, className, style }) => (
   <span
     className={['uc-status', className].filter(Boolean).join(' ')}
-    style={{ '--uc-status-dot': DOT[status] ?? '#aeaeb2', ...style } as React.CSSProperties}
+    style={{ '--uc-status-dot': DOT[status] ?? '#9aa19d', ...style } as React.CSSProperties}
   >
     {CASE_STATUS_LABELS[status] ?? status}
   </span>

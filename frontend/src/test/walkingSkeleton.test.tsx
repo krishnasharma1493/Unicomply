@@ -157,64 +157,67 @@ describe('Issue #11 Walking Skeleton', () => {
 
       // Wait until AuthProvider loads user
       await waitFor(() => {
-        expect(screen.getByText('Dashboard')).toBeInTheDocument();
+        expect(screen.getByText('Today')).toBeInTheDocument();
       });
     };
 
-    it('senior_mgmt (admin) sees all 9 navigation items, Match Review included', async () => {
+    it('senior_mgmt (admin) sees all 10 navigation items, Match Review included', async () => {
       await setupSidebarWithUser(fixtures.login.senior.data.access_token);
 
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Today')).toBeInTheDocument();
       expect(screen.getByText('Cases')).toBeInTheDocument();
-      expect(screen.getByText('Case Intake')).toBeInTheDocument();
+      expect(screen.getByText('New case')).toBeInTheDocument();
       expect(screen.getByText('Match Review')).toBeInTheDocument();
-      expect(screen.getByText('Overlap Center')).toBeInTheDocument();
+      expect(screen.getByText('Overlaps')).toBeInTheDocument();
       expect(screen.getByText('Institutions')).toBeInTheDocument();
       expect(screen.getByText('Alerts')).toBeInTheDocument();
+      expect(screen.getByText('Overview')).toBeInTheDocument();
       expect(screen.getByText('Reports')).toBeInTheDocument();
-      expect(screen.getByText('System Admin')).toBeInTheDocument();
+      expect(screen.getByText('Admin')).toBeInTheDocument();
     });
 
-    it('bureau_head sees 7 navigation items (no System Admin, no Match Review)', async () => {
+    it('bureau_head sees 8 navigation items (no Admin, no Match Review)', async () => {
       await setupSidebarWithUser(fixtures.login.pgrc_head.data.access_token);
 
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Today')).toBeInTheDocument();
       expect(screen.getByText('Cases')).toBeInTheDocument();
-      expect(screen.getByText('Case Intake')).toBeInTheDocument();
-      expect(screen.getByText('Overlap Center')).toBeInTheDocument();
+      expect(screen.getByText('New case')).toBeInTheDocument();
+      expect(screen.getByText('Overlaps')).toBeInTheDocument();
       expect(screen.getByText('Institutions')).toBeInTheDocument();
       expect(screen.getByText('Alerts')).toBeInTheDocument();
       expect(screen.getByText('Reports')).toBeInTheDocument();
-      expect(screen.queryByText('System Admin')).not.toBeInTheDocument();
+      expect(screen.queryByText('Admin')).not.toBeInTheDocument();
       expect(screen.queryByText('Match Review')).not.toBeInTheDocument();
     });
 
-    it('ro_officer sees 4 navigation items (Dashboard, Cases, Institutions, Alerts)', async () => {
-      await setupSidebarWithUser(fixtures.login.ro_central.data.access_token);
+    it('ro_officer sees 5 navigation items (Today, Cases, Alerts, Institutions, Overview)', async () => {
+      await setupSidebarWithUser(fixtures.login.ro_nw.data.access_token);
 
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Today')).toBeInTheDocument();
       expect(screen.getByText('Cases')).toBeInTheDocument();
       expect(screen.getByText('Institutions')).toBeInTheDocument();
       expect(screen.getByText('Alerts')).toBeInTheDocument();
-      expect(screen.queryByText('Case Intake')).not.toBeInTheDocument();
-      expect(screen.queryByText('Overlap Center')).not.toBeInTheDocument();
+      expect(screen.getByText('Overview')).toBeInTheDocument();
+      expect(screen.queryByText('New case')).not.toBeInTheDocument();
+      expect(screen.queryByText('Overlaps')).not.toBeInTheDocument();
       expect(screen.queryByText('Reports')).not.toBeInTheDocument();
-      expect(screen.queryByText('System Admin')).not.toBeInTheDocument();
+      expect(screen.queryByText('Admin')).not.toBeInTheDocument();
       expect(screen.queryByText('Match Review')).not.toBeInTheDocument();
     });
 
-    it('intake_operator sees Match Review and Case Intake', async () => {
+    it('intake_operator sees Match Review and New case', async () => {
       await setupSidebarWithUser(fixtures.login.intake.data.access_token);
 
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Today')).toBeInTheDocument();
       expect(screen.getByText('Cases')).toBeInTheDocument();
-      expect(screen.getByText('Case Intake')).toBeInTheDocument();
+      expect(screen.getByText('New case')).toBeInTheDocument();
       expect(screen.getByText('Match Review')).toBeInTheDocument();
       expect(screen.getByText('Institutions')).toBeInTheDocument();
       expect(screen.getByText('Alerts')).toBeInTheDocument();
-      expect(screen.queryByText('Overlap Center')).not.toBeInTheDocument();
+      expect(screen.queryByText('Overlaps')).not.toBeInTheDocument();
+      expect(screen.queryByText('Overview')).not.toBeInTheDocument();
       expect(screen.queryByText('Reports')).not.toBeInTheDocument();
-      expect(screen.queryByText('System Admin')).not.toBeInTheDocument();
+      expect(screen.queryByText('Admin')).not.toBeInTheDocument();
     });
   });
 

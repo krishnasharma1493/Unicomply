@@ -55,9 +55,9 @@ def test_rb_head_sees_only_rb_cases(db: Session) -> None:
         [c.id for c in db.exec(scope.scope_cases(select(Case), user(db, "rb.head@aicte.example"))).all()]))).all()} == {bureau}
 
 
-def test_central_ro_sees_only_central_region_institutions_across_bureaus(db: Session) -> None:
-    got = refs(db, user(db, "ro.central@aicte.example"))
-    assert {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"} <= set(got)  # any bureau
+def test_north_western_ro_sees_only_its_region_institutions_across_bureaus(db: Session) -> None:
+    got = refs(db, user(db, "ro.nw@aicte.example"))
+    assert {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"} <= set(got)  # any bureau
     assert "RO-WRO/2026/00204" not in got and "PGRC/2026/00377" not in got  # western institution
     assert "PGRC/2026/00431" not in got  # unresolved: no institution, no region
 
@@ -72,7 +72,7 @@ def test_intake_sees_only_cases_they_created(db: Session) -> None:
 def test_roles_without_case_access_and_regionless_ro_see_nothing(db: Session) -> None:
     officer = user(db, "sunita.mishra@aicte.example")
     assert officer.role == Role.case_officer and refs(db, officer) == []
-    ro = user(db, "ro.central@aicte.example")
+    ro = user(db, "ro.nw@aicte.example")
     ro.region = None
     assert refs(db, ro) == []
 
@@ -143,12 +143,12 @@ def test_http_out_of_scope_is_404_and_wrong_role_is_403(probe: TestClient, db: S
 
 
 def test_in_scope_but_cannot_act_is_403(probe: TestClient, db: Session, test_settings) -> None:
-    """The central RO sees every central-region case but acts only where the case is at its own RO."""
-    ro = headers(db, test_settings, "ro.central@aicte.example")
+    """The North-Western RO sees every North-Western-region case but acts only where the case is at its own RO."""
+    ro = headers(db, test_settings, "ro.nw@aicte.example")
     assert probe.get(f"/cases/{case_id(db, 'PGRC/2026/00412')}", headers=ro).status_code == 200
     denied = probe.post(f"/cases/{case_id(db, 'PGRC/2026/00412')}/act", headers=ro)
     assert (denied.status_code, denied.json()["error"]["code"]) == (403, "FORBIDDEN")
-    assert probe.post(f"/cases/{case_id(db, 'RO-CRO/2026/00133')}/act", headers=ro).status_code == 200
+    assert probe.post(f"/cases/{case_id(db, 'RO-NWRO/2026/00133')}/act", headers=ro).status_code == 200
 
 
 # ── can_act_on_case ──────────────────────────────────────────────────────
@@ -163,8 +163,8 @@ def test_in_scope_but_cannot_act_is_403(probe: TestClient, db: Session, test_set
         ("senior@aicte.example", "RB/2026/00087", ActionType.transfer, False),
         ("pgrc.head@aicte.example", "PGRC/2026/00412", ActionType.dispose, True),
         ("pgrc.head@aicte.example", "RB/2026/00087", ActionType.escalate, False),
-        ("ro.central@aicte.example", "RO-CRO/2026/00133", ActionType.transfer, True),
-        ("ro.central@aicte.example", "RB/2026/00087", ActionType.remark, False),
+        ("ro.nw@aicte.example", "RO-NWRO/2026/00133", ActionType.transfer, True),
+        ("ro.nw@aicte.example", "RB/2026/00087", ActionType.remark, False),
         ("intake@aicte.example", "PGRC/2026/00412", ActionType.remark, False),
     ],
 )
@@ -179,12 +179,12 @@ def test_can_act_on_case(db: Session, email: str, ref: str, action: ActionType, 
 def test_cards_show_group_mates_outside_scope(db: Session) -> None:
     """The RB head sees RB/00087 in full and the PGRC and RO cases of its group as cards only."""
     rb = user(db, "rb.head@aicte.example")
-    group_one = {case_id(db, r) for r in ("PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133")}
+    group_one = {case_id(db, r) for r in ("PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133")}
     visible = scope.card_case_ids(db, rb, group_one)
     assert visible == group_one
     in_scope = scope.in_scope_callback(db, rb)
     flags = {db.get(Case, i).case_ref: in_scope(db.get(Case, i)) for i in group_one}  # type: ignore[union-attr]
-    assert flags == {"PGRC/2026/00412": False, "RB/2026/00087": True, "RO-CRO/2026/00133": False}
+    assert flags == {"PGRC/2026/00412": False, "RB/2026/00087": True, "RO-NWRO/2026/00133": False}
 
 
 def test_case_in_no_group_with_an_in_scope_case_has_no_card(db: Session) -> None:

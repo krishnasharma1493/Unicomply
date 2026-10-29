@@ -16,7 +16,7 @@ class AlertBase(SQLModel):
     case_id: Optional[int] = Field(default=None, foreign_key="case.id", index=True)
     group_id: Optional[int] = Field(default=None, foreign_key="overlap_group.id")
     permanent_id: Optional[str] = Field(
-        default=None, foreign_key="institution.permanent_id", index=True, max_length=12
+        default=None, foreign_key="institution.permanent_id", index=True, max_length=13
     )
     title: str = Field(max_length=200)
     body: str = Field(max_length=1000)

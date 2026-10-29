@@ -22,12 +22,12 @@ export const LinkedCaseCard: React.FC<LinkedCaseCardProps> = ({ card, coordinato
   <article className="uc-linked" aria-label={`Linked case ${card.case_ref}`}>
     <div className="uc-linked-head">
       {card.in_scope ? (
-        <Link to={`/cases/${card.case_id}`} className="uc-linked-ref">
+        <Link to={`/cases/${card.case_id}`} className="uc-linked-ref uc-ref">
           {card.case_ref}
         </Link>
       ) : (
         <>
-          <span className="uc-linked-ref">{card.case_ref}</span>
+          <span className="uc-linked-ref uc-ref">{card.case_ref}</span>
           <span className="uc-label uc-label--outline">Summary only</span>
         </>
       )}

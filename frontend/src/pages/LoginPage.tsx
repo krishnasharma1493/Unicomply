@@ -63,7 +63,6 @@ export const LoginPage: React.FC = () => {
     <main className="uc-login">
       <div className="uc-login-col" style={{ maxWidth: env.VITE_DEMO_MODE ? '40rem' : '26rem' }}>
         <header className="uc-login-head">
-          <div className="uc-brand-name">AICTE</div>
           <h1>Unicomply Portal</h1>
           <p className="uc-page-subtitle" style={{ marginInline: 'auto' }}>
             AICTE complaint monitoring: grievance redressal, cross-bureau overlap detection and compliance tracking.

@@ -72,14 +72,14 @@ import getReviews from '../../../../../contract/fixtures/get_reviews.json';
 import getUsersMeIntake from '../../../../../contract/fixtures/get_users_me_intake.json';
 import getUsersMePgrcHead from '../../../../../contract/fixtures/get_users_me_pgrc_head.json';
 import getUsersMeRbHead from '../../../../../contract/fixtures/get_users_me_rb_head.json';
-import getUsersMeRoCentral from '../../../../../contract/fixtures/get_users_me_ro_central.json';
+import getUsersMeRoNw from '../../../../../contract/fixtures/get_users_me_ro_nw.json';
 import getUsersMeSenior from '../../../../../contract/fixtures/get_users_me_senior.json';
 import postAlertsIdRead from '../../../../../contract/fixtures/post_alerts_id_read.json';
 import postAlertsReadAll from '../../../../../contract/fixtures/post_alerts_read_all.json';
 import postAuthLoginIntake from '../../../../../contract/fixtures/post_auth_login_intake.json';
 import postAuthLoginPgrcHead from '../../../../../contract/fixtures/post_auth_login_pgrc_head.json';
 import postAuthLoginRbHead from '../../../../../contract/fixtures/post_auth_login_rb_head.json';
-import postAuthLoginRoCentral from '../../../../../contract/fixtures/post_auth_login_ro_central.json';
+import postAuthLoginRoNw from '../../../../../contract/fixtures/post_auth_login_ro_nw.json';
 import postAuthLoginSenior from '../../../../../contract/fixtures/post_auth_login_senior.json';
 import postCases from '../../../../../contract/fixtures/post_cases.json';
 import postCasesIdActions from '../../../../../contract/fixtures/post_cases_id_actions.json';
@@ -131,14 +131,14 @@ export const fixtures = {
     senior: postAuthLoginSenior satisfies Contract<typeof postAuthLoginSenior, Envelope<LoginOut>> as Envelope<LoginOut>,
     pgrc_head: postAuthLoginPgrcHead satisfies Contract<typeof postAuthLoginPgrcHead, Envelope<LoginOut>> as Envelope<LoginOut>,
     rb_head: postAuthLoginRbHead satisfies Contract<typeof postAuthLoginRbHead, Envelope<LoginOut>> as Envelope<LoginOut>,
-    ro_central: postAuthLoginRoCentral satisfies Contract<typeof postAuthLoginRoCentral, Envelope<LoginOut>> as Envelope<LoginOut>,
+    ro_nw: postAuthLoginRoNw satisfies Contract<typeof postAuthLoginRoNw, Envelope<LoginOut>> as Envelope<LoginOut>,
     intake: postAuthLoginIntake satisfies Contract<typeof postAuthLoginIntake, Envelope<LoginOut>> as Envelope<LoginOut>,
   },
   usersMe: {
     senior: getUsersMeSenior satisfies Contract<typeof getUsersMeSenior, Envelope<UserMe>> as Envelope<UserMe>,
     pgrc_head: getUsersMePgrcHead satisfies Contract<typeof getUsersMePgrcHead, Envelope<UserMe>> as Envelope<UserMe>,
     rb_head: getUsersMeRbHead satisfies Contract<typeof getUsersMeRbHead, Envelope<UserMe>> as Envelope<UserMe>,
-    ro_central: getUsersMeRoCentral satisfies Contract<typeof getUsersMeRoCentral, Envelope<UserMe>> as Envelope<UserMe>,
+    ro_nw: getUsersMeRoNw satisfies Contract<typeof getUsersMeRoNw, Envelope<UserMe>> as Envelope<UserMe>,
     intake: getUsersMeIntake satisfies Contract<typeof getUsersMeIntake, Envelope<UserMe>> as Envelope<UserMe>,
   },
 

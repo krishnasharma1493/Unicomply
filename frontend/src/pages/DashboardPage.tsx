@@ -12,7 +12,7 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="uc-page">
       <PageHeader
-        title="Dashboard"
+        title="Overview"
         subtitle={`${user ? user.name : ''}${meta.data ? ` · as of ${formatDate(meta.data.today)}` : ''}. Every number opens the cases behind it.`}
       />
       <div className="uc-stack">

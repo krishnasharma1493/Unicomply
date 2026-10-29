@@ -6,7 +6,7 @@
 
 | Directory | What | Used by |
 | --- | --- | --- |
-| `seed_data/*.json` | The **full synthetic world** written by `python -m seed_data.generator --seed 26264` (#23): 500 institutions, 60 trusts, 15 universities, 1,500 cases with action histories, 45 planted overlaps, 20 hard negatives, review queue, plus `ground_truth.json`. Deterministic: the same seed gives byte-identical files, and a test fails if the checked-in files differ from the generator's output. | the demo, `python -m app.eval` (#40) |
+| `seed_data/*.json` | The **full demo world** written by `python -m seed_data.generator --seed 26264` (#23): the real AICTE registry (3,751 institutions in six states, 46 trusts, 70 universities), 1,500 fabricated cases with action histories about 466 of those institutions, 45 planted overlaps, 20 hard negatives, review queue, plus `ground_truth.json`. Deterministic: the same seed gives byte-identical files, and a test fails if the checked-in files differ from the generator's output. | the demo, `python -m app.eval` (#40) |
 | `seed_data/tiny/` | The hand-written **hero story** (#6): the world described by `contract/fixtures/`. The generator reads it as its base and keeps it verbatim (ids 101–114), so the hero cases are identical after every reset. | the tests (`SEED_SET=tiny`), `python -m app.seed --tiny` |
 
 `SEED_SET=full|tiny` (env, default `full`) picks which one seeding and demo reset load. Everything below describes the file format, which both worlds share.
@@ -17,7 +17,7 @@
 - Enum values are the snake_case values in `app/core/enums.py` (the same as `frontend/src/lib/api/enums.ts`).
 - Dates are `YYYY-MM-DD`; timestamps are UTC ISO 8601 ending in `Z`.
 - **Relative dates.** A file with a top-level `as_of` date is shifted on load by `today() - as_of` days (`today()` honours `DEMO_TODAY`). Every date/timestamp **value** moves, plus the day inside each alert `dedupe_key`; dates written inside free text (remarks, `next_action`) do not. With `DEMO_TODAY` equal to `as_of` (2026-11-20) the data is identical to the contract fixtures; on any other day the hero case PGRC/2026/00412 is still on day 19 of 21.
-- Fictional data only (PRD A6): no real institutions, complainants or officers.
+- **Real institutions, fabricated everything else** (PRD A6): institution names, districts, addresses and Permanent IDs are AICTE's own (`aicte_registry.json`, below). Cases, complaint text, complainants, officers and every action are fabricated.
 - Files marked *optional* may be omitted (the generator need not write them; the overlap engine creates groups, pairs and alerts at runtime).
 
 ## Files
@@ -43,11 +43,11 @@
 | `hard_negatives` | `{kind: same_name_other_state / disposed_long_ago, case_ids, permanent_ids}`: pairs that must **not** be linked or flagged |
 | `split_by_family`, `dev_case_ids`, `test_case_ids` | 50/50 dev/test split. Whole institution families (a trust, or a university and its departments) go to one side, so nothing leaks between tuning and reporting |
 
-`abbreviations.json` and `thresholds.json` belong to the matching engine (#19) and are not loaded into tables. The generator reads `abbreviations.json` (it never writes it) to produce abbreviated names.
+`aicte_registry.json` is the real institution list the generator reads (see "The real registry" below). `abbreviations.json` and `thresholds.json` belong to the matching engine (#19) and are not loaded into tables. The generator reads `abbreviations.json` (it never writes it) to produce abbreviated names.
 
 ### What the generator does
 
-- **Names.** Fictional: place word + founder word + type (e.g. "Sahyadri Prabhat Institute of Engineering & Technology"). Spot-check against AICTE's public approved-institution search before the event and rename any real match (PRD §10B).
+- **Names.** Real: the generator picks institutions from `aicte_registry.json` instead of inventing names. Families come from the registry's trusts and university links; same-name institutions in two states become the hard negatives. Complaints about real institutions that AICTE does not approve (IITs, IIMs, IHM Pusa) are left unresolved on purpose: the engine correctly finds no registry match.
 - **Name noise** (per case, PRD §4.7): typos on 40% (p = 0.03 per character), abbreviations 35%, acronym only 15%, district missing 20%, city instead of district 10% (the localities are district aliases in `abbreviations.json`), wrong state 2%. The location rates are exact quotas, not coin flips.
 - **No accidental overlaps.** Background cases at one trust or university family always sit in one bureau, so the only cross-bureau overlaps in the data are the planted ones and the ground truth is complete.
 - **Planted overlaps.** 30 institution-level, 5 parent-level, 10 trust-level, each with near-identical wording and dates within a few weeks. With the default weights a trust-level pair scores at most 0.6, below `T_probable` (0.68), so the engine cannot find them until #44 settles whether non-institution levels use `T_possible`.
@@ -57,13 +57,24 @@
 
 | | Count | Notes |
 | --- | --- | --- |
-| Bureaus | 14 | RB 1, PGRC 2, AB 3, ACAD 4, Regional Offices 5–14 (5 = RO-CRO Central, 14 = RO-WRO Western) |
+| Bureaus | 14 | RB 1, PGRC 2, AB 3, ACAD 4, Regional Offices 5–14 (5 = RO-CRO Central, 9 = RO-NWRO North-Western, 14 = RO-WRO Western) |
 | Categories | 12 | ragging has a 7-day SLA, the rest 21 days |
-| Users | 12 | personas 1–5, case officers 6–12 |
-| Trusts / institutions / aliases | 3 / 10 / 5 | hero VVIET and its trust sibling; a university with two departments; `1-2491105538`, a same-name "Narmada Valley College of Engineering" in Gujarat (hard negative for the location veto); a Western-region institute |
-| Cases / actions | 13 / 19 | the four §4.7 hero cases (PGRC/2026/00412 day −19 under process, RB/2026/00087 day −10 under process, RO-CRO/2026/00133 day −5 received, RB/2026/00079 day −30 escalated) and nine others covering every status; actions 1001–1019 |
+| Users | 13 | personas 1–5 (4 = the North-Western RO officer), case officers 6–13 |
+| Trusts / institutions / aliases | 2 / 11 / 5 | hero Maharaja Agrasen Institute of Technology (MAIT, Delhi) and its two trust siblings; Bharati Vidyapeeth Deemed University (Pune) with two constituent colleges; National Institute of Technical Teachers' Training and Research in Bhopal and in Chennai (a same-name pair, hard negative for the location veto); two Bhopal institutes that share the acronym MIT; Sinhgad Institute of Technology (Pune) |
+| Cases / actions | 13 / 19 | the four §4.7 hero cases (PGRC/2026/00412 day −19 under process, RB/2026/00087 day −10 under process, RO-NWRO/2026/00133 day −5 received, RB/2026/00079 day −30 escalated) and nine others covering every status; actions 1001–1019 |
 | Reviews | 2 | pending (cases 112 and 113) |
 | Overlap groups / pairs | 4 / 6 | 1 institution probable open (hero), 2 trust possible open, 3 parent possible dismissed, 4 institution possible open |
 | Alerts | 6 | for the RB head |
 
-The PRD's hero intake (`vindya valley engg college jabalpur`, live in demo step 4) is **not** seeded; it is created during the demo as PGRC/2026/00519.
+The PRD's hero intake (`maharaja agrsen institute of technology delhi`, live in demo step 4) is **not** seeded; it is created during the demo as PGRC/2026/00519 on the tiny seed (PGRC/2026/00698 on the full seed).
+
+## The real registry (`aicte_registry.json`)
+
+Built by `python -m seed_data.aicte_import` from `aicte_raw/AICTE_Approved_Colleges_Master.xlsx` (provenance in `aicte_raw/SOURCE.md`). The list has no state, PIN or programme column, so the importer:
+
+- finds each state's block of rows (rows are grouped by state; the six demo states' start rows and sizes are recorded in the script and checked against the SHA-256 of the file and each block's districts);
+- takes the institution type from the name (engineering, management, pharmacy, polytechnic, hotel management, university); a name that does not say is left out;
+- groups institutions into a trust only where a distinctive shared name makes it a family (a hand-reviewed list), and links a university to its campuses only from a hand-checked list. No link is invented;
+- cleans names (case, encoding, known misspellings) and drops same-name duplicates in one district.
+
+The committed JSON means the demo never needs the raw file or the network.
