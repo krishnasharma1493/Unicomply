@@ -11,13 +11,13 @@ from app.modules.alerts.models import Alert
 from app.modules.engine import service
 from app.modules.institutions.models import InstitutionAlias
 from app.modules.overlaps.models import OverlapGroup, OverlapPair
-from tests.test_intake_real import HERO_REFS, VVIET, hero_body, login
+from tests.test_intake_real import HERO_REFS, MAIT, hero_body, login
 
-AMBIGUOUS = "Vindhya Valley Jabalpur"  # VVIET or its trust sibling VVIM: the engine must not guess
+AMBIGUOUS = "maharaja agrsen engg college delhi"  # MAIT or its trust sibling MAIMS: the engine must not guess
 
 
 def intake(client: TestClient, text: str = AMBIGUOUS, **over: Any) -> Dict[str, Any]:
-    res = client.post("/api/v1/cases", json=hero_body(raw_institution_text=text, raw_state="Madhya Pradesh", raw_district=None, **over), headers=login(client, "intake@aicte.example"))
+    res = client.post("/api/v1/cases", json=hero_body(raw_institution_text=text, raw_state="Delhi", raw_district=None, **over), headers=login(client, "intake@aicte.example"))
     assert res.status_code == 201, res.text
     return res.json()["data"]
 
@@ -34,42 +34,42 @@ def decide(client: TestClient, case_id: int, permanent_id: str) -> Dict[str, Any
 def test_an_ambiguous_spelling_is_queued_not_guessed(full_client: TestClient) -> None:
     data = intake(full_client)
     assert data["resolution"]["decision"] == "pending_review" and data["case"]["permanent_id"] is None
-    assert VVIET in {c["permanent_id"] for c in data["resolution"]["candidates"]}
+    assert MAIT in {c["permanent_id"] for c in data["resolution"]["candidates"]}
 
 
 def test_after_a_reviewer_confirms_a_spelling_it_resolves_exactly_next_time(full_client: TestClient, full_engine) -> None:
     first = intake(full_client)
-    result = decide(full_client, first["case"]["id"], VVIET)
-    assert result["case"]["permanent_id"] == VVIET and result["case"]["match_status"] == "reviewed"
-    assert result["alias"]["source"] == "review" and result["alias"]["permanent_id"] == VVIET
+    result = decide(full_client, first["case"]["id"], MAIT)
+    assert result["case"]["permanent_id"] == MAIT and result["case"]["match_status"] == "reviewed"
+    assert result["alias"]["source"] == "review" and result["alias"]["permanent_id"] == MAIT
     with Session(full_engine) as s:
-        assert s.exec(select(InstitutionAlias).where(InstitutionAlias.source == "review", InstitutionAlias.permanent_id == VVIET)).first()
+        assert s.exec(select(InstitutionAlias).where(InstitutionAlias.source == "review", InstitutionAlias.permanent_id == MAIT)).first()
 
     second = intake(full_client)  # the same spelling again
     assert second["resolution"]["decision"] == "auto"
     best = second["resolution"]["candidates"][0]
-    assert (best["permanent_id"], best["score"]) == (VVIET, 0.99)
+    assert (best["permanent_id"], best["score"]) == (MAIT, 0.99)
     assert any("previously confirmed" in r for r in best["reasons"])
-    assert (second["case"]["permanent_id"], second["case"]["match_status"]) == (VVIET, "auto")
+    assert (second["case"]["permanent_id"], second["case"]["match_status"]) == (MAIT, "auto")
 
 
 def test_the_learned_spelling_does_not_apply_to_another_state(full_client: TestClient) -> None:
-    decide(full_client, intake(full_client)["case"]["id"], VVIET)
+    decide(full_client, intake(full_client)["case"]["id"], MAIT)
     other = full_client.post(
         "/api/v1/cases", json=hero_body(raw_institution_text=AMBIGUOUS, raw_state="Gujarat", raw_district=None),
         headers=login(full_client, "intake@aicte.example"),
     ).json()["data"]
-    assert other["case"]["permanent_id"] != VVIET  # the alias is for the Madhya Pradesh institution
+    assert other["case"]["permanent_id"] != MAIT  # the alias is for the Delhi institution
 
 
 def test_a_review_decision_creates_or_extends_an_overlap_group(full_client: TestClient, full_engine) -> None:
     case = intake(full_client)["case"]
-    result = decide(full_client, case["id"], VVIET)
+    result = decide(full_client, case["id"], MAIT)
     [group] = result["overlaps"]
     assert group["level"] == "institution" and {c["case_ref"] for c in group["cases"]} >= HERO_REFS
     with Session(full_engine) as s:
         extended = s.get(OverlapGroup, group["group_id"])
-        assert extended is not None and extended.anchor_key == VVIET
+        assert extended is not None and extended.anchor_key == MAIT
     assert full_client.get(f"/api/v1/cases/{case['id']}", headers=login(full_client, "pgrc.head@aicte.example")).json()["data"]["case"]["in_overlap"] is True
 
 

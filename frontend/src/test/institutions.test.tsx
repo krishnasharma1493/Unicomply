@@ -18,8 +18,8 @@ const heroName = hero.institution.name;
 describe('searchParams', () => {
   it('sends only what is set', () => {
     expect(searchParams({ q: '', state: '', region: null, instType: null, page: 1 })).toEqual({ page: 1, limit: 12 });
-    expect(searchParams({ q: ' VVIET ', state: 'Madhya Pradesh', region: 'central', instType: 'engineering', page: 2 })).toEqual({
-      q: 'VVIET', state: 'Madhya Pradesh', region: 'central', inst_type: 'engineering', page: 2, limit: 12,
+    expect(searchParams({ q: ' MAIT ', state: 'Delhi', region: 'north_western', instType: 'engineering', page: 2 })).toEqual({
+      q: 'MAIT', state: 'Delhi', region: 'north_western', inst_type: 'engineering', page: 2, limit: 12,
     });
   });
 });
@@ -54,10 +54,10 @@ describe('Institutions on the mock API (Issue #32)', () => {
     it('finds the hero institution by its acronym', async () => {
       const user = userEvent.setup();
       wrap('senior', '/institutions');
-      await user.type(await screen.findByLabelText('Name or Permanent ID'), 'VVIET');
+      await user.type(await screen.findByLabelText('Name or Permanent ID'), 'MAIT');
       const link = await screen.findByRole('link', { name: heroName });
       expect(link).toHaveAttribute('href', `/institutions/${hero.institution.permanent_id}`);
-      await waitFor(() => expect(screen.queryByRole('link', { name: /Deccan Plateau/ })).toBeNull());
+      await waitFor(() => expect(screen.queryByRole('link', { name: /Sinhgad Institute/ })).toBeNull());
     });
 
     it('finds it by Permanent ID, and shows the open-case count and trust', async () => {
@@ -81,7 +81,7 @@ describe('Institutions on the mock API (Issue #32)', () => {
       fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Region' }));
       fireEvent.click((await screen.findAllByText('Western')).at(-1)!);
       await waitFor(() => expect(requests(get).at(-1)).toMatchObject({ state: 'Maharashtra', region: 'western', page: 1, limit: 12 }));
-      expect(await screen.findByRole('link', { name: /Deccan Plateau/ })).toBeInTheDocument();
+      expect(await screen.findByRole('link', { name: /Sinhgad Institute/ })).toBeInTheDocument();
     });
 
     it('does not search on every keystroke', async () => {
@@ -90,8 +90,8 @@ describe('Institutions on the mock API (Issue #32)', () => {
       wrap('senior', '/institutions');
       await screen.findAllByRole('link');
       const before = requests(get).length;
-      await user.type(screen.getByLabelText('Name or Permanent ID'), 'vindhya valley');
-      await waitFor(() => expect(requests(get).at(-1)).toMatchObject({ q: 'vindhya valley' }));
+      await user.type(screen.getByLabelText('Name or Permanent ID'), 'maharaja agrasen');
+      await waitFor(() => expect(requests(get).at(-1)).toMatchObject({ q: 'maharaja agrasen' }));
       expect(requests(get).length - before).toBeLessThanOrEqual(2);
     });
 

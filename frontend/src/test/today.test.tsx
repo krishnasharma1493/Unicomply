@@ -57,7 +57,7 @@ describe('Today page on the mock API', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Today' })).toBeInTheDocument();
     expect(await screen.findByText('20 Nov 2026')).toBeInTheDocument();
     const decisions = await section(/Needs your decision/);
-    expect(await within(decisions).findByRole('link', { name: /Probable overlap: Vindhya Valley Institute of Engineering/ })).toHaveAttribute('href', '/overlaps/1');
+    expect(await within(decisions).findByRole('link', { name: /Probable overlap: Maharaja Agrasen Institute of Technology/ })).toHaveAttribute('href', '/overlaps/1');
     const due = await section(/Due soon/);
     expect(await within(due).findByText('PGRC/2026/00412')).toBeInTheDocument();
     expect(within(due).getByText('Day 19 of 21')).toBeInTheDocument();
@@ -91,9 +91,9 @@ describe('Today page on the mock API', () => {
 
   it('gives a regional officer their region, with the open cases that have no officer', async () => {
     const get = vi.spyOn(client, 'get');
-    renderAs('ro_central');
+    renderAs('ro_nw');
     const unassigned = await section(/Unassigned/);
-    expect(await within(unassigned).findByText('RO-CRO/2026/00133')).toBeInTheDocument();
+    expect(await within(unassigned).findByText('RO-NWRO/2026/00133')).toBeInTheDocument();
     expect(get.mock.calls.some(([url]) => url === '/reviews' || url === '/overlaps')).toBe(false);
   });
 
@@ -123,7 +123,7 @@ describe('Today page on the mock API', () => {
     const button = await within(alerts).findByRole('button', { name: 'Mark read: Beyond SLA: RB/2026/00079' });
     await user.click(button);
     await waitFor(() => expect(within(alerts).queryByRole('button', { name: 'Mark read: Beyond SLA: RB/2026/00079' })).toBeNull());
-    expect(within(alerts).getByRole('button', { name: 'Mark read: Beyond SLA: RO-CRO/2026/00121' })).toHaveFocus();
+    expect(within(alerts).getByRole('button', { name: 'Mark read: Beyond SLA: RO-WRO/2026/00121' })).toHaveFocus();
     // The count follows the server; the heading's accessible name carries the real number.
     await waitFor(() => expect(within(alerts).getByRole('heading', { name: /Unread alerts\s*4\b/ })).toBeInTheDocument());
   });

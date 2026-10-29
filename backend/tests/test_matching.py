@@ -18,13 +18,13 @@ from app.matching.overlap import detect_overlaps
 from app.matching.thresholds import load_thresholds
 from app.matching.types import CaseLite, InstitutionLite
 from app.modules.alerts.models import Alert
-from tests.test_intake_real import VVIET, hero_body, login
+from tests.test_intake_real import MAIT, hero_body, login
 
-VVIM = "1-4812730987"  # the hero institution's trust sibling
-NARMADA_JABALPUR, NARMADA_GUJARAT = "1-4812744105", "1-2491105538"  # the same name in two states
+MAIMS = "1-44079581354"  # the hero institution's trust sibling
+NITTTR_BHOPAL, NITTTR_CHENNAI = "1-43674307362", "1-43658573897"  # the same name in two states
 
 
-def resolve(client: TestClient, text: str, state: Optional[str] = "Madhya Pradesh", district: Optional[str] = None) -> Dict[str, Any]:
+def resolve(client: TestClient, text: str, state: Optional[str] = "Delhi", district: Optional[str] = None) -> Dict[str, Any]:
     res = client.post("/api/v1/institutions/resolve", json={"raw_text": text, "state": state, "district": district}, headers=login(client, "intake@aicte.example"))
     assert res.status_code == 200, res.text
     return res.json()["data"]
@@ -34,43 +34,43 @@ def resolve(client: TestClient, text: str, state: Optional[str] = "Madhya Prades
 
 
 def test_abbreviations_are_expanded_engg_becomes_engineering(full_client: TestClient) -> None:
-    out = resolve(full_client, "Vindhya Valley Inst. of Engg. & Tech. Jabalpur")
-    assert (out["decision"], out["candidates"][0]["permanent_id"]) == ("auto", VVIET)
+    out = resolve(full_client, "Maharaja Agrasen Inst. of Tech. Delhi")
+    assert (out["decision"], out["candidates"][0]["permanent_id"]) == ("auto", MAIT)
     assert any("similar" in r for r in out["candidates"][0]["reasons"])
 
 
-def test_an_acronym_hits_the_institution_vviet(full_client: TestClient) -> None:
-    out = resolve(full_client, "VVIET Jabalpur")
-    assert (out["decision"], out["candidates"][0]["permanent_id"]) == ("auto", VVIET)
+def test_an_acronym_hits_the_institution_mait(full_client: TestClient) -> None:
+    out = resolve(full_client, "MAIT", "Delhi", "West Delhi")
+    assert (out["decision"], out["candidates"][0]["permanent_id"]) == ("auto", MAIT)
 
 
-def test_a_typo_is_tolerated_vindhya_written_vindya(full_client: TestClient) -> None:
-    out = resolve(full_client, "vindya valley engg college jabalpur")
-    assert (out["decision"], out["candidates"][0]["permanent_id"]) == ("auto", VVIET)
+def test_a_typo_is_tolerated_agrasen_written_agrsen(full_client: TestClient) -> None:
+    out = resolve(full_client, "maharaja agrsen institute of technology delhi")
+    assert (out["decision"], out["candidates"][0]["permanent_id"]) == ("auto", MAIT)
     assert out["candidates"][0]["score"] - out["candidates"][1]["score"] >= 0.05  # clear of its trust sibling
 
 
 def test_the_location_veto_the_same_name_in_another_district_is_never_linked(full_client: TestClient) -> None:
-    in_jabalpur = resolve(full_client, "Narmada Valley College of Engineering", "Madhya Pradesh", "Jabalpur")
-    in_bharuch = resolve(full_client, "Narmada Valley College of Engineering", "Gujarat", "Bharuch")
-    assert in_jabalpur["candidates"][0]["permanent_id"] == NARMADA_JABALPUR
-    assert in_bharuch["candidates"][0]["permanent_id"] == NARMADA_GUJARAT
-    pune = resolve(full_client, "Narmada Valley College of Engineering", "Madhya Pradesh", "Pune")
-    assert NARMADA_JABALPUR not in {c["permanent_id"] for c in pune["candidates"]}  # a known, different district vetoes
+    in_bhopal = resolve(full_client, "National Institute of Technical Teachers' Training and Research", "Madhya Pradesh", "Bhopal")
+    in_chennai = resolve(full_client, "National Institute of Technical Teachers' Training and Research", "Tamil Nadu", "Chennai")
+    assert in_bhopal["candidates"][0]["permanent_id"] == NITTTR_BHOPAL
+    assert in_chennai["candidates"][0]["permanent_id"] == NITTTR_CHENNAI
+    pune = resolve(full_client, "National Institute of Technical Teachers' Training and Research", "Madhya Pradesh", "Pune")
+    assert NITTTR_BHOPAL not in {c["permanent_id"] for c in pune["candidates"]}  # a known, different district vetoes
     assert pune["decision"] != "auto" or pune["candidates"][0]["district"] == "Pune"
 
 
 def test_the_same_name_in_two_states_without_a_state_is_not_guessed(full_client: TestClient) -> None:
-    out = resolve(full_client, "Narmada Valley College of Engineering", None)
+    out = resolve(full_client, "National Institute of Technical Teachers' Training and Research", None)
     assert out["decision"] != "auto"
-    assert {NARMADA_JABALPUR, NARMADA_GUJARAT} <= {c["permanent_id"] for c in out["candidates"]}
+    assert {NITTTR_BHOPAL, NITTTR_CHENNAI} <= {c["permanent_id"] for c in out["candidates"]}
 
 
 def test_a_permanent_id_in_the_text_is_an_exact_match(full_client: TestClient) -> None:
-    out = resolve(full_client, f"Please look at institution {VVIM} regarding fees", None)
+    out = resolve(full_client, f"Please look at institution {MAIMS} regarding fees", None)
     assert out["decision"] == "auto"
     top = out["candidates"][0]
-    assert (top["permanent_id"], top["score"]) == (VVIM, 1.0)
+    assert (top["permanent_id"], top["score"]) == (MAIMS, 1.0)
 
 
 def test_a_permanent_id_not_in_the_registry_is_not_matched(full_client: TestClient) -> None:
@@ -80,13 +80,13 @@ def test_a_permanent_id_not_in_the_registry_is_not_matched(full_client: TestClie
 
 def test_a_spelling_a_reviewer_confirmed_resolves_exactly_next_time(full_client: TestClient) -> None:
     h = login(full_client, "intake@aicte.example")
-    text = "Vindhya Valley Jabalpur"  # genuinely ambiguous between the hero and its trust sibling
+    text = "maharaja agrsen engg college delhi"  # genuinely ambiguous between the hero and its trust sibling
     created = full_client.post("/api/v1/cases", json=hero_body(raw_institution_text=text, raw_district=None), headers=h).json()["data"]
     assert created["resolution"]["decision"] == "pending_review"
     review = next(r for r in full_client.get("/api/v1/reviews?status=pending&limit=100", headers=h).json()["data"] if r["case_id"] == created["case"]["id"])
-    assert full_client.post(f"/api/v1/reviews/{review['id']}/decide", json={"permanent_id": VVIET}, headers=h).status_code == 200
+    assert full_client.post(f"/api/v1/reviews/{review['id']}/decide", json={"permanent_id": MAIT}, headers=h).status_code == 200
     again = resolve(full_client, text)
-    assert (again["decision"], again["candidates"][0]["permanent_id"], again["candidates"][0]["score"]) == ("auto", VVIET, 0.99)
+    assert (again["decision"], again["candidates"][0]["permanent_id"], again["candidates"][0]["score"]) == ("auto", MAIT, 0.99)
 
 
 def test_a_name_that_is_not_in_the_registry_is_never_linked_automatically(full_client: TestClient) -> None:

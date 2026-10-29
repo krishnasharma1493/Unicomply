@@ -10,9 +10,9 @@ from sqlmodel import Field, SQLModel
 from app.core.enums import AliasSource, InstType, Region
 from app.utils.time import utcnow
 
-PERMANENT_ID_PATTERN = r"^1-\d{6,10}$"
+PERMANENT_ID_PATTERN = r"^1-\d{6,11}$"
 # Use this type for validation: SQLModel's Field(regex=...) is silently ignored (sqlmodel 0.0.48).
-PermanentIdStr = Annotated[str, StringConstraints(pattern=PERMANENT_ID_PATTERN, max_length=12)]
+PermanentIdStr = Annotated[str, StringConstraints(pattern=PERMANENT_ID_PATTERN, max_length=13)]
 
 
 class TrustBase(SQLModel):
@@ -41,18 +41,18 @@ class InstitutionBase(SQLModel):
     trust_id: Optional[int] = Field(default=None, foreign_key="trust.id", index=True)
     # A university department points at its university (parent-level overlap).
     parent_id: Optional[str] = Field(
-        default=None, foreign_key="institution.permanent_id", index=True, max_length=12
+        default=None, foreign_key="institution.permanent_id", index=True, max_length=13
     )
     is_active: bool = True
 
 
 class Institution(InstitutionBase, table=True):
     # `1-XXXXXXXXXX`; validated by InstitutionCreate (table models don't validate on init).
-    permanent_id: str = Field(primary_key=True, max_length=12)
+    permanent_id: str = Field(primary_key=True, max_length=13)
 
 
 class InstitutionAliasBase(SQLModel):
-    permanent_id: str = Field(foreign_key="institution.permanent_id", index=True, max_length=12)
+    permanent_id: str = Field(foreign_key="institution.permanent_id", index=True, max_length=13)
     alias_norm: str = Field(index=True, min_length=1, max_length=300)
     source: AliasSource
 

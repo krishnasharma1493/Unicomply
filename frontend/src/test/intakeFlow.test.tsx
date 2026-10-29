@@ -32,8 +32,8 @@ describe('intake helpers', () => {
   });
 
   it('finds a same-day duplicate by category or by a near-identical subject only', () => {
-    const base = { permanent_id: '1-4812730561', received_at: '2026-11-20', category_id: 2, subject: 'Original certificates not returned' } as CaseListItem;
-    const probe = { permanentId: '1-4812730561', receivedAt: '2026-11-20', categoryId: 2, subject: 'Something else entirely' };
+    const base = { permanent_id: '1-43655981521', received_at: '2026-11-20', category_id: 2, subject: 'Original certificates not returned' } as CaseListItem;
+    const probe = { permanentId: '1-43655981521', receivedAt: '2026-11-20', categoryId: 2, subject: 'Something else entirely' };
     expect(findDuplicate([base], probe)?.why).toBe('category');
     expect(findDuplicate([base], { ...probe, categoryId: 5, subject: 'Original certificates not returned yet' })?.why).toBe('subject');
     expect(findDuplicate([base], { ...probe, categoryId: 5 })).toBeNull();

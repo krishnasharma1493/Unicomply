@@ -100,7 +100,7 @@ class CaseListParams(PageParams):
     """Search & filters for GET /cases (PS feature 6)."""
 
     q: Optional[str] = PydanticField(default=None, max_length=300, description="Institution name or raw text")
-    permanent_id: Optional[str] = PydanticField(default=None, max_length=12)
+    permanent_id: Optional[str] = PydanticField(default=None, max_length=13)
     case_ref: Optional[str] = PydanticField(default=None, max_length=30)
     bureau_id: Optional[int] = None
     region: Optional[Region] = None

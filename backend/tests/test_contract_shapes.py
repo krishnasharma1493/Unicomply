@@ -51,8 +51,8 @@ READS: List[Tuple[str, str, str]] = [
     ("/api/v1/users/me", "get_users_me_senior", SENIOR),
     ("/api/v1/cases?limit=20", "get_cases", SENIOR),
     ("/api/v1/cases/101", "get_cases_id", SENIOR),
-    ("/api/v1/institutions?q=vviet", "get_institutions", SENIOR),
-    ("/api/v1/institutions/1-4812730561", "get_institutions_permanent_id", SENIOR),
+    ("/api/v1/institutions?q=mait", "get_institutions", SENIOR),
+    ("/api/v1/institutions/1-43655981521", "get_institutions_permanent_id", SENIOR),
     ("/api/v1/overlaps", "get_overlaps", SENIOR),
     ("/api/v1/overlaps/1", "get_overlaps_id", SENIOR),
     ("/api/v1/alerts", "get_alerts", RB),
@@ -77,7 +77,7 @@ def test_real_response_has_the_fixtures_shape(seeded_client: TestClient, auth_he
     assert not surprising, f"{fixture}: null where the contract has a value: {surprising}"
 
 
-@pytest.mark.parametrize("url", ["/api/v1/institutions/1-4812730561", "/api/v1/overlaps/1"])
+@pytest.mark.parametrize("url", ["/api/v1/institutions/1-43655981521", "/api/v1/overlaps/1"])
 def test_summary_cards_never_carry_free_text_or_names(seeded_client: TestClient, auth_headers: Headers, url: str) -> None:
     """PRD §4.2: even a viewer who may open the case gets the reduced card here, never the description or complainant."""
     body = seeded_client.get(url, headers=auth_headers(SENIOR)).text
@@ -92,7 +92,7 @@ WRITES: List[Tuple[str, str, str, str]] = [
     # (url, request fixture, response fixture, persona)
     ("/api/v1/cases", "requests/post_cases", "post_cases", INTAKE),
     ("/api/v1/institutions/resolve", "requests/post_institutions_resolve", "post_institutions_resolve", INTAKE),
-    ("/api/v1/cases/103/actions", "requests/post_cases_id_actions", "post_cases_id_actions", "ro.central@aicte.example"),
+    ("/api/v1/cases/103/actions", "requests/post_cases_id_actions", "post_cases_id_actions", "ro.nw@aicte.example"),
     ("/api/v1/reviews/2/decide", "requests/post_reviews_id_decide", "post_reviews_id_decide", INTAKE),
     ("/api/v1/overlaps/1/decision", "requests/post_overlaps_id_decision", "post_overlaps_id_decision", PGRC),
 ]

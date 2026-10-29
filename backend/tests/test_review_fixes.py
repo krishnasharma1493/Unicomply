@@ -66,8 +66,8 @@ def test_escalation_alerts_are_critical_for_senior_and_the_receiving_head(
 
 
 def test_ro_officer_may_escalate_a_case_at_its_own_office(seeded_client: TestClient, auth_headers: Headers) -> None:
-    assert escalate(seeded_client, auth_headers("ro.central@aicte.example"), 103).status_code == 200
-    assert escalate(seeded_client, auth_headers("ro.central@aicte.example"), 102).status_code in (403, 404)  # not its case
+    assert escalate(seeded_client, auth_headers("ro.nw@aicte.example"), 103).status_code == 200
+    assert escalate(seeded_client, auth_headers("ro.nw@aicte.example"), 102).status_code in (403, 404)  # not its case
 
 
 def test_district_aliases_come_from_the_seed_file() -> None:

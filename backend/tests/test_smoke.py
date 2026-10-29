@@ -11,8 +11,8 @@ from fastapi.testclient import TestClient
 from app.core.fixtures import load_fixture
 from tests.conftest import DEMO_PASSWORD
 
-VVIET = "1-4812730561"
-HERO_REFS = {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"}
+MAIT = "1-43655981521"
+HERO_REFS = {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"}
 API = "/api/v1"
 
 
@@ -38,14 +38,14 @@ def test_the_demo_path_steps_1_to_10(full_client: TestClient) -> None:
     preview = c.post(f"{API}/institutions/resolve", json=load_fixture("requests/post_institutions_resolve"), headers=intake)
     assert preview.status_code == 200, "step 3: resolve"
     resolution = preview.json()["data"]
-    assert (resolution["decision"], resolution["candidates"][0]["permanent_id"]) == ("auto", VVIET), "step 3: hero on top, auto"
+    assert (resolution["decision"], resolution["candidates"][0]["permanent_id"]) == ("auto", MAIT), "step 3: hero on top, auto"
 
     # 4. POST /cases (the hero intake) -> a group with the three cases of the other bureaus
     created = c.post(f"{API}/cases", json=load_fixture("requests/post_cases"), headers=intake)
     assert created.status_code == 201, f"step 4: intake {created.text}"
     body = created.json()["data"]
     case_id = body["case"]["id"]
-    assert (body["resolution"]["decision"], body["case"]["permanent_id"]) == ("auto", VVIET), "step 4: resolved to the hero"
+    assert (body["resolution"]["decision"], body["case"]["permanent_id"]) == ("auto", MAIT), "step 4: resolved to the hero"
     group = body["overlaps"][0]
     assert group["level"] == "institution" and {x["case_ref"] for x in group["cases"]} == HERO_REFS, "step 4: the three linked cases"
     # The PRD expects tier == "probable". With TF-IDF the hero's best pair scores ~0.47 against T_probable 0.50, so the
@@ -73,8 +73,8 @@ def test_the_demo_path_steps_1_to_10(full_client: TestClient) -> None:
     error = refused.json()["error"]
     assert error["code"] == "OPEN_OVERLAP" and set(error["details"]["linked_case_refs"]) == HERO_REFS, "step 7: OPEN_OVERLAP lists the linked cases"
 
-    # 8. The Central RO officer cannot open a Western-region case -> 404
-    ro = login(c, "ro.central@aicte.example")
+    # 8. The North-Western RO officer cannot open a Western-region case -> 404
+    ro = login(c, "ro.nw@aicte.example")
     western = c.get(f"{API}/cases/111", headers=ro)  # RO-WRO/2026/00204, Western region
     assert (western.status_code, western.json()["error"]["code"]) == (404, "NOT_FOUND"), "step 8: out of scope is a 404"
 

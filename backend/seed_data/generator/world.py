@@ -13,7 +13,7 @@ from . import vocab
 from .cases import AS_OF, CATEGORY_WEIGHT, CHANNELS, OPEN_PATHS, Spec, Staff, _ts, case_row
 from . import noise
 from .noise import inverse_abbreviations
-from .registry import Families, Registry
+from .registry import Families, Registry, load_registry
 
 CASE_TARGET = 1500
 PLANTED = {"institution": 30, "parent": 5, "trust": 10}
@@ -24,6 +24,7 @@ HORIZON = 270
 FILES = ("bureaus", "categories", "users", "institutions", "cases", "reviews", "overlaps", "alerts")
 LOCATION_TAGS = ("district_missing", "city_for_district", "wrong_state")
 SELF_CHECKED = ("RB", "PGRC", "AB", "ACAD")
+CORE_TYPES = ("engineering", "management", "pharmacy", "polytechnic", "hotel_management")
 
 
 def read(path: Path) -> dict:
@@ -71,36 +72,34 @@ class World:
     def build_registry(self) -> None:
         inst = self.base["institutions"]
         self.tiny_pids = {i["permanent_id"] for i in inst["institutions"]}
-        self.registry = Registry(self.rng, copy.deepcopy(inst["trusts"]), copy.deepcopy(inst["institutions"]))
+        self.registry = Registry(self.rng, copy.deepcopy(inst["trusts"]), copy.deepcopy(inst["institutions"]), load_registry())
         reg = self.registry
+        reg.pick_active()
+        tiny_trusts = {t["id"] for t in inst["trusts"]}
         twin_count = HARD_NEGATIVES["same_name_other_state"]
-        reg.add_universities()
-        reg.add_trusts()
-        reg.fill_independents(reserve_for_twins=twin_count)
+        assert len(reg.twin_pairs) >= twin_count, "the registry has too few same-name institutions in two states"
+        pairs = reg.twin_pairs[:twin_count]
+        self.twin_sources, self.twins = [a for a, _ in pairs], [b for _, b in pairs]
+        in_pairs = {i["permanent_id"] for pair in reg.twin_pairs for i in pair}
 
-        independents = [i for i in reg.institutions
-                        if i["trust_id"] is None and i["parent_id"] is None and i["inst_type"] in ("engineering", "management", "pharmacy", "polytechnic")
-                        and i["permanent_id"] not in self.tiny_pids]
+        independents = [i for i in reg.active
+                        if i["trust_id"] is None and i["parent_id"] is None and i["inst_type"] in CORE_TYPES
+                        and i["permanent_id"] not in self.tiny_pids and i["permanent_id"] not in in_pairs]
         self.rng.shuffle(independents)
         n_inst, n_old = PLANTED["institution"], HARD_NEGATIVES["disposed_long_ago"]
         self.planted_institutions = independents[:n_inst]
         self.old_negatives = independents[n_inst:n_inst + n_old]
-        self.twin_sources = independents[n_inst + n_old:n_inst + n_old + twin_count]
-        self.twins = []
-        for src in self.twin_sources:
-            where = reg.place()
-            while where["state"] == src["state"]:
-                where = reg.place()
-            self.twins.append(reg.make_institution(src["inst_type"], name=src["name"], where=where))
 
         members: Dict[int, List[dict]] = {}
-        for i in reg.institutions:
-            if i["trust_id"] is not None and i["trust_id"] > 3:
+        for i in reg.active:
+            if i["trust_id"] is not None and i["trust_id"] not in tiny_trusts:
                 members.setdefault(i["trust_id"], []).append(i)
-        trust_ids = sorted(t for t, m in members.items() if len(m) >= 2)
+        trust_ids = sorted(t for t, m in members.items() if len({i["name_norm"] for i in m}) >= 2)
         self.planted_trusts = self.rng.sample(trust_ids, PLANTED["trust"])
         self.planted_trust_members = {t: members[t] for t in self.planted_trusts}
-        universities = [i for i in reg.institutions if i["inst_type"] == "university" and i["permanent_id"] not in self.tiny_pids]
+        with_departments = {i["parent_id"] for i in reg.institutions if i["parent_id"]}
+        universities = [i for i in reg.active if i["inst_type"] == "university" and i["permanent_id"] in with_departments
+                        and i["permanent_id"] not in self.tiny_pids]
         self.planted_universities = self.rng.sample(universities, PLANTED["parent"])
 
         reserved = set(self.tiny_pids)
@@ -113,7 +112,7 @@ class World:
             reserved.update(i["permanent_id"] for i in reg.institutions if i["parent_id"] == uni["permanent_id"])
         self.families = Families(reg.institutions)
         reserved_roots = {self.families.root(p) for p in reserved}
-        self.background = [i for i in reg.institutions if self.families.root(i["permanent_id"]) not in reserved_roots]
+        self.background = [i for i in reg.active if self.families.root(i["permanent_id"]) not in reserved_roots]
         self.by_pid = {i["permanent_id"]: i for i in reg.institutions}
 
     # ── specs ────────────────────────────────────────────────────────────
@@ -206,11 +205,11 @@ class World:
         for kind, channel in zip(kinds, channels):
             day = AS_OF - timedelta(days=rng.randint(2, HORIZON))
             if kind == "unresolved":
-                where = self.registry.place()
+                unknown_name, where = self.registry.unknown_institution()
                 category = self.category()
                 bureau = self.bureau_by_code[self.categories[category]["default_bureau_code"]]
                 self.specs.append(Spec(None, bureau, category, channel, day, resolution=kind, paths=tuple(OPEN_PATHS) + ("disposed",),
-                                       unknown_name=self.registry.fresh_name("engineering"), unknown_where=where))
+                                       unknown_name=unknown_name, unknown_where=where))
                 continue
             category = "faculty_shortage" if channel in ("rb_suo_motu", "inspection") and rng.random() < 0.5 else self.category()
             if channel in ("rb_suo_motu", "inspection") and category not in ("faculty_shortage", "infrastructure_deficiency", "admission_irregularity", "unapproved_course"):
@@ -287,11 +286,13 @@ class World:
         rng = self.rng
         eligible = [n for n in order if not self.specs[n].clean_location]
         total = len(eligible)
-        kinds = (["missing"] * round(total * noise.P_DISTRICT_MISSING) + ["city"] * round(total * noise.P_CITY_FOR_DISTRICT))
-        kinds += ["none"] * (total - len(kinds))
-        rng.shuffle(kinds)
+        district_of = lambda n: self.by_pid[self.specs[n].pid]["district"] if self.specs[n].pid else self.specs[n].unknown_where["district"]  # type: ignore[index] # noqa: E731
+        city = set(rng.sample([n for n in eligible if district_of(n) in vocab.LOCALITIES], round(total * noise.P_CITY_FOR_DISTRICT)))
+        rest = [n for n in eligible if n not in city]
+        missing = set(rng.sample(rest, round(total * noise.P_DISTRICT_MISSING)))
+        kinds = {n: "city" if n in city else "missing" if n in missing else "none" for n in eligible}
         wrong = set(rng.sample(eligible, round(total * noise.P_WRONG_STATE)))
-        return dict(zip(eligible, kinds)), wrong
+        return kinds, wrong
 
     # ── reviews ──────────────────────────────────────────────────────────
 
@@ -304,8 +305,7 @@ class World:
             truth = self.truth[row["id"]]
             candidates: List[dict] = []
             if truth:
-                same_state = [i for i in self.registry.institutions if i["state"] == self.by_pid[truth]["state"] and i["permanent_id"] != truth]
-                picks = [self.by_pid[truth]] + rng.sample(same_state, 2)
+                picks = [self.by_pid[truth]] + self.registry.lookalikes(self.by_pid[truth], 2)
                 top = row["match_score"]
                 for rank, inst in enumerate(picks):
                     score = top if rank == 0 else round(max(0.2, top - rng.uniform(0.05, 0.2)), 2)
@@ -379,18 +379,16 @@ class World:
         truth: Dict[int, Optional[str]] = {}
         for c in self.tiny_cases:
             truth[c["id"]] = c["permanent_id"]
-        truth[113] = "1-4812744105"  # the fixture's review decision: Narmada Valley College of Engineering, Jabalpur
+        truth[113] = next(r for r in self.base["reviews"]["reviews"] if r["case_id"] == 113)["candidates"][0]["permanent_id"]  # the fixture's review decision
         truth.update(self.truth)
         roots = sorted({self.families.root(p) for p in truth.values() if p})
         rng.shuffle(roots)
         dev_roots = set(roots[: len(roots) // 2])
         split = {r: ("dev" if r in dev_roots else "test") for r in roots}
         case_split = {cid: split[self.families.root(p)] for cid, p in truth.items() if p}
-        hero = [
-            {"group_id": 1, "level": "institution", "anchor_key": "1-4812730561", "tier": "probable", "case_ids": [101, 102, 103]},
-            {"group_id": 2, "level": "trust", "anchor_key": "trust:1", "tier": "possible", "case_ids": [103, 104]},
-            {"group_id": 4, "level": "institution", "anchor_key": "1-3156608124", "tier": "possible", "case_ids": [110, 111]},
-        ]
+        story = {g["id"]: g for g in self.base["overlaps"]["groups"]}
+        hero = [{"group_id": g, "level": story[g]["level"], "anchor_key": story[g]["anchor_key"], "tier": story[g]["tier"],
+                 "case_ids": [link["case_id"] for link in story[g]["links"]]} for g in (1, 2, 4)]  # group 3 is the dismissed parent group
         for c in clusters + hero:
             c["split"] = split[self.families.root(self.anchor_pid(c))]
         negatives = []

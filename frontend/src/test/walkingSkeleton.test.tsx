@@ -191,7 +191,7 @@ describe('Issue #11 Walking Skeleton', () => {
     });
 
     it('ro_officer sees 5 navigation items (Today, Cases, Alerts, Institutions, Overview)', async () => {
-      await setupSidebarWithUser(fixtures.login.ro_central.data.access_token);
+      await setupSidebarWithUser(fixtures.login.ro_nw.data.access_token);
 
       expect(screen.getByText('Today')).toBeInTheDocument();
       expect(screen.getByText('Cases')).toBeInTheDocument();

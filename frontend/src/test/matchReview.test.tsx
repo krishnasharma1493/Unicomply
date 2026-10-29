@@ -123,11 +123,11 @@ describe('Match Review on the mock API (Issue #29)', () => {
     const user = userEvent.setup();
     renderAs();
     await queue();
-    await user.type(screen.getByLabelText('Search the registry'), 'Deccan');
-    const deccan = fixtures.institutions.data.find((i) => i.name.startsWith('Deccan'))!;
-    await user.click(await screen.findByRole('button', { name: `Pick ${deccan.name}` }));
-    await user.click(screen.getByRole('button', { name: `Link this case to ${deccan.name}` }));
-    expect(await screen.findByText(new RegExp(`is now linked to ${deccan.name}`))).toBeInTheDocument();
+    await user.type(screen.getByLabelText('Search the registry'), 'Sinhgad');
+    const sinhgad = fixtures.institutions.data.find((i) => i.name.startsWith('Sinhgad'))!;
+    await user.click(await screen.findByRole('button', { name: `Pick ${sinhgad.name}` }));
+    await user.click(screen.getByRole('button', { name: `Link this case to ${sinhgad.name}` }));
+    expect(await screen.findByText(new RegExp(`is now linked to ${sinhgad.name}`))).toBeInTheDocument();
   });
 
   it('says so when the registry search finds nothing', async () => {

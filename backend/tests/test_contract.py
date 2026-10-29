@@ -30,7 +30,7 @@ from app.modules.reports.schemas import AnyReport
 from app.modules.reviews.schemas import ReviewDecideIn, ReviewDecideResult, ReviewItem
 from app.modules.users.schemas import UserRead
 
-PERSONAS = ["senior", "pgrc_head", "rb_head", "ro_central", "intake"]
+PERSONAS = ["senior", "pgrc_head", "rb_head", "ro_nw", "intake"]
 REPORT_KINDS = [
     "bureau", "region", "institution", "status", "ageing", "disposal_rate", "reopen_rate", "overlaps", "periodic",
 ]
@@ -125,11 +125,11 @@ def test_open_overlap_details_shape() -> None:
     [
         ("GET", "/api/v1/cases?limit=500", None, "limit"),
         ("GET", "/api/v1/cases?status=weird", None, "status"),
-        ("GET", "/api/v1/institutions/VVIET", None, "permanent_id"),
+        ("GET", "/api/v1/institutions/MAIT", None, "permanent_id"),
         ("GET", "/api/v1/reports/salary", None, "kind"),
         ("POST", "/api/v1/cases", {**load_fixture("requests/post_cases"), "permanent_id": "2-48"}, "permanent_id"),
         ("POST", "/api/v1/overlaps/1/decision", {"decision": "confirm", "remark": "no coordinator"}, "confirm.coordinator_id"),
-        ("POST", "/api/v1/reviews/2/decide", {"permanent_id": "1-4812744105", "none": True}, None),
+        ("POST", "/api/v1/reviews/2/decide", {"permanent_id": "1-43674307362", "none": True}, None),
     ],
 )
 def test_invalid_input_is_a_400_validation_error(
@@ -154,7 +154,7 @@ def test_docs_list_every_endpoint_with_models_and_errors(seeded_client: TestClie
         ("get", "/api/v1/dashboard/ageing"), ("get", "/api/v1/dashboard/institutions"),
     }
     normalised = {
-        "/api/v1/institutions/1-4812730561": "/api/v1/institutions/{permanent_id}",
+        "/api/v1/institutions/1-43655981521": "/api/v1/institutions/{permanent_id}",
         "/api/v1/cases/101": "/api/v1/cases/{case_id}",
         "/api/v1/cases/103/actions": "/api/v1/cases/{case_id}/actions",
         "/api/v1/reviews/2/decide": "/api/v1/reviews/{review_id}/decide",

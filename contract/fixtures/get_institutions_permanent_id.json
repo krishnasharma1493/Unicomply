@@ -2,37 +2,44 @@
   "success": true,
   "data": {
     "institution": {
-      "permanent_id": "1-4812730561",
-      "name": "Vindhya Valley Institute of Engineering & Technology",
-      "name_norm": "VINDHYA VALLEY INSTITUTE ENGINEERING TECHNOLOGY",
-      "acronym": "VVIET",
-      "address": "Tilwara Ghat Road, Jabalpur, Madhya Pradesh",
-      "district": "Jabalpur",
-      "state": "Madhya Pradesh",
-      "pin": "482003",
-      "region": "central",
+      "permanent_id": "1-43655981521",
+      "name": "Maharaja Agrasen Institute of Technology",
+      "name_norm": "MAHARAJA AGRASEN INSTITUTE TECHNOLOGY",
+      "acronym": "MAIT",
+      "address": "Agrasen Chowk, PSP Area, Plot No. - 1, Sector - 22, Rohini, West Delhi, Delhi",
+      "district": "West Delhi",
+      "state": "Delhi",
+      "pin": "",
+      "region": "north_western",
       "inst_type": "engineering",
-      "year_est": 2008,
+      "year_est": null,
       "trust_id": 1,
       "parent_id": null,
       "is_active": true,
-      "trust_name": "Vindhya Valley Education Trust",
+      "trust_name": "Maharaja Agrasen Group of Institutions (Delhi)",
       "open_case_count": 3
     },
     "trust": {
       "id": 1,
-      "name": "Vindhya Valley Education Trust",
-      "address": "Plot 14, Vindhya Nagar, Jabalpur, Madhya Pradesh 482002",
-      "state": "Madhya Pradesh"
+      "name": "Maharaja Agrasen Group of Institutions (Delhi)",
+      "address": "West Delhi, Delhi",
+      "state": "Delhi"
     },
     "parent": null,
     "departments": [],
     "trust_institutions": [
       {
-        "permanent_id": "1-4812730987",
-        "name": "Vindhya Valley Institute of Management",
-        "district": "Jabalpur",
-        "state": "Madhya Pradesh",
+        "permanent_id": "1-43662802779",
+        "name": "Maharaja Agrasen Business School",
+        "district": "North West Delhi",
+        "state": "Delhi",
+        "inst_type": "management"
+      },
+      {
+        "permanent_id": "1-44079581354",
+        "name": "Maharaja Agrasen Institute of Management Studies",
+        "district": "North West Delhi",
+        "state": "Delhi",
         "inst_type": "management"
       }
     ],
@@ -51,8 +58,8 @@
           {
             "case_id": 102,
             "case_ref": "RB/2026/00087",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
             "bureau_id": 1,
             "bureau_code": "RB",
             "status": "under_process",
@@ -76,8 +83,8 @@
           {
             "case_id": 101,
             "case_ref": "PGRC/2026/00412",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
             "bureau_id": 2,
             "bureau_code": "PGRC",
             "status": "under_process",
@@ -94,17 +101,17 @@
         ]
       },
       {
-        "bureau_id": 5,
-        "bureau_code": "RO-CRO",
-        "bureau_name": "Central Regional Office",
+        "bureau_id": 9,
+        "bureau_code": "RO-NWRO",
+        "bureau_name": "North-Western Regional Office",
         "cases": [
           {
             "case_id": 103,
-            "case_ref": "RO-CRO/2026/00133",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
-            "bureau_id": 5,
-            "bureau_code": "RO-CRO",
+            "case_ref": "RO-NWRO/2026/00133",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
+            "bureau_id": 9,
+            "bureau_code": "RO-NWRO",
             "status": "received",
             "category_id": 2,
             "category_code": "certificate_withheld",
@@ -130,8 +137,8 @@
           {
             "case_id": 101,
             "case_ref": "PGRC/2026/00412",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
             "bureau_id": 2,
             "bureau_code": "PGRC",
             "status": "under_process",
@@ -148,8 +155,8 @@
           {
             "case_id": 102,
             "case_ref": "RB/2026/00087",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
             "bureau_id": 1,
             "bureau_code": "RB",
             "status": "under_process",
@@ -165,11 +172,11 @@
           },
           {
             "case_id": 103,
-            "case_ref": "RO-CRO/2026/00133",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
-            "bureau_id": 5,
-            "bureau_code": "RO-CRO",
+            "case_ref": "RO-NWRO/2026/00133",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
+            "bureau_id": 9,
+            "bureau_code": "RO-NWRO",
             "status": "received",
             "category_id": 2,
             "category_code": "certificate_withheld",
@@ -183,10 +190,10 @@
           }
         ],
         "reasons": [
-          "Same institution 1-4812730561 (Vindhya Valley Institute of Engineering & Technology)",
-          "Handled by PGRC, RB and RO-CRO",
-          "PGRC/2026/00412 and RO-CRO/2026/00133 are both about original certificates being withheld",
-          "Description similarity 0.81 (PGRC/2026/00412 ↔ RO-CRO/2026/00133)",
+          "Same institution 1-43655981521 (Maharaja Agrasen Institute of Technology)",
+          "Handled by PGRC, RB and RO-NWRO",
+          "PGRC/2026/00412 and RO-NWRO/2026/00133 are both about original certificates being withheld",
+          "Description similarity 0.81 (PGRC/2026/00412 ↔ RO-NWRO/2026/00133)",
           "Received 14 days apart"
         ],
         "coordinator_name": null
@@ -200,11 +207,11 @@
         "cases": [
           {
             "case_id": 103,
-            "case_ref": "RO-CRO/2026/00133",
-            "permanent_id": "1-4812730561",
-            "institution_name": "Vindhya Valley Institute of Engineering & Technology",
-            "bureau_id": 5,
-            "bureau_code": "RO-CRO",
+            "case_ref": "RO-NWRO/2026/00133",
+            "permanent_id": "1-43655981521",
+            "institution_name": "Maharaja Agrasen Institute of Technology",
+            "bureau_id": 9,
+            "bureau_code": "RO-NWRO",
             "status": "received",
             "category_id": 2,
             "category_code": "certificate_withheld",
@@ -219,8 +226,8 @@
           {
             "case_id": 104,
             "case_ref": "RB/2026/00079",
-            "permanent_id": "1-4812730987",
-            "institution_name": "Vindhya Valley Institute of Management",
+            "permanent_id": "1-44079581354",
+            "institution_name": "Maharaja Agrasen Institute of Management Studies",
             "bureau_id": 1,
             "bureau_code": "RB",
             "status": "escalated",
@@ -236,8 +243,8 @@
           }
         ],
         "reasons": [
-          "Both run by Vindhya Valley Education Trust",
-          "Handled by RO-CRO and RB",
+          "Both run by Maharaja Agrasen Group of Institutions (Delhi)",
+          "Handled by RO-NWRO and RB",
           "Both about certificates being withheld",
           "Description similarity 0.79",
           "Received 25 days apart"

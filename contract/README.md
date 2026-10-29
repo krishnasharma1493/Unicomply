@@ -8,7 +8,7 @@ One shared set of JSON responses for every Must endpoint in `docs/Unicomply PRD.
 
 - Envelopes follow `docs/HACKATHON_PRD.md` §4–§5: `{success: true, data}`, `Page[T]` = `{success: true, data: [...], pagination: {total, page, limit, total_pages}}`, and errors are `{success: false, error: {code, message, fields?, details?}}`. `details` is only used where a domain error needs structured data, for example the linked case refs on `OPEN_OVERLAP`.
 - `GET /health` is the only response with no envelope. It matches the implemented #1 endpoint: `{status, timestamp, environment, version}`.
-- JSON keys are snake_case. Ids are integers except `permanent_id` (`1-` + 10 digits) and `case_ref`.
+- JSON keys are snake_case. Ids are integers except `permanent_id` (`1-` + 6 to 11 digits) and `case_ref`.
 - Dates are ISO `YYYY-MM-DD`: `received_at`, `sla_due_on`, `expected_disposal_date`, `as_of`, report `from`/`to`. Timestamps are UTC ISO 8601 ending in `Z`.
 - Path parameters become `id` or `permanent_id` in file names, and `-` becomes `_`. For example, `POST /alerts/{id}/read` → `post_alerts_id_read.json`. Fixtures that vary by persona or report kind add a suffix.
 - All paths below sit under `/api/v1` (`/health` is also served at the root).
@@ -20,19 +20,19 @@ Every fixture is cut from one small synthetic world, so ids, refs and names matc
 - **Today** is `DEMO_TODAY = 2026-11-20` (PRD §3). Hero days in §4.7 are relative to this date.
 - **GET fixtures** show the seeded state after `POST /demo/reset`, before the live intake.
 - **POST fixtures** show the response to that step of the §10 Swagger run order. The intake (step 4) adds case 105 to group 1, and the overlap decision (step 5) confirms group 1 with all 4 cases.
-- All names are fictional, including institutions, trusts, complainants and officers. Before the event, check the institution names against AICTE's public approved-institution search (PRD §4.7).
+- The institutions are real AICTE-approved institutions: names, districts and Permanent IDs come from AICTE's public approved-institution list. Complaints, complainants and officers are fictional. The trust names group real sibling institutions for the demo (PRD §4.7).
 
 | Entity | Ids used |
 | --- | --- |
-| Personas (logins) | 1 `senior@aicte.example` (senior_mgmt, `is_admin`), 2 `pgrc.head@aicte.example`, 3 `rb.head@aicte.example`, 4 `ro.central@aicte.example` (region `central`, bureau 5), 5 `intake@aicte.example` |
-| Case officers (data only, no login; listed in `/meta.officers`) | 6 Sunita Mishra (PGRC), 7 Vikram Choudhary (RB), 8 Pooja Saxena (RB), 9 Arvind Kulkarni (AB), 10 Sanjay Patil (RO-WRO), 11 Deepak Shrivastava (RO-CRO), 12 Farhan Qureshi (PGRC) |
-| Bureaus | 1 RB, 2 PGRC, 3 AB, 4 ACAD, 5–14 the 10 Regional Offices (5 = RO-CRO Central, 14 = RO-WRO Western) |
-| Trusts | 1 Vindhya Valley Education Trust, 2 Satpura Technical Education Society, 3 Deccan Plateau Education Society |
-| Institutions | `1-4812730561` Vindhya Valley Institute of Engineering & Technology (VVIET, hero), `1-4812730987` Vindhya Valley Institute of Management (trust sibling), `1-4812744105` Narmada Valley College of Engineering, `1-4870215534` Satpura Institute of Technology, `1-4870219908` Sarovar Institute of Technology, `1-4800112233` Mahakaushal Technical University, `1-4800112290` its Department of Pharmacy (`parent_id`), `1-3156608124` Deccan Plateau Institute of Technology (Western region) |
-| Hero cases | 101 PGRC/2026/00412, 102 RB/2026/00087, 103 RO-CRO/2026/00133, 104 RB/2026/00079 (trust sibling), 105 PGRC/2026/00519 (live intake, only in POST results) |
-| Other cases | 106 PGRC/2026/00398, 107 PGRC/2026/00405 (disposed), 108 RO-CRO/2026/00121 (transferred to RB), 109 AB/2026/00056, 110 PGRC/2026/00377 (reopened, Western), 111 RO-WRO/2026/00204, 112 PGRC/2026/00431 and 113 PGRC/2026/00428 (pending match review), 114 RB/2026/00091 |
-| Overlap groups | 1 institution / probable / open (VVIET: 101, 102, 103; plus 105 after intake), 2 trust / possible / open (103, 104), 3 parent / possible / dismissed (108, 109), 4 institution / possible / open (110, 111), 5 institution / possible / open (113, 114; created by the review decision) |
-| Match reviews | 1 (case 112, two Bhopal "SIT"s), 2 (case 113, decided in `post_reviews_id_decide.json`) |
+| Personas (logins) | 1 `senior@aicte.example` (senior_mgmt, `is_admin`), 2 `pgrc.head@aicte.example`, 3 `rb.head@aicte.example`, 4 `ro.nw@aicte.example` (region `central`, bureau 5), 5 `intake@aicte.example` |
+| Case officers (data only, no login; listed in `/meta.officers`) | 6 Sunita Mishra (PGRC), 7 Vikram Choudhary (RB), 8 Pooja Saxena (RB), 9 Arvind Kulkarni (AB), 10 Sanjay Patil (RO-WRO), 11 Deepak Shrivastava (RO-CRO), 12 Farhan Qureshi (PGRC), 13 Manish Bhatia (RO-NWRO, region `north_western`) |
+| Bureaus | 1 RB, 2 PGRC, 3 AB, 4 ACAD, 5–14 the 10 Regional Offices (5 = RO-CRO Central, 9 = RO-NWRO North-Western, 14 = RO-WRO Western) |
+| Trusts | 1 Maharaja Agrasen Group of Institutions (Delhi), 2 Sinhgad Group of Institutions |
+| Institutions | `1-43655981521` Maharaja Agrasen Institute of Technology (MAIT, West Delhi, hero, region `north_western`), `1-44079581354` Maharaja Agrasen Institute of Management Studies (MAIMS) and `1-43662802779` Maharaja Agrasen Business School (trust 1 siblings), `1-43674307362` National Institute of Technical Teachers' Training and Research (NITTTR Bhopal), `1-43658573897` National Institute of Technical Teachers Training and Research (Chennai, same-name twin in another state), `1-43657291568` Millennium Institute of Technology and `1-43658435413` Mittal Institute of Technology (both Bhopal, acronym MIT), `1-43673888924` Bharati Vidyapeeth Deemed to be University (Pune), `1-43664723507` Bharati Vidyapeeth Deemed University College of Engineering and `1-43655372414` Bharati Vidyapeeth Deemed to be University Department of Engineering and Technology Offcampus (Raigad), both with the university as `parent_id`, `1-43658264742` Sinhgad Institute of Technology (Pune, trust 2, Western region) |
+| Hero cases | 101 PGRC/2026/00412, 102 RB/2026/00087, 103 RO-NWRO/2026/00133 (North-Western RO, bureau 9), 104 RB/2026/00079 (trust sibling), 105 PGRC/2026/00519 (live intake, only in POST results) |
+| Other cases | 106 PGRC/2026/00398, 107 PGRC/2026/00405 (disposed), 108 RO-WRO/2026/00121 (transferred to RB), 109 AB/2026/00056, 110 PGRC/2026/00377 (reopened, Western), 111 RO-WRO/2026/00204, 112 PGRC/2026/00431 and 113 PGRC/2026/00428 (pending match review), 114 RB/2026/00091. The North-Western RO persona sees only the Bhopal cases 106, 107, 112, 113 and 114 |
+| Overlap groups | 1 institution / probable / open (MAIT: 101, 102, 103; plus 105 after intake), 2 trust / possible / open (103, 104), 3 parent / possible / dismissed (108, 109), 4 institution / possible / open (110, 111), 5 institution / possible / open (113, 114; created by the review decision) |
+| Match reviews | 1 (case 112, two Bhopal "MIT"s), 2 (case 113, decided in `post_reviews_id_decide.json`) |
 
 ## Fixture → endpoint → scenario
 
@@ -44,23 +44,23 @@ Every fixture is cut from one small synthetic world, so ids, refs and names matc
 | `post_auth_login_senior.json` | POST `/auth/login` | 200 | public | Senior officer persona card. Request: `requests/post_auth_login.json` with this persona's email |
 | `post_auth_login_pgrc_head.json` | POST `/auth/login` | 200 | public | PGRC head persona card |
 | `post_auth_login_rb_head.json` | POST `/auth/login` | 200 | public | RB head persona card |
-| `post_auth_login_ro_central.json` | POST `/auth/login` | 200 | public | Central RO officer persona card |
+| `post_auth_login_ro_nw.json` | POST `/auth/login` | 200 | public | North-Western RO officer persona card |
 | `post_auth_login_intake.json` | POST `/auth/login` | 200 | public | Intake operator persona card |
 | `get_users_me_senior.json` | GET `/users/me` | 200 | senior | Role, bureau, region of the current user |
 | `get_users_me_pgrc_head.json` | GET `/users/me` | 200 | PGRC head | 〃 |
 | `get_users_me_rb_head.json` | GET `/users/me` | 200 | RB head | 〃 |
-| `get_users_me_ro_central.json` | GET `/users/me` | 200 | Central RO | 〃 |
+| `get_users_me_ro_nw.json` | GET `/users/me` | 200 | North-Western RO | 〃 |
 | `get_users_me_intake.json` | GET `/users/me` | 200 | intake | 〃 |
 | `get_meta.json` | GET `/meta` | 200 | any | Dropdowns: bureaus, regions, categories, statuses, channels, action types, complainant types, dispose outcomes, institution types, officers |
-| `get_institutions.json` | GET `/institutions?page=1&limit=20` | 200 | any | Whole registry (8 institutions) |
-| `get_institutions_permanent_id.json` | GET `/institutions/{permanent_id}` (`1-4812730561`) | 200 | senior | Institution 360 of VVIET: trust, sibling, cases by bureau, open overlap groups 1 and 2 |
-| `post_institutions_resolve.json` | POST `/institutions/resolve` | 200 | intake | Live preview for "vindya valley engg college jabalpur" → `auto`, top-3 candidates with reasons. Request: `requests/post_institutions_resolve.json` |
+| `get_institutions.json` | GET `/institutions?page=1&limit=20` | 200 | any | Whole registry (11 institutions) |
+| `get_institutions_permanent_id.json` | GET `/institutions/{permanent_id}` (`1-43655981521`) | 200 | senior | Institution 360 of MAIT: trust, siblings, cases by bureau, open overlap groups 1 and 2 |
+| `post_institutions_resolve.json` | POST `/institutions/resolve` | 200 | intake | Live preview for "maharaja agrsen institute of technology delhi" (state Delhi) → `auto`, top-3 candidates with reasons. Request: `requests/post_institutions_resolve.json` |
 | `get_cases.json` | GET `/cases?page=1&limit=20` | 200 | senior | All 13 seeded cases, newest first |
 | `post_cases.json` | POST `/cases` | 201 | intake | Demo step 4: PGRC/2026/00519 created, resolution `auto`, one probable institution overlap with the exact PS banner. Request: `requests/post_cases.json` |
 | `get_cases_id.json` | GET `/cases/{id}` (101) | 200 | PGRC head | Case Detail of PGRC/2026/00412: action history and overlap group 1 with linked RB and RO cards |
-| `post_cases_id_actions.json` | POST `/cases/{id}/actions` (103) | 200 | Central RO | `assign` to officer 11: returns the updated case and the new action. Request: `requests/post_cases_id_actions.json` |
+| `post_cases_id_actions.json` | POST `/cases/{id}/actions` (103) | 200 | North-Western RO officer | `assign` to officer 13 (case 103 sits at the North-Western RO): returns the updated case and the new action. Request: `requests/post_cases_id_actions.json` |
 | `get_reviews.json` | GET `/reviews?status=pending` | 200 | intake | Match review queue (reviews 1 and 2) |
-| `post_reviews_id_decide.json` | POST `/reviews/{id}/decide` (2) | 200 | intake | Picks Narmada Valley College of Engineering: alias saved, case updated, overlap re-run creates group 5. Request: `requests/post_reviews_id_decide.json` |
+| `post_reviews_id_decide.json` | POST `/reviews/{id}/decide` (2) | 200 | intake | Picks National Institute of Technical Teachers' Training and Research (Bhopal): alias saved, case updated, overlap re-run creates group 5. Request: `requests/post_reviews_id_decide.json` |
 | `get_overlaps.json` | GET `/overlaps` | 200 | senior | Overlap Center list: groups 1, 2, 4 (open) and 3 (dismissed) |
 | `get_overlaps_id.json` | GET `/overlaps/{id}` (1) | 200 | PGRC head | Side-by-side cases, issue clusters, pair reasons (seeded, 3 cases) |
 | `post_overlaps_id_decision.json` | POST `/overlaps/{id}/decision` (1) | 200 | PGRC head | Demo step 5: confirm with the PGRC head as coordinator (after intake, 4 cases). Request: `requests/post_overlaps_id_decision.json` |
@@ -92,8 +92,8 @@ Every report fixture uses `from=2026-09-01&to=2026-11-20`. `format=csv` on `/rep
 | `errors/remarks_required.json` | POST `/cases/{id}/actions` (102) | 400 | RB head | `transfer` without remarks |
 | `errors/open_overlap.json` | POST `/cases/{id}/actions` (101) | 409 | PGRC head | Run-order step 7: `dispose` without `confirm_open_overlap`. `details.linked_case_refs` lists the group 1 cases |
 | `errors/already_decided.json` | POST `/overlaps/{id}/decision` (3) | 409 | senior | Group 3 was already dismissed |
-| `errors/not_found.json` | GET `/cases/{id}` (110) | 404 | Central RO | Run-order step 8: a Western-region case is out of scope, so 404, never 403 |
-| `errors/forbidden.json` | POST `/overlaps/{id}/decision` (1) | 403 | Central RO | Group 1 is in scope to read, but `ro_officer` cannot decide overlaps |
+| `errors/not_found.json` | GET `/cases/{id}` (110) | 404 | North-Western RO | Run-order step 8: a Western-region case is out of scope, so 404, never 403 |
+| `errors/forbidden.json` | POST `/overlaps/{id}/decision` (1) | 403 | North-Western RO | `ro_officer` cannot decide overlaps, whatever the group |
 | `errors/validation_error.json` | POST `/cases` | 400 | intake | Bad `permanent_id` pattern and a too-short `description` |
 | `errors/unauthorized.json` | POST `/auth/login` | 401 | public | Wrong email or password |
 

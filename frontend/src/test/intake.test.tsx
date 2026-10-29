@@ -17,7 +17,7 @@ import { resetWorld } from '../lib/api/mock/state';
 
 const valid: IntakeFormValues = {
   source_channel: 'email', external_ref: '', received_at: '2026-11-20', complainant_type: 'parent', complainant_name: 'Sushila Dubey',
-  raw_institution_text: 'vindya valley engg college jabalpur', raw_state: 'Madhya Pradesh', raw_district: '', permanent_id: '',
+  raw_institution_text: 'maharaja agrsen institute of technology delhi', raw_state: 'Delhi', raw_district: '', permanent_id: '',
   category_id: 2, subject: 'Certificates not returned', description: 'The college is not returning the original mark sheets.',
   route_to_bureau_id: null,
 };
@@ -27,13 +27,13 @@ describe('intake schema (same limits as the backend CaseCreate)', () => {
     expect(intakeSchema.safeParse(valid).success).toBe(true);
     const body = toCaseCreate(valid);
     expect(body).toMatchObject({ external_ref: null, raw_district: null, permanent_id: null, route_to_bureau_id: null });
-    expect(body.raw_institution_text).toBe('vindya valley engg college jabalpur');
+    expect(body.raw_institution_text).toBe('maharaja agrsen institute of technology delhi');
   });
 
   it.each([
     ['raw_institution_text', 'ab'], ['raw_institution_text', 'x'.repeat(301)], ['subject', 'ab'], ['subject', 'x'.repeat(201)],
     ['description', 'too short'], ['description', 'x'.repeat(4001)], ['permanent_id', '2-123456'], ['permanent_id', '1-12345'],
-    ['permanent_id', '1-12345678901'], ['external_ref', 'x'.repeat(61)], ['complainant_name', 'x'.repeat(121)],
+    ['permanent_id', '1-123456789012'], ['external_ref', 'x'.repeat(61)], ['complainant_name', 'x'.repeat(121)],
     ['raw_state', 'x'.repeat(61)], ['raw_district', 'x'.repeat(61)], ['received_at', '20/11/2026'],
   ])('rejects %s = %s', (field, value) => {
     const result = intakeSchema.safeParse({ ...valid, [field]: value });
@@ -98,9 +98,9 @@ describe('Intake page on the mock API (Issue #25)', () => {
       </QueryClientProvider>,
     );
 
-  async function fillHero(user: ReturnType<typeof userEvent.setup>, institution = 'vindya valley engg college jabalpur') {
+  async function fillHero(user: ReturnType<typeof userEvent.setup>, institution = 'maharaja agrsen institute of technology delhi') {
     await user.type(await screen.findByLabelText(/Institution name/), institution);
-    await user.type(screen.getByLabelText('State'), 'Madhya Pradesh');
+    await user.type(screen.getByLabelText('State'), 'Delhi');
     await user.type(screen.getByLabelText(/Subject/), 'Certificates not returned');
     await user.type(screen.getByLabelText(/Description/), 'The college is not returning the original mark sheets.');
     fireEvent.mouseDown(document.getElementById('intake-category_id')!);
@@ -112,7 +112,7 @@ describe('Intake page on the mock API (Issue #25)', () => {
     const user = userEvent.setup();
     renderPage();
     expect(await screen.findByText(/Type the institution name as written/)).toBeInTheDocument();
-    await user.type(screen.getByLabelText(/Institution name/), 'vindya valley engg college jabalpur');
+    await user.type(screen.getByLabelText(/Institution name/), 'maharaja agrsen institute of technology delhi');
     expect(await screen.findByText('Matched automatically')).toBeInTheDocument();
     const [best] = fixtures.intake.data.resolution.candidates;
     const list = screen.getByRole('list', { name: 'Candidate institutions' });
@@ -121,13 +121,13 @@ describe('Intake page on the mock API (Issue #25)', () => {
     expect(within(list).getByText(best.reasons[0])).toBeInTheDocument();
     const previews = post.mock.calls.filter(([url]) => url === '/institutions/resolve');
     expect(previews).toHaveLength(1);
-    expect((previews[0][1] as { raw_text: string }).raw_text).toBe('vindya valley engg college jabalpur');
+    expect((previews[0][1] as { raw_text: string }).raw_text).toBe('maharaja agrsen institute of technology delhi');
   });
 
   it('selecting a candidate fills the Permanent ID', async () => {
     const user = userEvent.setup();
     renderPage();
-    await user.type(await screen.findByLabelText(/Institution name/), 'vindya valley engg college jabalpur');
+    await user.type(await screen.findByLabelText(/Institution name/), 'maharaja agrsen institute of technology delhi');
     const [best] = fixtures.intake.data.resolution.candidates;
     await user.click(await screen.findByRole('button', { name: `Select ${best.name}` }));
     expect(screen.getByLabelText(/Permanent ID/)).toHaveValue(best.permanent_id);
@@ -152,7 +152,7 @@ describe('Intake page on the mock API (Issue #25)', () => {
     await user.click(screen.getByRole('button', { name: 'Register case' }));
     expect(await screen.findByRole('heading', { name: /Case registered: PGRC\/2026\/00519/ })).toBeInTheDocument();
     expect(screen.getByText('Potential Overlapping Cases – Coordination Required')).toBeInTheDocument();
-    for (const ref of ['PGRC/2026/00412', 'RB/2026/00087', 'RO-CRO/2026/00133']) {
+    for (const ref of ['PGRC/2026/00412', 'RB/2026/00087', 'RO-NWRO/2026/00133']) {
       expect(screen.getAllByText(ref).length).toBeGreaterThan(0);
     }
     expect(screen.getByRole('link', { name: 'Open case' })).toHaveAttribute('href', '/cases/105');
@@ -163,7 +163,7 @@ describe('Intake page on the mock API (Issue #25)', () => {
   it('registers an ambiguous name as pending review and links to the review queue (#42)', async () => {
     const user = userEvent.setup();
     renderPage();
-    await fillHero(user, 'S.I.T. Bhopal');
+    await fillHero(user, 'M.I.T. Bhopal');
     await user.click(screen.getByRole('button', { name: 'Register case' }));
     expect(await screen.findByRole('heading', { name: /Case registered: PGRC\/2026\// })).toBeInTheDocument();
     expect(screen.getByText('Institution not confirmed: queued for match review')).toBeInTheDocument();
@@ -180,7 +180,7 @@ describe('Intake page on the mock API (Issue #25)', () => {
     tokenStore.set(fixtures.login.pgrc_head.data.access_token);
     const user = userEvent.setup();
     renderPage();
-    await fillHero(user, 'S.I.T. Bhopal');
+    await fillHero(user, 'M.I.T. Bhopal');
     await user.click(screen.getByRole('button', { name: 'Register case' }));
     expect(await screen.findByText('Institution not confirmed: queued for match review')).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Open review queue' })).not.toBeInTheDocument();
@@ -205,7 +205,7 @@ describe('Intake page on the mock API (Issue #25)', () => {
   it('puts an API 400 on the field it names', async () => {
     const user = userEvent.setup();
     renderPage();
-    await user.type(await screen.findByLabelText(/Institution name/), 'vindya valley engg college jabalpur');
+    await user.type(await screen.findByLabelText(/Institution name/), 'maharaja agrsen institute of technology delhi');
     await user.type(screen.getByLabelText(/Subject/), 'Certificates not returned');
     await user.type(screen.getByLabelText(/Description/), 'The college is not returning the original mark sheets.');
     fireEvent.mouseDown(document.getElementById('intake-category_id')!);
@@ -228,7 +228,7 @@ describe('Intake page on the mock API (Issue #25)', () => {
     const user = userEvent.setup();
     renderPage();
     vi.spyOn(client, 'post').mockRejectedValueOnce(new Error('Network down'));
-    await user.type(await screen.findByLabelText(/Institution name/), 'vindya valley');
+    await user.type(await screen.findByLabelText(/Institution name/), 'maharaja agrasen');
     expect(await screen.findByText('Network down')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Try Again/i })).toBeInTheDocument();
   });

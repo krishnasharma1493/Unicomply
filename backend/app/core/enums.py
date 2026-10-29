@@ -42,6 +42,7 @@ class InstType(str, Enum):
     management = "management"
     pharmacy = "pharmacy"
     polytechnic = "polytechnic"
+    hotel_management = "hotel_management"
     university = "university"
     university_department = "university_department"
 

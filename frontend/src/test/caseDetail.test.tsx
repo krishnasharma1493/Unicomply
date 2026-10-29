@@ -31,8 +31,8 @@ describe('workflow rules (PRD §4.3 / §4.2)', () => {
   it('lets heads and ROs act only at their own bureau, the senior officer escalate and remark anywhere, intake never', () => {
     expect(canAct(me('pgrc_head'), { current_bureau_id: 2 }, 'dispose')).toBe(true);
     expect(canAct(me('pgrc_head'), { current_bureau_id: 1 }, 'dispose')).toBe(false);
-    expect(canAct(me('ro_central'), { current_bureau_id: 5 }, 'transfer')).toBe(true);
-    expect(canAct(me('ro_central'), { current_bureau_id: 2 }, 'transfer')).toBe(false);
+    expect(canAct(me('ro_nw'), { current_bureau_id: 9 }, 'transfer')).toBe(true);
+    expect(canAct(me('ro_nw'), { current_bureau_id: 2 }, 'transfer')).toBe(false);
     expect(allowedActions(me('senior'), { current_bureau_id: 14, status: 'under_process' })).toEqual(['remark', 'escalate']);
     expect(allowedActions(me('senior'), { current_bureau_id: 14, status: 'disposed' })).toEqual(['remark']);
     expect(allowedActions(me('intake'), { current_bureau_id: 2, status: 'received' })).toEqual([]);
@@ -106,10 +106,10 @@ describe('Case Detail page on the mock API (Issue #26)', () => {
     expect(screen.getByText('Day 19 of 21')).toBeInTheDocument();
     expect(screen.getByText('Potential Overlapping Cases – Coordination Required')).toBeInTheDocument();
     expect(screen.getByText('RB/2026/00087')).toBeInTheDocument();
-    expect(screen.getByText('RO-CRO/2026/00133')).toBeInTheDocument();
+    expect(screen.getByText('RO-NWRO/2026/00133')).toBeInTheDocument();
     // The resolution line: the complainant's words, then the registry institution it resolved to.
-    expect(screen.getByText(/VVIET Jabalpur/)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Open the institution record' })).toHaveAttribute('href', '/institutions/1-4812730561');
+    expect(screen.getByText(/MAIT Delhi/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open the institution record' })).toHaveAttribute('href', '/institutions/1-43655981521');
     expect(screen.getByText('History')).toBeInTheDocument();
     expect(screen.getAllByText(/Anil Deshmukh/).length).toBeGreaterThan(0);
   });
@@ -187,7 +187,7 @@ describe('Case Detail page on the mock API (Issue #26)', () => {
     // The warning is there as soon as the dialog opens: the case's open overlap is already known.
     expect(within(dialog).getByText('This case is part of an open overlap group')).toBeInTheDocument();
     expect(within(dialog).getByText('RB/2026/00087')).toBeInTheDocument();
-    expect(within(dialog).getByText('RO-CRO/2026/00133')).toBeInTheDocument();
+    expect(within(dialog).getByText('RO-NWRO/2026/00133')).toBeInTheDocument();
     await pick('Outcome', 'Redressed');
     await user.type(within(dialog).getByLabelText('Remarks'), 'Institute released the certificates');
     expect(screen.queryByText('Closed')).toBeNull(); // nothing has changed yet
@@ -288,7 +288,7 @@ describe('Case view: evidence, headings and the action dialog', () => {
     await screen.findByRole('heading', { level: 1, name: 'PGRC/2026/00412' });
     const grid = await screen.findByRole('table', { name: 'Evidence for each pair of cases' });
     const heads = within(grid).getAllByRole('columnheader').map((th) => th.textContent);
-    expect(heads.slice(1)).toEqual(expect.arrayContaining(['with RB/2026/00087', 'with RO-CRO/2026/00133']));
+    expect(heads.slice(1)).toEqual(expect.arrayContaining(['with RB/2026/00087', 'with RO-NWRO/2026/00133']));
     expect(heads.slice(1)).toHaveLength(2);
     expect(screen.getByRole('img', { name: /PGRC\/2026\/00412 at PGRC.*\(this case\)/ })).toBeInTheDocument();
   });

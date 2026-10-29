@@ -8,7 +8,7 @@ from pathlib import Path
 from functools import lru_cache
 from typing import List, Mapping, Optional, Tuple
 
-PERMANENT_ID_RE = re.compile(r"\b1-\d{6,10}\b")
+PERMANENT_ID_RE = re.compile(r"\b1-\d{6,11}\b")
 _WORD_RE = re.compile(r"[A-Z0-9]+")
 _STOPWORDS = frozenset({"OF", "AND", "THE", "FOR"})
 _DEFAULT_ABBREVIATIONS = {

@@ -14,9 +14,9 @@ from app.core.fixtures import load_fixture
 from tests.conftest import DEMO_PASSWORD
 
 API = "/api/v1"
-VVIET = "1-4812730561"
-HERO_REFS = {"PGRC/2026/00412", "RB/2026/00087", "RO-CRO/2026/00133"}
-SENIOR, INTAKE, PGRC, RB, RO = (f"{x}@aicte.example" for x in ("senior", "intake", "pgrc.head", "rb.head", "ro.central"))
+MAIT = "1-43655981521"
+HERO_REFS = {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"}
+SENIOR, INTAKE, PGRC, RB, RO = (f"{x}@aicte.example" for x in ("senior", "intake", "pgrc.head", "rb.head", "ro.nw"))
 REPORT_KINDS = ("bureau", "region", "institution", "status", "ageing", "disposal_rate", "reopen_rate", "overlaps", "periodic")
 
 # What the coordination rule keeps out of a summary card, taken from the hero story itself.
@@ -50,7 +50,7 @@ def all_cases(client: TestClient, email: str) -> List[Dict[str, Any]]:
 
 @pytest.fixture(name="hero")
 def hero_fixture(full_client: TestClient) -> Dict[str, Any]:
-    """Demo step 4 done: the intake operator registered the hero case, which joined the Vindhya Valley group."""
+    """Demo step 4 done: the intake operator registered the hero case, which joined the Maharaja Agrasen group."""
     res = full_client.post(f"{API}/cases", json=load_fixture("requests/post_cases"), headers=login(full_client, INTAKE))
     assert res.status_code == 201, res.text
     return res.json()["data"]  # type: ignore[no-any-return]
@@ -60,7 +60,7 @@ def hero_fixture(full_client: TestClient) -> Dict[str, Any]:
 
 
 def test_senior_sees_every_hero_case_and_all_of_them(full_client: TestClient, hero: Dict[str, Any]) -> None:
-    refs = {c["case_ref"] for c in cases(full_client, SENIOR, f"permanent_id={VVIET}")}
+    refs = {c["case_ref"] for c in cases(full_client, SENIOR, f"permanent_id={MAIT}")}
     assert HERO_REFS <= refs and hero["case"]["case_ref"] in refs
     total = len(all_cases(full_client, SENIOR))
     summary = full_client.get(f"{API}/dashboard/summary", headers=login(full_client, SENIOR)).json()["data"]
@@ -134,29 +134,29 @@ def test_rb_head_sees_pgrc_cases_only_as_summary_cards(full_client: TestClient, 
     assert group.status_code == 200
     cards = {c["case_ref"]: c for c in group.json()["data"]["cases"]}
     assert cards["PGRC/2026/00412"]["in_scope"] is False and cards["RB/2026/00087"]["in_scope"] is True
-    institution = full_client.get(f"{API}/institutions/{VVIET}", headers=h).json()["data"]
+    institution = full_client.get(f"{API}/institutions/{MAIT}", headers=h).json()["data"]
     pgrc_cards = [c for col in institution["cases_by_bureau"] if col["bureau_code"] == "PGRC" for c in col["cases"]]
     assert pgrc_cards and all(c["in_scope"] is False for c in pgrc_cards)
 
 
-# ── Central RO ───────────────────────────────────────────────────────────
+# ── North-Western RO ───────────────────────────────────────────────────────────
 
 
-def test_central_ro_sees_central_region_cases_from_any_bureau_and_not_western_ones(full_client: TestClient) -> None:
+def test_north_western_ro_sees_its_region_cases_from_any_bureau_and_not_western_ones(full_client: TestClient) -> None:
     ro = all_cases(full_client, RO)
-    assert ro and all(c["region"] == "central" for c in ro)
-    assert {c["current_bureau_id"] for c in ro} > {5}  # PGRC and RB cases of Central institutions too
+    assert ro and all(c["region"] == "north_western" for c in ro)
+    assert {c["current_bureau_id"] for c in ro} > {9}  # PGRC and RB cases of North-Western institutions too
     assert full_client.get(f"{API}/cases/111", headers=login(full_client, RO)).status_code == 404  # RO-WRO/2026/00204
 
 
-def test_central_ro_can_read_a_pgrc_case_in_its_region_but_not_act_on_it(full_client: TestClient) -> None:
+def test_north_western_ro_can_read_a_pgrc_case_in_its_region_but_not_act_on_it(full_client: TestClient) -> None:
     h = login(full_client, RO)
     assert full_client.get(f"{API}/cases/101", headers=h).status_code == 200
     res = full_client.post(f"{API}/cases/101/actions", json={"action_type": "escalate", "remarks": "x"}, headers=h)
     assert (res.status_code, res.json()["error"]["code"]) == (403, "FORBIDDEN")
 
 
-def test_central_ro_has_no_access_to_reports(full_client: TestClient) -> None:
+def test_north_western_ro_has_no_access_to_reports(full_client: TestClient) -> None:
     assert full_client.get(f"{API}/reports/bureau", headers=login(full_client, RO)).status_code == 403
 
 
@@ -167,7 +167,7 @@ def test_central_ro_has_no_access_to_reports(full_client: TestClient) -> None:
 def test_summary_cards_never_contain_the_description_or_the_complainant(full_client: TestClient, hero: Dict[str, Any], email: str) -> None:
     h = login(full_client, email)
     group = hero["overlaps"][0]["group_id"]
-    for url in (f"{API}/overlaps/{group}", f"{API}/institutions/{VVIET}"):
+    for url in (f"{API}/overlaps/{group}", f"{API}/institutions/{MAIT}"):
         res = full_client.get(url, headers=h)
         if res.status_code != 200:
             continue  # this persona may not open it at all
