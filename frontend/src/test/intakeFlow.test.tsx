@@ -129,7 +129,7 @@ describe('Intake flow on the mock API', () => {
     const due = created.sla_due_on;
     expect(screen.queryByText(new RegExp(due))).toBeNull(); // never the raw ISO date
     expect(screen.getAllByText(/due \d{2} [A-Z][a-z]{2} \d{4}/).length).toBeGreaterThan(0);
-    expect(screen.getByText(/The heads of PGRC, RB and RO-CRO and senior management have been alerted\./)).toBeInTheDocument();
+    expect(screen.getByText(/The heads of PGRC, RB and RO-NWRO and senior management have been alerted\./)).toBeInTheDocument();
     expect(screen.getByText(/Routed to PGRC \(/)).toBeInTheDocument();
     expect(screen.getByRole('img', { name: new RegExp(`${created.case_ref} at PGRC, received .* \\(this case\\)`) })).toBeInTheDocument();
     expect(await screen.findByRole('heading', { name: 'Why this was flagged' })).toBeInTheDocument();

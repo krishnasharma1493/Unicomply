@@ -21,7 +21,7 @@ export interface IntakeResultProps {
   onNewCase: () => void;
 }
 
-/** "PGRC, RB and RO-CRO" */
+/** "PGRC, RB and RO-NWRO" */
 export const listWords = (items: string[]) =>
   items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 

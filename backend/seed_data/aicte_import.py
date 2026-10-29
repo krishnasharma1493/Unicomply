@@ -111,6 +111,14 @@ def title(text: str) -> str:
     return re.sub(r"\s+", " ", "".join(words)).strip()
 
 
+def clean_name(raw: str) -> str:
+    """Stray characters AICTE's list carries: wrapping quotes, a quote used as an apostrophe, a leading serial code ('126-', '122,', '370 ')."""
+    name = mojibake(raw).strip().strip('"').strip()
+    name = re.sub(r'(?<=[A-Za-z])"(?=s\b)', "'", name, flags=re.IGNORECASE)
+    name = re.sub(r"^\d{1,4}\s*[,\-.]\s*", "", name)
+    return re.sub(r"^\d{3}\s+(?=[A-Za-z])", "", name)
+
+
 def classify(name: str, ownership: str) -> Optional[str]:
     """The institution type from the name (the list has no program column); None when the name does not say."""
     n = " ".join(re.findall(r"[A-Z0-9]+", name.upper().replace("&", " AND ")))
@@ -187,7 +195,7 @@ def build() -> dict:
         if inst_type is None:
             dropped["name does not say what kind of institution it is"] += 1
             continue
-        name = title(raw_name)
+        name = title(clean_name(raw_name))
         key = (name_norm(name), district)
         if key in kept:
             dropped["same name twice in one district"] += 1

@@ -6,7 +6,7 @@
 
 | Directory | What | Used by |
 | --- | --- | --- |
-| `seed_data/*.json` | The **full demo world** written by `python -m seed_data.generator --seed 26264` (#23): the real AICTE registry (3,751 institutions in six states, 46 trusts, 70 universities), 1,500 fabricated cases with action histories about 466 of those institutions, 45 planted overlaps, 20 hard negatives, review queue, plus `ground_truth.json`. Deterministic: the same seed gives byte-identical files, and a test fails if the checked-in files differ from the generator's output. | the demo, `python -m app.eval` (#40) |
+| `seed_data/*.json` | The **full demo world** written by `python -m seed_data.generator --seed 26264` (#23): the real AICTE registry (3,751 institutions in six states, 46 trusts, 70 universities), 1,500 fabricated cases with action histories 458 of those institutions, 45 planted overlaps, 20 hard negatives, review queue, plus `ground_truth.json`. Deterministic: the same seed gives byte-identical files, and a test fails if the checked-in files differ from the generator's output. | the demo, `python -m app.eval` (#40) |
 | `seed_data/tiny/` | The hand-written **hero story** (#6): the world described by `contract/fixtures/`. The generator reads it as its base and keeps it verbatim (ids 101–114), so the hero cases are identical after every reset. | the tests (`SEED_SET=tiny`), `python -m app.seed --tiny` |
 
 `SEED_SET=full|tiny` (env, default `full`) picks which one seeding and demo reset load. Everything below describes the file format, which both worlds share.
