@@ -19,6 +19,7 @@ from app.modules.cases.schemas import (
     CaseCreate,
     CaseDetail,
     CaseIntakeResult,
+    CategorySuggestion,
     CaseRead,
     OpenOverlapErrorDetails,
 )
@@ -53,6 +54,7 @@ RESPONSES: Dict[str, Any] = {
     "post_overlaps_id_decision": Envelope[OverlapGroupDetail],
     "get_alerts": Page[AlertRead],
     "post_alerts_id_read": Envelope[AlertRead],
+    "post_cases_id_classify": Envelope[CategorySuggestion],
     "post_alerts_read_all": Envelope[ReadAllResult],
     "get_dashboard_summary": Envelope[DashboardSummary],
     "get_dashboard_workload": Envelope[List[WorkloadRow]],

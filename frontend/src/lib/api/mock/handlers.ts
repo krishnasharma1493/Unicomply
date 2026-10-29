@@ -202,6 +202,17 @@ const routes: Route[] = [
     handle: ({ param, body, viewer }) =>
       ok(db.applyAction(db.caseInScopeOr404(viewer, Number(param)), body as Partial<CaseActionIn>, viewer)),
   },
+  {
+    method: 'POST',
+    pattern: /^\/cases\/(\d+)\/classify$/,
+    handle: ({ param, viewer }) => {
+      if (!role(viewer, 'intake_operator', 'bureau_head', 'senior_mgmt')) throw forbidden();
+      const c = db.caseInScopeOr404(viewer, Number(param));
+      const k = fixtures.meta.data.categories.find((x) => x.id === c.category_id);
+      if (!k) throw notFound('Category');
+      return ok({ category_id: k.id, category_code: k.code, category_name: k.name, confidence: 0.8 });
+    },
+  },
 
   // Match review
   {

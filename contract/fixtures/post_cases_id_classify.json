@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "data": {
+    "category_id": 1,
+    "category_code": "fee_refund",
+    "category_name": "Fee refund",
+    "confidence": 0.8
+  }
+}

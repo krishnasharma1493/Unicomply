@@ -57,4 +57,8 @@ A case can carry several noise types, so rows overlap.
 | Wrong state | 14 | n/a | 0.000 | n/a | 0.000 |
 | No noise | 181 | 1.000 | 0.967 | 0.983 | 0.000 |
 
+## Category suggestion
+
+A TF-IDF + LinearSVC model trained on the 726 dev-split cases picks the right category for 768/769 (0.999) of the test-split cases. The synthetic descriptions are templated, so this is an upper bound for real complaint text.
+
 Reproduce: `python -m app.eval --split test --mode tfidf`

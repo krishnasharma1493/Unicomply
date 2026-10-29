@@ -364,6 +364,14 @@ export type CaseIntakeResult = {
   overlaps: OverlapSummary[];
 };
 
+/** POST /cases/{id}/classify → 200 (503 CLASSIFIER_UNAVAILABLE when the model is off). Confidence ranks classes; it is not a probability. */
+export type CategorySuggestion = {
+  category_id: number;
+  category_code: string;
+  category_name: string;
+  confidence: number;
+};
+
 // ── Overlaps ─────────────────────────────────────────────────────────────
 
 /** Summary card of a case in an overlap group; shown even outside the viewer's scope (§4.2). */

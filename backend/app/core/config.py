@@ -4,6 +4,7 @@ import logging
 import sys
 from datetime import date
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, List, Literal, Optional
 
 from pydantic import Field, ValidationError, field_validator, model_validator
@@ -83,6 +84,13 @@ class Settings(BaseSettings):
     )
     OVERLAP_WINDOW_DAYS: int = Field(
         default=180, ge=1, description="Compare with cases received / active in this window"
+    )
+
+    CLASSIFIER_ENABLED: bool = Field(
+        default=True, description="Suggest a complaint category at intake (N1); also off when no model file exists"
+    )
+    CLASSIFIER_MODEL_PATH: Optional[Path] = Field(
+        default=None, description="Where the category model is saved; default seed_data/.cache/category-classifier.joblib"
     )
 
     # ── SLA & alerts ────────────────────────────────────────────────────

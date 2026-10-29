@@ -73,6 +73,7 @@ _ERROR_DESCRIPTIONS = {
     403: "In scope to read, but this role cannot do this (FORBIDDEN)",
     404: "Not found, or out of the caller's scope (never 403 for scope)",
     409: "OPEN_OVERLAP, ALREADY_DECIDED or CONFLICT",
+    503: "CLASSIFIER_UNAVAILABLE: the category model is off or not trained",
 }
 
 

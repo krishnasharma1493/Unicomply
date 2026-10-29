@@ -20,6 +20,7 @@ from app.core.errors import AppError
 from app.core.scope import in_scope_callback
 from app.matching.types import BANNERS
 from app.modules.audit.models import AuditLog
+from app.modules.cases import classifier
 from app.modules.cases.models import Case, CaseAction
 from app.modules.cases.schemas import (
     CaseActionEntry,
@@ -29,6 +30,7 @@ from app.modules.cases.schemas import (
     CaseIntakeResult,
     CaseListParams,
     CaseRead,
+    CategorySuggestion,
 )
 from app.modules.engine import service as engine
 from app.modules.engine.builders import InScope, coordinator_name, everyone, linked_case_card
@@ -46,6 +48,16 @@ ACTIVE_GROUPS = (OverlapGroupStatus.open, OverlapGroupStatus.confirmed)
 
 def validation_error(field: str, message: str) -> AppError:
     return AppError(400, "VALIDATION_ERROR", "Validation failed", fields={field: [message]})
+
+
+def suggest_category(session: Session, case: Case) -> CategorySuggestion:
+    """N1: the model's category for this case's subject and description. Reads only; 503 when the feature is off."""
+    suggestion = classifier.suggest(session, f"{case.subject}. {case.description}")
+    if suggestion is None:
+        raise AppError(503, "CLASSIFIER_UNAVAILABLE", "Category suggestions are not available")
+    category, confidence = suggestion
+    assert category.id is not None
+    return CategorySuggestion(category_id=category.id, category_code=category.code, category_name=category.name, confidence=confidence)
 
 
 # ── Derived fields ───────────────────────────────────────────────────────
@@ -267,6 +279,9 @@ def create_case(session: Session, body: CaseCreate, user: User) -> CaseIntakeRes
         created_at=now,
         updated_at=now,
     )
+    suggestion = classifier.suggest(session, f"{case.subject}. {case.description}")
+    if suggestion is not None:
+        case.category_suggested_id = suggestion[0].id
     session.add(case)
     session.flush()
     assert case.id is not None
