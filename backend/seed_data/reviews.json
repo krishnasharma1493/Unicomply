@@ -70,717 +70,27 @@
   },
   {
    "id": 3,
-   "case_id": 240,
+   "case_id": 265,
    "candidates": [
     {
-     "permanent_id": "1-43663268285",
-     "name": "Thakur Global Business School",
-     "district": "Mumbai City",
-     "state": "Maharashtra",
-     "score": 0.55,
-     "reasons": [
-      "Name 55% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43659443675",
-     "name": "Terna Global Business School",
-     "district": "Thane",
-     "state": "Maharashtra",
-     "score": 0.41,
-     "reasons": [
-      "Name 41% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43659450953",
-     "name": "Durgadevi Saraf Global Business School",
-     "district": "Mumbai City",
-     "state": "Maharashtra",
-     "score": 0.41,
-     "reasons": [
-      "Name 41% similar",
-      "State Maharashtra matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-03-02T12:00:00Z"
-  },
-  {
-   "id": 4,
-   "case_id": 310,
-   "candidates": [
-    {
-     "permanent_id": "1-43662198485",
-     "name": "Radiant Institute of Management and Science",
-     "district": "Indore",
-     "state": "Madhya Pradesh",
-     "score": 0.51,
-     "reasons": [
-      "Name 51% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43656801766",
-     "name": "Radiant Institute of Management",
-     "district": "Jabalpur",
-     "state": "Madhya Pradesh",
-     "score": 0.42,
-     "reasons": [
-      "Name 42% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43665071929",
-     "name": "Srajan Institute of Tech. Management & Science",
-     "district": "Ratlam",
-     "state": "Madhya Pradesh",
-     "score": 0.39,
-     "reasons": [
-      "Name 39% similar",
-      "State Madhya Pradesh matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-03-17T12:00:00Z"
-  },
-  {
-   "id": 5,
-   "case_id": 326,
-   "candidates": [
-    {
-     "permanent_id": "1-43660488997",
-     "name": "D.N.S. College of Engineering & Technology",
-     "district": "J P Nagar",
-     "state": "Uttar Pradesh",
-     "score": 0.67,
-     "reasons": [
-      "Name 67% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43657318142",
-     "name": "B.B.S. College of Engineering & Technology",
-     "district": "Allahabad",
-     "state": "Uttar Pradesh",
-     "score": 0.55,
-     "reasons": [
-      "Name 55% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43662570863",
-     "name": "MGM'S College of Engineering and Technology",
-     "district": "Gautam Buddha Nagar",
-     "state": "Uttar Pradesh",
-     "score": 0.52,
-     "reasons": [
-      "Name 52% similar",
-      "State Uttar Pradesh matches"
-     ]
-    }
-   ],
-   "status": "resolved",
-   "decided_permanent_id": "1-43660488997",
-   "decided_by": 5,
-   "decided_at": "2026-03-21T09:00:00Z",
-   "created_at": "2026-03-20T09:00:00Z"
-  },
-  {
-   "id": 6,
-   "case_id": 364,
-   "candidates": [
-    {
-     "permanent_id": "1-43655148093",
-     "name": "IMS College of Polytechnic",
-     "district": "J P Nagar",
-     "state": "Uttar Pradesh",
-     "score": 0.75,
-     "reasons": [
-      "Name 75% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43659379953",
-     "name": "Itm College of Polytechnic",
-     "district": "Maharajganj",
-     "state": "Uttar Pradesh",
-     "score": 0.68,
-     "reasons": [
-      "Name 68% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43655266278",
-     "name": "Iimt College of Polytechnic",
-     "district": "Gautham Buddha Nagar",
-     "state": "Uttar Pradesh",
-     "score": 0.67,
-     "reasons": [
-      "Name 67% similar",
-      "State Uttar Pradesh matches"
-     ]
-    }
-   ],
-   "status": "resolved",
-   "decided_permanent_id": "1-43655148093",
-   "decided_by": 5,
-   "decided_at": "2026-03-28T10:00:00Z",
-   "created_at": "2026-03-27T10:00:00Z"
-  },
-  {
-   "id": 7,
-   "case_id": 370,
-   "candidates": [],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-03-28T10:00:00Z"
-  },
-  {
-   "id": 8,
-   "case_id": 371,
-   "candidates": [
-    {
-     "permanent_id": "1-43665494469",
-     "name": "Gnanamani College of Technology",
-     "district": "Namakkal",
-     "state": "Tamil Nadu",
-     "score": 0.55,
-     "reasons": [
-      "Name 55% similar",
-      "State Tamil Nadu matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43662613806",
-     "name": "Nandha College of Technology",
-     "district": "Erode",
-     "state": "Tamil Nadu",
-     "score": 0.45,
-     "reasons": [
-      "Name 45% similar",
-      "State Tamil Nadu matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43657380734",
-     "name": "Agni College of Technology",
-     "district": "Kanchipuram",
-     "state": "Tamil Nadu",
-     "score": 0.35,
-     "reasons": [
-      "Name 35% similar",
-      "State Tamil Nadu matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-03-28T08:00:00Z"
-  },
-  {
-   "id": 9,
-   "case_id": 411,
-   "candidates": [],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-04-06T11:00:00Z"
-  },
-  {
-   "id": 10,
-   "case_id": 444,
-   "candidates": [],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-04-12T12:00:00Z"
-  },
-  {
-   "id": 11,
-   "case_id": 494,
-   "candidates": [
-    {
-     "permanent_id": "1-43657240591",
-     "name": "MGM'S Institute of Management",
-     "district": "Aurangabad",
-     "state": "Maharashtra",
-     "score": 0.52,
-     "reasons": [
-      "Name 52% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43655597491",
-     "name": "Met's Institute of Management",
-     "district": "Nashik",
-     "state": "Maharashtra",
-     "score": 0.43,
-     "reasons": [
-      "Name 43% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43662307876",
-     "name": "Mima Institute of Management",
-     "district": "Pune",
-     "state": "Maharashtra",
-     "score": 0.44,
-     "reasons": [
-      "Name 44% similar",
-      "State Maharashtra matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-04-21T11:00:00Z"
-  },
-  {
-   "id": 12,
-   "case_id": 553,
-   "candidates": [
-    {
-     "permanent_id": "1-43660613126",
-     "name": "Lakshmi Narain College of Technology",
-     "district": "Bhopal",
-     "state": "Madhya Pradesh",
-     "score": 0.61,
-     "reasons": [
-      "Name 61% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43662017321",
-     "name": "Lakshmi Narain College of Technology",
-     "district": "Jabalpur",
-     "state": "Madhya Pradesh",
-     "score": 0.42,
-     "reasons": [
-      "Name 42% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43660329844",
-     "name": "Lakshmi Narain College of Technology (MCA)",
-     "district": "Bhopal",
-     "state": "Madhya Pradesh",
-     "score": 0.43,
-     "reasons": [
-      "Name 43% similar",
-      "State Madhya Pradesh matches"
-     ]
-    }
-   ],
-   "status": "resolved",
-   "decided_permanent_id": "1-43660613126",
-   "decided_by": 5,
-   "decided_at": "2026-05-05T08:00:00Z",
-   "created_at": "2026-05-04T08:00:00Z"
-  },
-  {
-   "id": 13,
-   "case_id": 563,
-   "candidates": [
-    {
-     "permanent_id": "1-43659995712",
-     "name": "Maharaja Agrasen College of Engg. & Technology",
-     "district": "Jyotiba Phule Nagar",
-     "state": "Uttar Pradesh",
-     "score": 0.69,
-     "reasons": [
-      "Name 69% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43656386570",
-     "name": "Ram Singh College of Engg.&technology",
-     "district": "Firozabad",
-     "state": "Uttar Pradesh",
-     "score": 0.6,
-     "reasons": [
-      "Name 60% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43662570863",
-     "name": "MGM'S College of Engineering and Technology",
-     "district": "Gautam Buddha Nagar",
-     "state": "Uttar Pradesh",
+     "permanent_id": "1-44656683218",
+     "name": "Hiraba BBA BCA College",
+     "district": "Ahmedabad",
+     "state": "Gujarat",
      "score": 0.57,
      "reasons": [
       "Name 56% similar",
-      "State Uttar Pradesh matches"
-     ]
-    }
-   ],
-   "status": "resolved",
-   "decided_permanent_id": "1-43659995712",
-   "decided_by": 5,
-   "decided_at": "2026-05-07T09:00:00Z",
-   "created_at": "2026-05-06T09:00:00Z"
-  },
-  {
-   "id": 14,
-   "case_id": 720,
-   "candidates": [
-    {
-     "permanent_id": "1-43657357285",
-     "name": "JSPM'S Rajarshi Shahu College of Engineering",
-     "district": "Pune",
-     "state": "Maharashtra",
-     "score": 0.65,
-     "reasons": [
-      "Name 65% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43659808612",
-     "name": "Rajarshi Shahu College of Engineering",
-     "district": "Buldhana",
-     "state": "Maharashtra",
-     "score": 0.55,
-     "reasons": [
-      "Name 55% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43657475909",
-     "name": "VPM'S Maharshi Parshuram College of Engineering",
-     "district": "Ratnagiri",
-     "state": "Maharashtra",
-     "score": 0.54,
-     "reasons": [
-      "Name 54% similar",
-      "State Maharashtra matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-06-05T10:00:00Z"
-  },
-  {
-   "id": 15,
-   "case_id": 726,
-   "candidates": [
-    {
-     "permanent_id": "1-43657831140",
-     "name": "Arihant Institute of Business Management",
-     "district": "Pune",
-     "state": "Maharashtra",
-     "score": 0.64,
-     "reasons": [
-      "Name 64% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43655688345",
-     "name": "Siddhant Institute of Business Management",
-     "district": "Pune",
-     "state": "Maharashtra",
-     "score": 0.58,
-     "reasons": [
-      "Name 57% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43654898360",
-     "name": "Pratibha Institute of Business Management",
-     "district": "Pune",
-     "state": "Maharashtra",
-     "score": 0.53,
-     "reasons": [
-      "Name 53% similar",
-      "State Maharashtra matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-06-06T08:00:00Z"
-  },
-  {
-   "id": 16,
-   "case_id": 868,
-   "candidates": [
-    {
-     "permanent_id": "1-43660379246",
-     "name": "Fortune Institute of International Business",
-     "district": "South West Delhi",
-     "state": "Delhi",
-     "score": 0.66,
-     "reasons": [
-      "Name 66% similar",
-      "State Delhi matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43660687663",
-     "name": "Gitarattan International Business School",
-     "district": "North West Delhi",
-     "state": "Delhi",
-     "score": 0.56,
-     "reasons": [
-      "Name 56% similar",
-      "State Delhi matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43664467687",
-     "name": "Institute of Marketing and Management - Business School",
-     "district": "New Delhi",
-     "state": "Delhi",
-     "score": 0.58,
-     "reasons": [
-      "Name 57% similar",
-      "State Delhi matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-07-03T11:00:00Z"
-  },
-  {
-   "id": 17,
-   "case_id": 881,
-   "candidates": [
-    {
-     "permanent_id": "1-43662745069",
-     "name": "Sri Ramakrishna Engineering College",
-     "district": "Coimbatore",
-     "state": "Tamil Nadu",
-     "score": 0.67,
-     "reasons": [
-      "Name 67% similar",
-      "State Tamil Nadu matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43658272974",
-     "name": "Sri Krishna Engineering College",
-     "district": "Kanchipuram",
-     "state": "Tamil Nadu",
-     "score": 0.6,
-     "reasons": [
-      "Name 60% similar",
-      "State Tamil Nadu matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43663326153",
-     "name": "Sri Ramanujar Engineering College",
-     "district": "Kanchipuram",
-     "state": "Tamil Nadu",
-     "score": 0.59,
-     "reasons": [
-      "Name 59% similar",
-      "State Tamil Nadu matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-07-06T10:00:00Z"
-  },
-  {
-   "id": 18,
-   "case_id": 889,
-   "candidates": [
-    {
-     "permanent_id": "1-43662541938",
-     "name": "Truba Institute of Engineering & Information Technology",
-     "district": "Bhopal",
-     "state": "Madhya Pradesh",
-     "score": 0.61,
-     "reasons": [
-      "Name 61% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43655923818",
-     "name": "Institute of Engineering and Technology",
-     "district": "Indore",
-     "state": "Madhya Pradesh",
-     "score": 0.44,
-     "reasons": [
-      "Name 44% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43664413232",
-     "name": "Shriram Institute of Information Technology",
-     "district": "Morena",
-     "state": "Madhya Pradesh",
-     "score": 0.47,
-     "reasons": [
-      "Name 47% similar",
-      "State Madhya Pradesh matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-07-07T08:00:00Z"
-  },
-  {
-   "id": 19,
-   "case_id": 967,
-   "candidates": [
-    {
-     "permanent_id": "1-43661016593",
-     "name": "Sant Hirdaram Institute of Management for Women",
-     "district": "Bhopal",
-     "state": "Madhya Pradesh",
-     "score": 0.58,
-     "reasons": [
-      "Name 57% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43996254434",
-     "name": "Shivam Institute of Management",
-     "district": "Seoni",
-     "state": "Madhya Pradesh",
-     "score": 0.47,
-     "reasons": [
-      "Name 47% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43660753062",
-     "name": "Sanghvi Institute of Management and Science",
-     "district": "Indore",
-     "state": "Madhya Pradesh",
-     "score": 0.44,
-     "reasons": [
-      "Name 44% similar",
-      "State Madhya Pradesh matches"
-     ]
-    }
-   ],
-   "status": "resolved",
-   "decided_permanent_id": "1-43661016593",
-   "decided_by": 5,
-   "decided_at": "2026-07-24T09:00:00Z",
-   "created_at": "2026-07-23T09:00:00Z"
-  },
-  {
-   "id": 20,
-   "case_id": 1042,
-   "candidates": [
-    {
-     "permanent_id": "1-43664123525",
-     "name": "Bharati Vidyapeeth's Institute of Management and Information Technology Navi Mumbai",
-     "district": "Thane",
-     "state": "Maharashtra",
-     "score": 0.56,
-     "reasons": [
-      "Name 56% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43654899334",
-     "name": "Bharati Vidyapeeth Institute of Management (MCA) Kolhapur",
-     "district": "Kolhapur",
-     "state": "Maharashtra",
-     "score": 0.36,
-     "reasons": [
-      "Name 36% similar",
-      "State Maharashtra matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43655547737",
-     "name": "Dr. Moonje Institute of Management & Information Technology",
-     "district": "Nashik",
-     "state": "Maharashtra",
-     "score": 0.47,
-     "reasons": [
-      "Name 47% similar",
-      "State Maharashtra matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-08-04T08:00:00Z"
-  },
-  {
-   "id": 21,
-   "case_id": 1059,
-   "candidates": [
-    {
-     "permanent_id": "1-44342385654",
-     "name": "Matashree K G Dholariya Mahila BBA College",
-     "district": "Junagadh",
-     "state": "Gujarat",
-     "score": 0.59,
-     "reasons": [
-      "Name 59% similar",
       "State Gujarat matches"
      ]
     },
     {
-     "permanent_id": "1-44288570013",
-     "name": "Shree Uttar Gujarat BBA College",
-     "district": "Surat",
+     "permanent_id": "1-44646571206",
+     "name": "Avirat BBA BCA College",
+     "district": "Ahmedabad",
      "state": "Gujarat",
-     "score": 0.42,
+     "score": 0.45,
      "reasons": [
-      "Name 42% similar",
+      "Name 45% similar",
       "State Gujarat matches"
      ]
     },
@@ -800,87 +110,175 @@
    "decided_permanent_id": null,
    "decided_by": null,
    "decided_at": null,
-   "created_at": "2026-08-07T11:00:00Z"
+   "created_at": "2026-03-07T10:00:00Z"
   },
   {
-   "id": 22,
-   "case_id": 1196,
+   "id": 4,
+   "case_id": 310,
    "candidates": [
     {
-     "permanent_id": "1-43656828273",
-     "name": "SRM TRP Engineering College",
-     "district": "Tiruchirappalli",
-     "state": "Tamil Nadu",
-     "score": 0.67,
+     "permanent_id": "1-43657258516",
+     "name": "Jaywant College of Engineering and Polytechnic",
+     "district": "Sangli",
+     "state": "Maharashtra",
+     "score": 0.57,
      "reasons": [
-      "Name 67% similar",
-      "State Tamil Nadu matches"
+      "Name 56% similar",
+      "State Maharashtra matches"
      ]
     },
     {
-     "permanent_id": "1-43657338371",
-     "name": "R.M.K. Engineering College",
-     "district": "Thiruvallur",
-     "state": "Tamil Nadu",
-     "score": 0.58,
+     "permanent_id": "1-43664674195",
+     "name": "R.c.patel College of Engineering and Polytechnic, Shirpur",
+     "district": "Dhule",
+     "state": "Maharashtra",
+     "score": 0.49,
      "reasons": [
-      "Name 57% similar",
-      "State Tamil Nadu matches"
+      "Name 49% similar",
+      "State Maharashtra matches"
      ]
     },
     {
-     "permanent_id": "1-43661119657",
-     "name": "R.M.D. Engineering College",
-     "district": "Thiruvallur",
+     "permanent_id": "1-43658187806",
+     "name": "Suryodaya College of Engineering & Technology",
+     "district": "Nagpur",
+     "state": "Maharashtra",
+     "score": 0.44,
+     "reasons": [
+      "Name 44% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "resolved",
+   "decided_permanent_id": "1-43657258516",
+   "decided_by": 5,
+   "decided_at": "2026-03-15T10:00:00Z",
+   "created_at": "2026-03-14T10:00:00Z"
+  },
+  {
+   "id": 5,
+   "case_id": 334,
+   "candidates": [
+    {
+     "permanent_id": "1-43664618019",
+     "name": "K.V.N. Naik S. P. Sanstha's Loknete Gopinathji Munde Institute of Engineering Education & Research",
+     "district": "Nashik",
+     "state": "Maharashtra",
+     "score": 0.53,
+     "reasons": [
+      "Name 53% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43655614918",
+     "name": "K. K. Wagh Institute of Engineering Education & Research",
+     "district": "Nashik",
+     "state": "Maharashtra",
+     "score": 0.41,
+     "reasons": [
+      "Name 41% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43661586250",
+     "name": "CHH. Shahu Institute of Business Education & Research",
+     "district": "Kolhapur",
+     "state": "Maharashtra",
+     "score": 0.39,
+     "reasons": [
+      "Name 39% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-03-17T08:00:00Z"
+  },
+  {
+   "id": 6,
+   "case_id": 514,
+   "candidates": [
+    {
+     "permanent_id": "1-43658239021",
+     "name": "SMT Indira Gandhi College of Engineering",
+     "district": "Thane",
+     "state": "Maharashtra",
+     "score": 0.74,
+     "reasons": [
+      "Name 74% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43655960925",
+     "name": "Bharat Ratna Indira Gandhi College of Engineering",
+     "district": "Solapur",
+     "state": "Maharashtra",
+     "score": 0.62,
+     "reasons": [
+      "Name 62% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43655672508",
+     "name": "Rajiv Gandhi College of Engineering",
+     "district": "Ahmednagar",
+     "state": "Maharashtra",
+     "score": 0.55,
+     "reasons": [
+      "Name 55% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "resolved",
+   "decided_permanent_id": "1-43658239021",
+   "decided_by": 5,
+   "decided_at": "2026-04-22T11:00:00Z",
+   "created_at": "2026-04-21T11:00:00Z"
+  },
+  {
+   "id": 7,
+   "case_id": 583,
+   "candidates": [
+    {
+     "permanent_id": "1-43655743729",
+     "name": "Muthayammal Polytechnic Institution",
+     "district": "Namakkal",
      "state": "Tamil Nadu",
      "score": 0.61,
      "reasons": [
       "Name 61% similar",
       "State Tamil Nadu matches"
      ]
-    }
-   ],
-   "status": "resolved",
-   "decided_permanent_id": "1-43656828273",
-   "decided_by": 5,
-   "decided_at": "2026-08-29T09:00:00Z",
-   "created_at": "2026-08-28T09:00:00Z"
-  },
-  {
-   "id": 23,
-   "case_id": 1450,
-   "candidates": [
+    },
     {
-     "permanent_id": "1-43655925223",
-     "name": "Prince Institute of Innovative Technology GR. Noida",
-     "district": "Gautam Buddha Nagar",
-     "state": "Uttar Pradesh",
-     "score": 0.62,
+     "permanent_id": "1-43663511770",
+     "name": "Muthayammal Polytechnic College",
+     "district": "Namakkal",
+     "state": "Tamil Nadu",
+     "score": 0.5,
      "reasons": [
-      "Name 62% similar",
-      "State Uttar Pradesh matches"
+      "Name 50% similar",
+      "State Tamil Nadu matches"
      ]
     },
     {
-     "permanent_id": "1-43662725028",
-     "name": "Jaypee Institute of Information Technology",
-     "district": "Gautam Buddha Nagar",
-     "state": "Uttar Pradesh",
-     "score": 0.49,
-     "reasons": [
-      "Name 49% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43663095068",
-     "name": "Kishan Institute of Information Technology",
-     "district": "Meerut",
-     "state": "Uttar Pradesh",
+     "permanent_id": "1-43657426396",
+     "name": "Sri Muthalamman Polytechnic College",
+     "district": "Ramanathapuram",
+     "state": "Tamil Nadu",
      "score": 0.48,
      "reasons": [
       "Name 48% similar",
-      "State Uttar Pradesh matches"
+      "State Tamil Nadu matches"
      ]
     }
    ],
@@ -888,70 +286,16 @@
    "decided_permanent_id": null,
    "decided_by": null,
    "decided_at": null,
-   "created_at": "2026-10-09T09:00:00Z"
+   "created_at": "2026-05-06T10:00:00Z"
   },
   {
-   "id": 24,
-   "case_id": 1466,
+   "id": 8,
+   "case_id": 741,
    "candidates": [
     {
-     "permanent_id": "1-43660517121",
-     "name": "Subharti Polytechnic College",
-     "district": "Meerut",
-     "state": "Uttar Pradesh",
-     "score": 0.52,
-     "reasons": [
-      "Name 52% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43656799783",
-     "name": "Buddha Polytechnic College",
-     "district": "Gorakhpur",
-     "state": "Uttar Pradesh",
-     "score": 0.43,
-     "reasons": [
-      "Name 43% similar",
-      "State Uttar Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43661610966",
-     "name": "R. K. Polytechnic College",
-     "district": "Fatehpur",
-     "state": "Uttar Pradesh",
-     "score": 0.33,
-     "reasons": [
-      "Name 33% similar",
-      "State Uttar Pradesh matches"
-     ]
-    }
-   ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-10-12T09:00:00Z"
-  },
-  {
-   "id": 25,
-   "case_id": 1517,
-   "candidates": [],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-10-22T11:00:00Z"
-  },
-  {
-   "id": 26,
-   "case_id": 1577,
-   "candidates": [
-    {
-     "permanent_id": "1-43659927401",
-     "name": "Sri Ramakrishna Polytechnic College",
-     "district": "Perambalur",
+     "permanent_id": "1-43657566320",
+     "name": "Adiparasakthi Polytechnic College",
+     "district": "Dharmapuri",
      "state": "Tamil Nadu",
      "score": 0.78,
      "reasons": [
@@ -960,68 +304,112 @@
      ]
     },
     {
-     "permanent_id": "1-43656633003",
-     "name": "Sri Ramakrishna Polytechnic College",
-     "district": "Coimbatore",
+     "permanent_id": "1-43661275929",
+     "name": "Adhiparasakthi Polytechnic College",
+     "district": "Kanchipuram",
      "state": "Tamil Nadu",
-     "score": 0.62,
+     "score": 0.65,
      "reasons": [
-      "Name 62% similar",
+      "Name 65% similar",
       "State Tamil Nadu matches"
      ]
     },
     {
-     "permanent_id": "1-43661194633",
-     "name": "Sri Ramakrishna Polytechnic College",
-     "district": "Vellore",
+     "permanent_id": "1-43665365245",
+     "name": "Sakthi Polytechnic College",
+     "district": "Erode",
      "state": "Tamil Nadu",
-     "score": 0.67,
+     "score": 0.66,
      "reasons": [
-      "Name 67% similar",
+      "Name 66% similar",
       "State Tamil Nadu matches"
      ]
     }
    ],
    "status": "resolved",
-   "decided_permanent_id": "1-43659927401",
+   "decided_permanent_id": "1-43657566320",
    "decided_by": 5,
-   "decided_at": "2026-11-01T08:00:00Z",
-   "created_at": "2026-10-31T08:00:00Z"
+   "decided_at": "2026-06-07T12:00:00Z",
+   "created_at": "2026-06-06T12:00:00Z"
   },
   {
-   "id": 27,
-   "case_id": 1585,
+   "id": 9,
+   "case_id": 767,
    "candidates": [
     {
-     "permanent_id": "1-43661001336",
-     "name": "Goel Institute of Technology & Management",
-     "district": "Lucknow",
-     "state": "Uttar Pradesh",
-     "score": 0.57,
+     "permanent_id": "1-43661969188",
+     "name": "Usha Mittal Institute of Technology",
+     "district": "Mumbai City",
+     "state": "Maharashtra",
+     "score": 0.5,
      "reasons": [
-      "Name 56% similar",
-      "State Uttar Pradesh matches"
+      "Name 50% similar",
+      "State Maharashtra matches"
      ]
     },
     {
-     "permanent_id": "1-43655166378",
-     "name": "Institute of Technology and Management",
-     "district": "Gorakhpur",
-     "state": "Uttar Pradesh",
+     "permanent_id": "1-43659899386",
+     "name": "Shatabdi Institute of Technology",
+     "district": "Nashik",
+     "state": "Maharashtra",
+     "score": 0.3,
+     "reasons": [
+      "Name 30% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43660986348",
+     "name": "Suhas Institute of Technology",
+     "district": "Pune",
+     "state": "Maharashtra",
      "score": 0.42,
      "reasons": [
       "Name 42% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-06-11T11:00:00Z"
+  },
+  {
+   "id": 10,
+   "case_id": 782,
+   "candidates": [
+    {
+     "permanent_id": "1-43660966102",
+     "name": "Nimt Institute of Hospital and Pharma Management",
+     "district": "Gautam Buddha Nagar",
+     "state": "Uttar Pradesh",
+     "score": 0.5,
+     "reasons": [
+      "Name 50% similar",
       "State Uttar Pradesh matches"
      ]
     },
     {
-     "permanent_id": "1-43655450792",
-     "name": "Institute of Technology and Management",
-     "district": "Maharajganj",
+     "permanent_id": "1-44453901204",
+     "name": "Rig Institute of Hospitality and Management",
+     "district": "Gautam Buddha Nagar",
      "state": "Uttar Pradesh",
-     "score": 0.44,
+     "score": 0.38,
      "reasons": [
-      "Name 44% similar",
+      "Name 38% similar",
+      "State Uttar Pradesh matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43656664789",
+     "name": "Sams Institute of Hotel Management",
+     "district": "Varanasi",
+     "state": "Uttar Pradesh",
+     "score": 0.35,
+     "reasons": [
+      "Name 35% similar",
       "State Uttar Pradesh matches"
      ]
     }
@@ -1030,71 +418,507 @@
    "decided_permanent_id": null,
    "decided_by": null,
    "decided_at": null,
-   "created_at": "2026-11-02T09:00:00Z"
+   "created_at": "2026-06-14T10:00:00Z"
   },
   {
-   "id": 28,
-   "case_id": 1663,
+   "id": 11,
+   "case_id": 824,
+   "candidates": [],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-06-21T10:00:00Z"
+  },
+  {
+   "id": 12,
+   "case_id": 835,
    "candidates": [
     {
-     "permanent_id": "1-44102363960",
-     "name": "Shrre Swaminarayan Gadi Institute of Technology",
-     "district": "Ahmedabad",
-     "state": "Gujarat",
-     "score": 0.74,
+     "permanent_id": "1-43656868511",
+     "name": "Sri Krishna Institute of Technology",
+     "district": "Kanchipuram",
+     "state": "Tamil Nadu",
+     "score": 0.53,
      "reasons": [
-      "Name 74% similar",
-      "State Gujarat matches"
+      "Name 53% similar",
+      "State Tamil Nadu matches"
      ]
     },
     {
-     "permanent_id": "1-43661266624",
-     "name": "Shree Swaminarayan Institute of Technology",
-     "district": "Gandhinagar",
-     "state": "Gujarat",
-     "score": 0.66,
+     "permanent_id": "1-43662359192",
+     "name": "Sri Ramakrishna Institute of Technology",
+     "district": "Coimbatore",
+     "state": "Tamil Nadu",
+     "score": 0.33,
      "reasons": [
-      "Name 66% similar",
-      "State Gujarat matches"
+      "Name 33% similar",
+      "State Tamil Nadu matches"
      ]
     },
     {
-     "permanent_id": "1-43662699084",
-     "name": "Shree Swami Atmanand Saraswati Institute of Technology",
-     "district": "Surat",
-     "state": "Gujarat",
-     "score": 0.6,
+     "permanent_id": "1-43663212572",
+     "name": "Sri Sai Ram Institute of Technology",
+     "district": "Kanchipuram",
+     "state": "Tamil Nadu",
+     "score": 0.45,
      "reasons": [
-      "Name 60% similar",
-      "State Gujarat matches"
+      "Name 45% similar",
+      "State Tamil Nadu matches"
      ]
     }
    ],
-   "status": "resolved",
-   "decided_permanent_id": "1-44102363960",
-   "decided_by": 5,
-   "decided_at": "2026-11-16T11:00:00Z",
-   "created_at": "2026-11-15T11:00:00Z"
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-06-24T08:00:00Z"
   },
   {
-   "id": 29,
-   "case_id": 1671,
+   "id": 13,
+   "case_id": 869,
    "candidates": [
     {
-     "permanent_id": "1-43659973742",
-     "name": "RKDF Institute of Business Management",
-     "district": "Bhopal",
-     "state": "Madhya Pradesh",
-     "score": 0.66,
+     "permanent_id": "1-43657566320",
+     "name": "Adiparasakthi Polytechnic College",
+     "district": "Dharmapuri",
+     "state": "Tamil Nadu",
+     "score": 0.5,
      "reasons": [
-      "Name 66% similar",
+      "Name 50% similar",
+      "State Tamil Nadu matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43661275929",
+     "name": "Adhiparasakthi Polytechnic College",
+     "district": "Kanchipuram",
+     "state": "Tamil Nadu",
+     "score": 0.39,
+     "reasons": [
+      "Name 39% similar",
+      "State Tamil Nadu matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43665365245",
+     "name": "Sakthi Polytechnic College",
+     "district": "Erode",
+     "state": "Tamil Nadu",
+     "score": 0.36,
+     "reasons": [
+      "Name 36% similar",
+      "State Tamil Nadu matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-06-30T08:00:00Z"
+  },
+  {
+   "id": 14,
+   "case_id": 886,
+   "candidates": [
+    {
+     "permanent_id": "1-43660797421",
+     "name": "D Y Patil Education Society's D Y Pail Technical Campus Faculty of Engineering and Faculty of Management Talsande Kolhapur",
+     "district": "Kolhapur",
+     "state": "Maharashtra",
+     "score": 0.58,
+     "reasons": [
+      "Name 57% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43659889953",
+     "name": "Sandipani Technical and Medical Education Institute's Sandipani Technical Campus - Faculty of Engineering",
+     "district": "Latur",
+     "state": "Maharashtra",
+     "score": 0.48,
+     "reasons": [
+      "Name 48% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43660805837",
+     "name": "Gokhale Education Society's R. H. Sapat College of Engineering, Management Studies & Research",
+     "district": "Nashik",
+     "state": "Maharashtra",
+     "score": 0.52,
+     "reasons": [
+      "Name 52% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-04T09:00:00Z"
+  },
+  {
+   "id": 15,
+   "case_id": 908,
+   "candidates": [
+    {
+     "permanent_id": "1-43654920983",
+     "name": "Zeal Institute of Business Administration, Computer Application & Research",
+     "district": "Pune",
+     "state": "Maharashtra",
+     "score": 0.58,
+     "reasons": [
+      "Name 57% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43663662257",
+     "name": "Sinhgad Institute of Business Administration & Computer Application",
+     "district": "Pune",
+     "state": "Maharashtra",
+     "score": 0.41,
+     "reasons": [
+      "Name 41% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43660965115",
+     "name": "Agasti Institute of Management, Computer Application and Research",
+     "district": "Ahmednagar",
+     "state": "Maharashtra",
+     "score": 0.48,
+     "reasons": [
+      "Name 48% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-08T11:00:00Z"
+  },
+  {
+   "id": 16,
+   "case_id": 911,
+   "candidates": [
+    {
+     "permanent_id": "1-43657472711",
+     "name": "Pillai Institute of Management Studies and Research",
+     "district": "Raigad",
+     "state": "Maharashtra",
+     "score": 0.55,
+     "reasons": [
+      "Name 55% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43655417345",
+     "name": "Pillai Hoc Institute of Management Studies and Research",
+     "district": "Raigad",
+     "state": "Maharashtra",
+     "score": 0.46,
+     "reasons": [
+      "Name 46% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43657891479",
+     "name": "Kala Institute of Management Studies and Research",
+     "district": "Mumbai Suburban",
+     "state": "Maharashtra",
+     "score": 0.37,
+     "reasons": [
+      "Name 37% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-09T09:00:00Z"
+  },
+  {
+   "id": 17,
+   "case_id": 922,
+   "candidates": [
+    {
+     "permanent_id": "1-43660022466",
+     "name": "Shri Rama Krishna College Polytechnic and Management",
+     "district": "Satna",
+     "state": "Madhya Pradesh",
+     "score": 0.5,
+     "reasons": [
+      "Name 50% similar",
       "State Madhya Pradesh matches"
      ]
     },
     {
-     "permanent_id": "1-43659505583",
-     "name": "Astral Institute of Business Management",
-     "district": "Indore",
+     "permanent_id": "1-43658001635",
+     "name": "Shri Rama Krishna College of Engineering Science and Management (srkcesm)",
+     "district": "Satna",
+     "state": "Madhya Pradesh",
+     "score": 0.41,
+     "reasons": [
+      "Name 41% similar",
+      "State Madhya Pradesh matches"
+     ]
+    },
+    {
+     "permanent_id": "1-44264447393",
+     "name": "Sha Shib College of Science and Management",
+     "district": "Bhopal",
+     "state": "Madhya Pradesh",
+     "score": 0.43,
+     "reasons": [
+      "Name 43% similar",
+      "State Madhya Pradesh matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-10T09:00:00Z"
+  },
+  {
+   "id": 18,
+   "case_id": 960,
+   "candidates": [
+    {
+     "permanent_id": "1-43657240591",
+     "name": "MGM'S Institute of Management",
+     "district": "Aurangabad",
+     "state": "Maharashtra",
+     "score": 0.51,
+     "reasons": [
+      "Name 51% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43655597491",
+     "name": "Met's Institute of Management",
+     "district": "Nashik",
+     "state": "Maharashtra",
+     "score": 0.37,
+     "reasons": [
+      "Name 37% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43662307876",
+     "name": "Mima Institute of Management",
+     "district": "Pune",
+     "state": "Maharashtra",
+     "score": 0.34,
+     "reasons": [
+      "Name 34% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-17T10:00:00Z"
+  },
+  {
+   "id": 19,
+   "case_id": 961,
+   "candidates": [],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-17T11:00:00Z"
+  },
+  {
+   "id": 20,
+   "case_id": 969,
+   "candidates": [
+    {
+     "permanent_id": "1-43656963644",
+     "name": "National Institute of Food Technology, Entrepreneurship and Management -Thanjavur",
+     "district": "Thanjavur",
+     "state": "Tamil Nadu",
+     "score": 0.65,
+     "reasons": [
+      "Name 65% similar",
+      "State Tamil Nadu matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43660555731",
+     "name": "Nehru Institute of Information Technology and Management",
+     "district": "Coimbatore",
+     "state": "Tamil Nadu",
+     "score": 0.55,
+     "reasons": [
+      "Name 55% similar",
+      "State Tamil Nadu matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43661965056",
+     "name": "Sri Venkateswara Institute of Information Technology and Management",
+     "district": "Coimbatore",
+     "state": "Tamil Nadu",
+     "score": 0.56,
+     "reasons": [
+      "Name 56% similar",
+      "State Tamil Nadu matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-19T10:00:00Z"
+  },
+  {
+   "id": 21,
+   "case_id": 985,
+   "candidates": [],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-22T10:00:00Z"
+  },
+  {
+   "id": 22,
+   "case_id": 1010,
+   "candidates": [
+    {
+     "permanent_id": "1-44218472413",
+     "name": "Aakar College of Management for Women",
+     "district": "Nagpur",
+     "state": "Maharashtra",
+     "score": 0.61,
+     "reasons": [
+      "Name 61% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-44240549493",
+     "name": "College of Management",
+     "district": "Buldhana",
+     "state": "Maharashtra",
+     "score": 0.46,
+     "reasons": [
+      "Name 46% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43665302080",
+     "name": "M.S. College of Management",
+     "district": "Thane",
+     "state": "Maharashtra",
+     "score": 0.47,
+     "reasons": [
+      "Name 47% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-07-25T10:00:00Z"
+  },
+  {
+   "id": 23,
+   "case_id": 1076,
+   "candidates": [],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-08-05T12:00:00Z"
+  },
+  {
+   "id": 24,
+   "case_id": 1171,
+   "candidates": [
+    {
+     "permanent_id": "1-43658182639",
+     "name": "Vivekananda College of Technology & Management, Aligarh",
+     "district": "Aligarh",
+     "state": "Uttar Pradesh",
+     "score": 0.63,
+     "reasons": [
+      "Name 63% similar",
+      "State Uttar Pradesh matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43662752932",
+     "name": "TDL College of Technology & Management",
+     "district": "Lucknow",
+     "state": "Uttar Pradesh",
+     "score": 0.54,
+     "reasons": [
+      "Name 54% similar",
+      "State Uttar Pradesh matches"
+     ]
+    },
+    {
+     "permanent_id": "1-44284279114",
+     "name": "M D College of Technology and Management",
+     "district": "Barabanki",
+     "state": "Uttar Pradesh",
+     "score": 0.56,
+     "reasons": [
+      "Name 56% similar",
+      "State Uttar Pradesh matches"
+     ]
+    }
+   ],
+   "status": "pending",
+   "decided_permanent_id": null,
+   "decided_by": null,
+   "decided_at": null,
+   "created_at": "2026-08-24T10:00:00Z"
+  },
+  {
+   "id": 25,
+   "case_id": 1385,
+   "candidates": [
+    {
+     "permanent_id": "1-43656588861",
+     "name": "Duke College of Management",
+     "district": "Bhopal",
+     "state": "Madhya Pradesh",
+     "score": 0.69,
+     "reasons": [
+      "Name 69% similar",
+      "State Madhya Pradesh matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43662161290",
+     "name": "Diksha College of Management",
+     "district": "Bhopal",
      "state": "Madhya Pradesh",
      "score": 0.52,
      "reasons": [
@@ -1103,14 +927,58 @@
      ]
     },
     {
-     "permanent_id": "1-44377947004",
-     "name": "Prestige Institute of Business Management",
-     "district": "Indore",
+     "permanent_id": "1-43656005780",
+     "name": "Veer College of Management",
+     "district": "Vidisha",
      "state": "Madhya Pradesh",
-     "score": 0.55,
+     "score": 0.62,
      "reasons": [
-      "Name 55% similar",
+      "Name 62% similar",
       "State Madhya Pradesh matches"
+     ]
+    }
+   ],
+   "status": "resolved",
+   "decided_permanent_id": "1-43656588861",
+   "decided_by": 5,
+   "decided_at": "2026-10-01T09:00:00Z",
+   "created_at": "2026-09-30T09:00:00Z"
+  },
+  {
+   "id": 26,
+   "case_id": 1424,
+   "candidates": [
+    {
+     "permanent_id": "1-43657831140",
+     "name": "Arihant Institute of Business Management",
+     "district": "Pune",
+     "state": "Maharashtra",
+     "score": 0.62,
+     "reasons": [
+      "Name 62% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43655688345",
+     "name": "Siddhant Institute of Business Management",
+     "district": "Pune",
+     "state": "Maharashtra",
+     "score": 0.44,
+     "reasons": [
+      "Name 44% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43654898360",
+     "name": "Pratibha Institute of Business Management",
+     "district": "Pune",
+     "state": "Maharashtra",
+     "score": 0.57,
+     "reasons": [
+      "Name 56% similar",
+      "State Maharashtra matches"
      ]
     }
    ],
@@ -1118,15 +986,114 @@
    "decided_permanent_id": null,
    "decided_by": null,
    "decided_at": null,
-   "created_at": "2026-11-16T10:00:00Z"
+   "created_at": "2026-10-07T11:00:00Z"
   },
   {
-   "id": 30,
-   "case_id": 1686,
+   "id": 27,
+   "case_id": 1504,
    "candidates": [
     {
-     "permanent_id": "1-43658469641",
-     "name": "Gyan Ganga College of Technology",
+     "permanent_id": "1-43657368453",
+     "name": "Sau.shantidevi Chavan Institute of Engineering and Technology, Polytechnic",
+     "district": "Jalgaon",
+     "state": "Maharashtra",
+     "score": 0.67,
+     "reasons": [
+      "Name 67% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43655446636",
+     "name": "Shriram Institute of Engineering and Technology(polytechnic), Paniv",
+     "district": "Solapur",
+     "state": "Maharashtra",
+     "score": 0.48,
+     "reasons": [
+      "Name 48% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43657857422",
+     "name": "Tatyasaheb Kore Institute of Engineering and Technology (polytechnic), Warananagar",
+     "district": "Kolhapur",
+     "state": "Maharashtra",
+     "score": 0.59,
+     "reasons": [
+      "Name 59% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "resolved",
+   "decided_permanent_id": "1-43657368453",
+   "decided_by": 5,
+   "decided_at": "2026-10-19T11:00:00Z",
+   "created_at": "2026-10-18T11:00:00Z"
+  },
+  {
+   "id": 28,
+   "case_id": 1517,
+   "candidates": [
+    {
+     "permanent_id": "1-43654959761",
+     "name": "Sandip Foundation's, Sandip Polytechnic",
+     "district": "Nashik",
+     "state": "Maharashtra",
+     "score": 0.61,
+     "reasons": [
+      "Name 61% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43657247854",
+     "name": "Sanjay Education Society's Polytechnic",
+     "district": "Dhule",
+     "state": "Maharashtra",
+     "score": 0.54,
+     "reasons": [
+      "Name 54% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43656307087",
+     "name": "Vivekanand Education Society's Polytechnic",
+     "district": "Mumbai City",
+     "state": "Maharashtra",
+     "score": 0.44,
+     "reasons": [
+      "Name 44% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "resolved",
+   "decided_permanent_id": "1-43654959761",
+   "decided_by": 5,
+   "decided_at": "2026-10-22T11:00:00Z",
+   "created_at": "2026-10-21T11:00:00Z"
+  },
+  {
+   "id": 29,
+   "case_id": 1612,
+   "candidates": [
+    {
+     "permanent_id": "1-43656339216",
+     "name": "Shri Ram Institute of Technology (MCA)",
+     "district": "Jabalpur",
+     "state": "Madhya Pradesh",
+     "score": 0.7,
+     "reasons": [
+      "Name 70% similar",
+      "State Madhya Pradesh matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43661187254",
+     "name": "Shri Ram Institute of Technology",
      "district": "Jabalpur",
      "state": "Madhya Pradesh",
      "score": 0.59,
@@ -1136,33 +1103,66 @@
      ]
     },
     {
-     "permanent_id": "1-43657818369",
-     "name": "Jai Narain College of Technology",
-     "district": "Bhopal",
+     "permanent_id": "1-43656451038",
+     "name": "Shri Ram Institute of SC & Technology",
+     "district": "Jabalpur",
      "state": "Madhya Pradesh",
-     "score": 0.41,
+     "score": 0.59,
      "reasons": [
-      "Name 41% similar",
-      "State Madhya Pradesh matches"
-     ]
-    },
-    {
-     "permanent_id": "1-43657707004",
-     "name": "Agnos College of Technology",
-     "district": "Bhopal",
-     "state": "Madhya Pradesh",
-     "score": 0.48,
-     "reasons": [
-      "Name 48% similar",
+      "Name 59% similar",
       "State Madhya Pradesh matches"
      ]
     }
    ],
-   "status": "pending",
-   "decided_permanent_id": null,
-   "decided_by": null,
-   "decided_at": null,
-   "created_at": "2026-11-18T09:00:00Z"
+   "status": "resolved",
+   "decided_permanent_id": "1-43656339216",
+   "decided_by": 5,
+   "decided_at": "2026-11-08T11:00:00Z",
+   "created_at": "2026-11-07T11:00:00Z"
+  },
+  {
+   "id": 30,
+   "case_id": 1682,
+   "candidates": [
+    {
+     "permanent_id": "1-43664667769",
+     "name": "Nath Polytechnic Paithan",
+     "district": "Aurangabad",
+     "state": "Maharashtra",
+     "score": 0.56,
+     "reasons": [
+      "Name 56% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43658468643",
+     "name": "Satara Polytechnic, Satara",
+     "district": "Satara",
+     "state": "Maharashtra",
+     "score": 0.44,
+     "reasons": [
+      "Name 44% similar",
+      "State Maharashtra matches"
+     ]
+    },
+    {
+     "permanent_id": "1-43660086869",
+     "name": "NIT Polytechnic",
+     "district": "Nagpur",
+     "state": "Maharashtra",
+     "score": 0.51,
+     "reasons": [
+      "Name 51% similar",
+      "State Maharashtra matches"
+     ]
+    }
+   ],
+   "status": "resolved",
+   "decided_permanent_id": "1-43664667769",
+   "decided_by": 5,
+   "decided_at": "2026-11-18T09:00:00Z",
+   "created_at": "2026-11-17T09:00:00Z"
   }
  ]
 }

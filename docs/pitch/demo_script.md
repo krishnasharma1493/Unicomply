@@ -13,7 +13,7 @@ State the script assumes (the numbers below were checked against the full seed o
 | Item | Value |
 | --- | --- |
 | Data | Full demo seed (real AICTE institutions, fabricated cases), loaded by `python -m app.seed --reset` or Admin → reset, with `DEMO_TODAY=2026-11-20` |
-| Dashboard before the live intake | 1,500 cases, 763 pending, 637 beyond SLA, 39 open overlaps |
+| Dashboard before the live intake | 1,500 cases, 740 pending, 630 beyond SLA, 39 open overlaps |
 | Hero case | PGRC/2026/00412: "Day 19 of 21" (due 2026-11-22), in an overlap |
 | Hero intake result | New case `PGRC/2026/00698` in PGRC, three linked cases (PGRC/2026/00412, RB/2026/00087, RO-NWRO/2026/00133). With the real model: red **Probable** banner, scores 0.72 / 0.61 / 0.56. With the offline TF-IDF fallback: amber **Possible** banner, scores 0.68 / 0.58 / 0.52 (see F-2) |
 | Embeddings | `EMBEDDINGS_MODE=model` with the model **already downloaded** (`paraphrase-multilingual-MiniLM-L12-v2`; run the hero once with network before the event). If the model cannot load, the app falls back to TF-IDF by itself and logs one line; the demo still works but shows the Possible tier |

@@ -29,7 +29,7 @@ describe('Signature components (Issue #24)', () => {
     });
 
     it('renders the hero fixture group', () => {
-      wrap(<OverlapBanner tier={group.tier} bureauCodes={['PGRC', 'RB', 'RO-CRO']} caseCount={4} />);
+      wrap(<OverlapBanner tier={group.tier} bureauCodes={['PGRC', 'RB', 'RO-NWRO']} caseCount={4} />);
       expect(screen.getByText(group.banner)).toBeInTheDocument();
     });
   });
