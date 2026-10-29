@@ -181,6 +181,15 @@ class CaseIntakeResult(BaseModel):
     overlaps: List[OverlapSummary]
 
 
+class CategorySuggestion(BaseModel):
+    """PRD §5 `POST /cases/{id}/classify`: the suggested category and the model's confidence (not a probability)."""
+
+    category_id: int
+    category_code: str
+    category_name: str
+    confidence: float = PydanticField(ge=0, le=1)
+
+
 class OpenOverlapErrorDetails(BaseModel):
     """`error.details` of 409 OPEN_OVERLAP."""
 

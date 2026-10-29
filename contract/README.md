@@ -59,6 +59,7 @@ Every fixture is cut from one small synthetic world, so ids, refs and names matc
 | `post_cases.json` | POST `/cases` | 201 | intake | Demo step 4: PGRC/2026/00519 created, resolution `auto`, one probable institution overlap with the exact PS banner. Request: `requests/post_cases.json` |
 | `get_cases_id.json` | GET `/cases/{id}` (101) | 200 | PGRC head | Case Detail of PGRC/2026/00412: action history and overlap group 1 with linked RB and RO cards |
 | `post_cases_id_actions.json` | POST `/cases/{id}/actions` (103) | 200 | North-Western RO officer | `assign` to officer 13 (case 103 sits at the North-Western RO): returns the updated case and the new action. Request: `requests/post_cases_id_actions.json` |
+| `post_cases_id_classify.json` | POST `/cases/{id}/classify` (101) | 200 | intake | N1: suggested category and confidence. The tiny seed has no trained model, so the real endpoint answers 503 `CLASSIFIER_UNAVAILABLE` there; the shape test trains one |
 | `get_reviews.json` | GET `/reviews?status=pending` | 200 | intake | Match review queue (reviews 1 and 2) |
 | `post_reviews_id_decide.json` | POST `/reviews/{id}/decide` (2) | 200 | intake | Picks National Institute of Technical Teachers' Training and Research (Bhopal): alias saved, case updated, overlap re-run creates group 5. Request: `requests/post_reviews_id_decide.json` |
 | `get_overlaps.json` | GET `/overlaps` | 200 | senior | Overlap Center list: groups 1, 2, 4 (open) and 3 (dismissed) |

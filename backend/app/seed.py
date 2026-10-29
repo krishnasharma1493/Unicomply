@@ -152,6 +152,14 @@ def _engine(target_engine: Optional[Engine]) -> Engine:
     return target_engine if target_engine is not None else db.engine  # looked up at call time
 
 
+def _train_classifier(seed_dir: Path) -> None:
+    """N1: fit the category model on the seed's labelled descriptions (the tiny world is too small and skips it)."""
+    from app.modules.cases.classifier import train_from_seed
+
+    if get_settings().CLASSIFIER_ENABLED:
+        train_from_seed(seed_dir)
+
+
 def seed_if_empty(target_engine: Optional[Engine] = None, seed_dir: Optional[Path] = None) -> bool:
     """Create tables and load the seed if there are no users yet. Returns True if it seeded."""
     eng = _engine(target_engine)
@@ -160,7 +168,8 @@ def seed_if_empty(target_engine: Optional[Engine] = None, seed_dir: Optional[Pat
         if session.exec(select(User)).first() is not None:
             return False
         load_seed(session, seed_dir or default_seed_dir())
-        return True
+    _train_classifier(seed_dir or default_seed_dir())
+    return True
 
 
 def reset_and_seed(target_engine: Optional[Engine] = None, seed_dir: Optional[Path] = None) -> Dict[str, int]:
@@ -168,7 +177,9 @@ def reset_and_seed(target_engine: Optional[Engine] = None, seed_dir: Optional[Pa
     eng = _engine(target_engine)
     db.reset_db(eng)
     with Session(eng) as session:
-        return load_seed(session, seed_dir or default_seed_dir())
+        counts = load_seed(session, seed_dir or default_seed_dir())
+    _train_classifier(seed_dir or default_seed_dir())
+    return counts
 
 
 if __name__ == "__main__":

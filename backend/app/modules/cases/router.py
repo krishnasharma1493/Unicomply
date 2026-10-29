@@ -17,6 +17,7 @@ from app.modules.cases.schemas import (
     CaseIntakeResult,
     CaseListParams,
     CaseRead,
+    CategorySuggestion,
 )
 from app.modules.cases import service
 from app.modules.engine.service import reset_indexes
@@ -72,6 +73,20 @@ def create_case(
 def get_case(user: CurrentUser, session: SessionDep, case_id: int) -> Envelope[CaseDetail]:
     """Case detail: tracking fields, action history, linked-case summaries and reasons."""
     return Envelope(data=service.case_detail(session, get_case_in_scope_or_404(session, case_id, user), user))
+
+
+@router.post(
+    "/{case_id}/classify",
+    response_model=Envelope[CategorySuggestion],
+    responses=error_responses(401, 403, 404, 503),
+)
+def classify_case(
+    session: SessionDep,
+    case_id: int,
+    user: User = require_roles(Role.intake_operator, Role.bureau_head, Role.senior_mgmt),
+) -> Envelope[CategorySuggestion]:
+    """Suggest a category from the case text (N1). Does not change the case."""
+    return Envelope(data=service.suggest_category(session, get_case_in_scope_or_404(session, case_id, user)))
 
 
 @router.post(

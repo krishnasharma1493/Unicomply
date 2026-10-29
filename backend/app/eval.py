@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any, Dict, FrozenSet, Iterable, List, Optional, Sequence, Set, Tuple
 
 from app.core.config import Settings
+from app.matching import classify
 from app.matching.embed import make_embedder
 from app.matching.engine import MatchingEngine, get_engine
 from app.matching.index import MatchIndex, build_index
@@ -165,6 +166,9 @@ class EvalReport:
     given_truth: OverlapCounts  # cases linked by their true institution (the overlap logic alone)
     split_cases: int = 0
     split_clusters: int = 0
+    category_hits: int = 0  # N1: category suggestions right on the split, by a model trained on the dev split
+    category_total: int = 0
+    category_train: int = 0
 
 
 # ── Loading the seed ─────────────────────────────────────────────────────
@@ -375,11 +379,26 @@ def evaluate(
     given = score_overlaps(
         replay(stream, truth_links, idx, th, engine, WINDOW_DAYS, families), true_pairs, stale, in_split
     )
+    hits = total = trained = 0
+    if split == "test":  # trained on the dev split only, so the test split is unseen
+        codes = {c["id"]: c["code"] for c in _load(seed_dir, "categories")["categories"]}
+        by_id = {c["id"]: c for c in _load(seed_dir, "cases")["cases"]}
+
+        def labelled(ids: Iterable[int]) -> Tuple[List[str], List[str]]:
+            rows = [by_id[i] for i in sorted(ids)]
+            return [f'{r["subject"]}. {r["description"]}' for r in rows], [codes[r["category_id"]] for r in rows]
+
+        train_x, train_y = labelled(truth["dev_case_ids"])
+        test_x, test_y = labelled(in_split)
+        model = classify.train(train_x, train_y)
+        hits = sum(1 for sug, y in zip(model.suggest_many(test_x), test_y) if sug.code == y)
+        total, trained = len(test_x), len(train_x)
     return EvalReport(
         split=split, engine=engine.name, embeddings_mode=mode, seed=truth["seed"], as_of=truth["as_of"],
         thresholds=th, window_days=WINDOW_DAYS, overall=overall, by_noise=dict(by_noise),
         hard_negative_cases=len(hn_cases), hard_negative_false_links=false_links, linked=linked,
         given_truth=given, split_cases=len(stream), split_clusters=len(clusters),
+        category_hits=hits, category_total=total, category_train=trained,
     )
 
 
@@ -484,6 +503,15 @@ def render(report: EvalReport) -> str:
                 f"| {NOISE_LABELS[tag]} | {n.cases} | {_fmt(n.precision)} | {_fmt(n.recall)} | {_fmt(n.f1)} | "
                 f"{_fmt(n.review_rate)} |"
             )
+    if report.category_total:
+        lines += [
+            "",
+            "## Category suggestion",
+            "",
+            f"A TF-IDF + LinearSVC model trained on the {report.category_train} dev-split cases picks the right category for "
+            f"{_count(report.category_hits, report.category_total)} ({_fmt(report.category_hits / report.category_total)}) "
+            "of the test-split cases. The synthetic descriptions are templated, so this is an upper bound for real complaint text.",
+        ]
     lines += ["", "Reproduce: `python -m app.eval" + f" --split {report.split} --mode {report.embeddings_mode}"
               + (f" --engine {report.engine}" if report.engine != "real" else "") + "`", ""]
     return "\n".join(lines)
