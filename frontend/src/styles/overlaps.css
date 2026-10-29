@@ -42,6 +42,21 @@
   outline-offset: 2px;
 }
 
+/* The confirm popover opens beside its button, inside the header. The cards below rise with transforms, which
+   paint over the header unless it sits above them while the popover is open. */
+.uc-page-header:has(.ov-popover) {
+  position: relative;
+  z-index: 30;
+}
+
+/* It holds a form, so it gets the dialog material: nothing behind it may show through the fields. */
+body .ant-popover:has(.ov-popover) .ant-popover-container {
+  background: var(--uc-surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: var(--uc-glass-edge), var(--uc-shadow-dialog);
+}
+
 /* The inline confirm: a small anchored sheet, never wider than the page allows */
 .ov-popover {
   width: min(22rem, calc(100vw - 2rem));
