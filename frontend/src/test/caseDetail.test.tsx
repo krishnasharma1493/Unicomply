@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -107,7 +107,9 @@ describe('Case Detail page on the mock API (Issue #26)', () => {
     expect(screen.getByText('Potential Overlapping Cases – Coordination Required')).toBeInTheDocument();
     expect(screen.getByText('RB/2026/00087')).toBeInTheDocument();
     expect(screen.getByText('RO-NWRO/2026/00133')).toBeInTheDocument();
-    expect(screen.getByText('Institution (resolved)')).toBeInTheDocument();
+    // The resolution line: the complainant's words, then the registry institution it resolved to.
+    expect(screen.getByText(/MAIT Delhi/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open the institution record' })).toHaveAttribute('href', '/institutions/1-43655981521');
     expect(screen.getByText('History')).toBeInTheDocument();
     expect(screen.getAllByText(/Anil Deshmukh/).length).toBeGreaterThan(0);
   });
@@ -182,12 +184,12 @@ describe('Case Detail page on the mock API (Issue #26)', () => {
     renderAs('pgrc_head', 101);
     await user.click(await screen.findByRole('button', { name: 'Dispose' }));
     const dialog = await screen.findByRole('dialog');
-    await pick('Outcome', 'Redressed');
-    await user.type(within(dialog).getByLabelText('Remarks'), 'Institute released the certificates');
-    await user.click(within(dialog).getByRole('button', { name: 'Dispose' }));
-    expect(await within(dialog).findByText('This case is part of an open overlap group')).toBeInTheDocument();
+    // The warning is there as soon as the dialog opens: the case's open overlap is already known.
+    expect(within(dialog).getByText('This case is part of an open overlap group')).toBeInTheDocument();
     expect(within(dialog).getByText('RB/2026/00087')).toBeInTheDocument();
     expect(within(dialog).getByText('RO-NWRO/2026/00133')).toBeInTheDocument();
+    await pick('Outcome', 'Redressed');
+    await user.type(within(dialog).getByLabelText('Remarks'), 'Institute released the certificates');
     expect(screen.queryByText('Closed')).toBeNull(); // nothing has changed yet
     await user.click(within(dialog).getByRole('button', { name: /Dispose anyway/ }));
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
@@ -195,11 +197,37 @@ describe('Case Detail page on the mock API (Issue #26)', () => {
     expect(screen.getByText('Closed')).toBeInTheDocument(); // the SLA badge stops
   });
 
+  it('still asks for confirmation when the server reports an overlap the page did not know about', async () => {
+    const user = userEvent.setup();
+    const post = client.post.bind(client);
+    let first = true;
+    const spy = vi.spyOn(client, 'post').mockImplementation(((url: string, body: unknown, ...rest: unknown[]) => {
+      if (first && url === '/cases/113/actions') {
+        first = false;
+        return Promise.reject({ response: { status: 409, data: { success: false, error: { code: 'OPEN_OVERLAP', message: 'open overlap', details: { linked_case_refs: ['RB/2026/00099'] } } } } });
+      }
+      return (post as (...a: unknown[]) => unknown)(url, body, ...rest);
+    }) as typeof client.post);
+    renderAs('pgrc_head', 113);
+    await user.click(await screen.findByRole('button', { name: 'Dispose' }));
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).queryByText('This case is part of an open overlap group')).toBeNull();
+    await pick('Outcome', 'Redressed');
+    await user.type(within(dialog).getByLabelText('Remarks'), 'Done');
+    await user.click(within(dialog).getByRole('button', { name: 'Dispose' }));
+    expect(await within(dialog).findByText('This case is part of an open overlap group')).toBeInTheDocument();
+    expect(within(dialog).getByText('RB/2026/00099')).toBeInTheDocument();
+    await user.click(within(dialog).getByRole('button', { name: /Dispose anyway/ }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(spy.mock.calls.at(-1)?.[1]).toMatchObject({ action_type: 'dispose', confirm_open_overlap: true });
+    spy.mockRestore();
+  });
+
   it('shows the API message for an out-of-scope case, never a blank page', async () => {
     renderAs('rb_head', 101);
     expect(await screen.findByText('Unable to load data')).toBeInTheDocument();
     expect(screen.getByText(fixtures.errors.notFound.error.message)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '← All cases' })).toHaveAttribute('href', '/cases');
+    expect(screen.getByRole('link', { name: 'All cases' })).toHaveAttribute('href', '/cases');
   });
 });
 
@@ -230,5 +258,108 @@ describe('Coordinator on a confirmed group (Issue #51)', () => {
     await screen.findByRole('heading', { name: 'PGRC/2026/00412' });
     expect((await screen.findAllByText(/Coordinator: Anil Deshmukh/)).length).toBeGreaterThan(1); // the group, and each linked card
     tokenStore.clear();
+  });
+});
+
+describe('Case view: evidence, headings and the action dialog', () => {
+  beforeAll(() => {
+    attachMockAdapter(client, { latencyMs: [0, 0] });
+  });
+  beforeEach(() => resetWorld());
+  afterEach(() => {
+    tokenStore.clear();
+    vi.restoreAllMocks();
+  });
+  const renderAs = (persona: Persona, id: number) => {
+    tokenStore.set(fixtures.login[persona].data.access_token);
+    return render(
+      <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+        <AuthProvider>
+          <MemoryRouter initialEntries={[`/cases/${id}`]}>
+            <Routes><Route path="/cases/:id" element={<CaseDetailPage />} /></Routes>
+          </MemoryRouter>
+        </AuthProvider>
+      </QueryClientProvider>,
+    );
+  };
+
+  it('shows only the evidence of pairs this case is in, each column named by the other case', async () => {
+    renderAs('pgrc_head', 101);
+    await screen.findByRole('heading', { level: 1, name: 'PGRC/2026/00412' });
+    const grid = await screen.findByRole('table', { name: 'Evidence for each pair of cases' });
+    const heads = within(grid).getAllByRole('columnheader').map((th) => th.textContent);
+    expect(heads.slice(1)).toEqual(expect.arrayContaining(['with RB/2026/00087', 'with RO-NWRO/2026/00133']));
+    expect(heads.slice(1)).toHaveLength(2);
+    expect(screen.getByRole('img', { name: /PGRC\/2026\/00412 at PGRC.*\(this case\)/ })).toBeInTheDocument();
+  });
+
+  it('falls back to the group reasons when the group cannot be read', async () => {
+    const get = client.get.bind(client);
+    vi.spyOn(client, 'get').mockImplementation(((url: string, ...rest: unknown[]) =>
+      url === '/overlaps/1' ? Promise.reject(new Error('nope')) : (get as (...a: unknown[]) => unknown)(url, ...rest)) as typeof client.get);
+    renderAs('pgrc_head', 101);
+    await screen.findByRole('heading', { level: 1, name: 'PGRC/2026/00412' });
+    await waitFor(() => expect(document.querySelector('.uc-ledger')).not.toBeNull()); // the group's reasons, as a ledger
+    expect(screen.getByRole('heading', { level: 3, name: 'Why these were flagged' })).toBeInTheDocument();
+    expect(screen.queryByRole('table', { name: 'Evidence for each pair of cases' })).toBeNull();
+  });
+
+  it('puts the overlap under its own h2, so no h3 sits directly under the h1', async () => {
+    renderAs('pgrc_head', 101);
+    await screen.findByRole('heading', { level: 1, name: 'PGRC/2026/00412' });
+    await screen.findByRole('table', { name: 'Evidence for each pair of cases' });
+    const levels = screen.getAllByRole('heading').map((h) => Number(h.tagName.slice(1)));
+    levels.forEach((l, i) => i > 0 && expect(l - levels[i - 1]).toBeLessThanOrEqual(1));
+    expect(screen.getByRole('heading', { level: 2, name: 'Overlap' })).toBeInTheDocument();
+  });
+
+  it('focuses the first field, marks and focuses an invalid one, and returns focus to the button on close', async () => {
+    const user = userEvent.setup();
+    renderAs('pgrc_head', 101);
+    const trigger = await screen.findByRole('button', { name: 'Transfer' });
+    await user.click(trigger);
+    const dialog = await screen.findByRole('dialog');
+    await waitFor(() => expect(within(dialog).getByRole('combobox', { name: 'Transfer to' })).toHaveFocus());
+    await user.type(within(dialog).getByLabelText('Remarks'), 'x');
+    await user.click(within(dialog).getByRole('button', { name: 'Transfer' }));
+    const select = within(dialog).getByRole('combobox', { name: 'Transfer to' });
+    await waitFor(() => expect(select).toHaveFocus());
+    expect(select).toHaveAttribute('aria-invalid', 'true');
+    await waitFor(() => expect(document.getElementById(select.getAttribute('aria-describedby')!)).toHaveTextContent('Choose the bureau to transfer to'));
+    expect(within(dialog).getByLabelText('Remarks')).toHaveAttribute('aria-invalid', 'false');
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(trigger).toHaveFocus();
+  });
+
+  it('keeps what was typed after a failed submit, across close and reopen', async () => {
+    const user = userEvent.setup();
+    const post = client.post.bind(client);
+    vi.spyOn(client, 'post').mockImplementation(((url: string, ...rest: unknown[]) =>
+      url === '/cases/101/actions' ? Promise.reject(new Error('Server busy')) : (post as (...a: unknown[]) => unknown)(url, ...rest)) as typeof client.post);
+    renderAs('pgrc_head', 101);
+    await user.click(await screen.findByRole('button', { name: 'Add remark' }));
+    let dialog = await screen.findByRole('dialog');
+    await user.type(within(dialog).getByLabelText('Remarks'), 'Called the registrar');
+    await user.click(within(dialog).getByRole('button', { name: 'Add remark' }));
+    expect(await within(dialog).findByText('Server busy')).toBeInTheDocument();
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    await user.click(screen.getByRole('button', { name: 'Add remark' }));
+    dialog = await screen.findByRole('dialog');
+    expect(within(dialog).getByLabelText('Remarks')).toHaveValue('Called the registrar');
+  });
+
+  it('announces a recorded action in a status region, and the new entry heads the history', async () => {
+    const user = userEvent.setup();
+    renderAs('pgrc_head', 101);
+    await user.click(await screen.findByRole('button', { name: 'Add remark' }));
+    const dialog = await screen.findByRole('dialog');
+    await user.type(within(dialog).getByLabelText('Remarks'), 'Reminder sent');
+    await user.click(within(dialog).getByRole('button', { name: 'Add remark' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    await waitFor(() => expect(screen.getAllByRole('status').some((s) => s.textContent === 'Remark added on PGRC/2026/00412.')).toBe(true));
+    const history = await screen.findByRole('list', { name: 'Case history, newest first' });
+    await waitFor(() => expect(within(history).getAllByRole('listitem')[0]).toHaveTextContent('Reminder sent'));
   });
 });

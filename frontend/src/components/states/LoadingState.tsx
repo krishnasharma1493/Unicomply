@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spin, Card } from 'antd';
+import { Skeleton } from 'antd';
 
 export interface LoadingStateProps {
   tip?: string;
@@ -9,39 +9,26 @@ export interface LoadingStateProps {
   style?: React.CSSProperties;
 }
 
+/**
+ * A skeleton of the content that is coming, with the tip as a quiet caption. Skeletons keep the page
+ * shape stable while data loads, so nothing jumps when it arrives.
+ */
 export const LoadingState: React.FC<LoadingStateProps> = ({
   tip = 'Loading...',
   card = false,
   minHeight = '200px',
   className,
   style,
-}) => {
-  const content = (
-    <div
-      role="status"
-      aria-label={tip}
-      className={className}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight,
-        gap: '12px',
-        width: '100%',
-        ...style,
-      }}
-    >
-      <Spin size="large" />
-      <span style={{ color: '#64748b', fontSize: '14px', fontWeight: 500 }}>{tip}</span>
-    </div>
-  );
-
-  if (card) {
-    return <Card styles={{ body: { padding: 0 } }}>{content}</Card>;
-  }
-
-  return content;
-};
+}) => (
+  <div
+    role="status"
+    aria-label={tip}
+    className={[card ? 'uc-section uc-section-body' : '', 'uc-loading', className].filter(Boolean).join(' ')}
+    style={{ minHeight, ...style }}
+  >
+    <Skeleton active title={{ width: '32%' }} paragraph={{ rows: 4, width: ['92%', '84%', '88%', '60%'] }} />
+    <span className="uc-meta">{tip}</span>
+  </div>
+);
 
 export default LoadingState;

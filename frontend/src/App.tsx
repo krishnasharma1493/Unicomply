@@ -2,15 +2,18 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConfigProvider } from 'antd';
+import { useReducedMotion } from 'motion/react';
 import { AuthProvider } from './auth/AuthProvider';
 import { RequireAuth } from './components/RequireAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppShell } from './components/layout';
-import { themeConfig } from './theme';
+import { buildTheme } from './theme';
+import { ANNOUNCER_ID } from './lib/announce';
 
 // Pages
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { TodayPage } from './pages/TodayPage';
 import { CasesPage } from './pages/CasesPage';
 import { CaseIntakePage } from './pages/CaseIntakePage';
 import { CaseDetailPage } from './pages/CaseDetailPage';
@@ -50,10 +53,13 @@ export const AppRoutes: React.FC = () => {
           </RequireAuth>
         }
       >
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/cases" element={<CasesPage />} />
+        <Route path="/" element={<TodayPage />} />
+        <Route path="/overview" element={<DashboardPage />} />
+        {/* The list is a layout: at the split width the open case sits beside it; below, :id renders full page. */}
+        <Route path="/cases" element={<CasesPage />}>
+          <Route path=":id" element={<CaseDetailPage />} />
+        </Route>
         <Route path="/cases/new" element={<CaseIntakePage />} />
-        <Route path="/cases/:id" element={<CaseDetailPage />} />
         <Route path="/reviews" element={<MatchReviewPage />} />
         <Route path="/overlaps" element={<OverlapCenterPage />} />
         <Route path="/overlaps/:id" element={<OverlapDetailPage />} />
@@ -79,14 +85,17 @@ export const AppRoutes: React.FC = () => {
 };
 
 export const App: React.FC = () => {
+  const reducedMotion = Boolean(useReducedMotion());
+  const theme = React.useMemo(() => buildTheme({ reducedMotion }), [reducedMotion]);
   return (
     <ErrorBoundary>
-      <ConfigProvider theme={themeConfig}>
+      <ConfigProvider theme={theme} wave={{ disabled: true }}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <BrowserRouter>
               <AppRoutes />
             </BrowserRouter>
+            <div id={ANNOUNCER_ID} className="uc-sr" role="status" aria-live="polite" aria-atomic="true" />
           </AuthProvider>
         </QueryClientProvider>
       </ConfigProvider>

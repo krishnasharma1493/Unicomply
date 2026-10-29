@@ -193,7 +193,7 @@ describe('Frontend Freeze Audit: Backend Stopped / Network Error & 500 Failure T
   });
 
   const routesWithData: Array<{ path: string; name: string }> = [
-    { path: '/', name: 'Dashboard' },
+    { path: '/', name: 'Today' },
     { path: '/cases', name: 'Cases' },
     { path: '/cases/new', name: 'Case Intake' },
     { path: '/cases/101', name: 'Case Detail' },

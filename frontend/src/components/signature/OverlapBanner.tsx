@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Space, Typography } from 'antd';
+import { ExclamationCircleFilled, WarningFilled } from '@ant-design/icons';
 import { OVERLAP_BANNERS, type OverlapTier } from '../../lib/api/enums';
 import { BureauChip } from '../ui';
-
-const { Text } = Typography;
 
 export interface OverlapBannerProps {
   tier: OverlapTier;
@@ -17,26 +15,30 @@ export interface OverlapBannerProps {
 
 /**
  * The signature alert (PRD §4.5, §7): red "Probable" with the PS's exact wording, amber "Possible".
- * The tier is always written out, never colour alone.
+ * The tier is always written out and carries its own icon, never colour alone.
  */
 export const OverlapBanner: React.FC<OverlapBannerProps> = ({ tier, bureauCodes, caseCount, groupId }) => (
-  <Alert
-    type={tier === 'probable' ? 'error' : 'warning'}
-    showIcon
-    role="alert"
-    title={<Text strong>{OVERLAP_BANNERS[tier]}</Text>}
-    description={
-      <Space wrap size={[8, 4]} align="center">
-        <Text>
+  <div role="alert" className={`uc-banner uc-banner--${tier}`}>
+    <span className="uc-banner-icon" aria-hidden="true">
+      {tier === 'probable' ? <ExclamationCircleFilled /> : <WarningFilled />}
+    </span>
+    <div className="uc-banner-body">
+      <strong className="uc-banner-title">{OVERLAP_BANNERS[tier]}</strong>
+      <div className="uc-banner-meta">
+        <span>
           {caseCount} {caseCount === 1 ? 'case' : 'cases'} handled by
-        </Text>
+        </span>
         {bureauCodes.map((code) => (
           <BureauChip key={code} code={code} />
         ))}
-        {groupId !== undefined && <Link to={`/overlaps/${groupId}`}>Open overlap group</Link>}
-      </Space>
-    }
-  />
+      </div>
+    </div>
+    {groupId !== undefined && (
+      <Link className="uc-banner-link" to={`/overlaps/${groupId}`}>
+        Open overlap group
+      </Link>
+    )}
+  </div>
 );
 
 export default OverlapBanner;

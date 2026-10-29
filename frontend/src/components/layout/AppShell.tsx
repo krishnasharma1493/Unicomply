@@ -1,95 +1,136 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Layout, Drawer } from 'antd';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import { Drawer } from 'antd';
+import { motion } from 'motion/react';
+import { useMotionPrefs } from '../../lib/motion';
 import { AppHeader } from './AppHeader';
 import { AppSidebar } from './AppSidebar';
+import { CommandBar, useCommandShortcut } from './CommandBar';
 
-const { Sider, Content } = Layout;
+const MOBILE_QUERY = '(max-width: 767px)';
 
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(() =>
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(query).matches : false,
+  );
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const mql = window.matchMedia(query);
+    const onChange = () => setMatches(mql.matches);
+    onChange();
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, [query]);
+  return matches;
+}
+
+/**
+ * The floating control layer (glass sidebar and toolbar) over one canvas. Content scrolls underneath;
+ * the toolbar shows its edge only once something is behind it.
+ */
 export const AppShell: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const isMobile = useMediaQuery(MOBILE_QUERY);
+  const motionPrefs = useMotionPrefs();
+  const location = useLocation();
+  const [commandOpen, setCommandOpen] = useState(false);
+  const openCommand = useCallback(() => setCommandOpen(true), []);
+  useCommandShortcut(openCommand);
 
   useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      if (mobile) {
-        setCollapsed(true);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // A new page starts at the top, the way a new window would. The tab title follows the page's h1,
+  // and when the user navigated from the chrome (sidebar, command bar, toolbar) focus moves to that h1
+  // so keyboard and screen-reader users land on the new content, not back at the top of the nav.
+  const lastPath = useRef<string | null>(null);
+  useEffect(() => {
+    window.scrollTo?.({ top: 0, behavior: 'instant' as ScrollBehavior });
+    const main = document.getElementById('main');
+    if (!main) return;
+    const fromChrome = () => {
+      const a = document.activeElement;
+      return !a || a === document.body || Boolean(a.closest('.uc-sidebar-col, .uc-toolbar, .uc-command, .ant-drawer'));
+    };
+    // Only after a real navigation inside the app (StrictMode re-runs effects on the same path).
+    const shouldFocus = lastPath.current !== null && lastPath.current !== location.pathname && fromChrome();
+    lastPath.current = location.pathname;
+    let focused = false;
+    const sync = () => {
+      const h1 = main.querySelector('h1');
+      if (!h1) return;
+      document.title = `${h1.textContent?.trim() || 'Unicomply'} · Unicomply`;
+      if (shouldFocus && !focused) {
+        focused = true;
+        h1.setAttribute('tabindex', '-1');
+        h1.focus({ preventScroll: true });
+      }
+    };
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(main, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
   return (
-    <Layout style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      {/* Top Header */}
-      <AppHeader
-        collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed(!collapsed)}
-        isMobile={isMobile}
-        onOpenMobileMenu={() => setMobileMenuOpen(true)}
-      />
-
-      <Layout style={{ minHeight: 'calc(100vh - 60px)' }}>
-        {/* Desktop Collapsible Sider */}
-        {!isMobile && (
-          <Sider
-            trigger={null}
-            collapsible
-            collapsed={collapsed}
-            width={220}
-            collapsedWidth={64}
-            style={{
-              backgroundColor: '#0f172a',
-              boxShadow: '1px 0 2px 0 rgba(0, 0, 0, 0.05)',
-              overflow: 'auto',
-              height: 'calc(100vh - 60px)',
-              position: 'sticky',
-              top: 60,
-              left: 0,
-            }}
-          >
+    <div
+      className="uc-shell"
+      data-collapsed={!isMobile && collapsed ? 'true' : 'false'}
+      data-mobile={isMobile ? 'true' : 'false'}
+    >
+      <a className="uc-skip" href="#main">
+        Skip to content
+      </a>
+      {!isMobile && (
+        <aside className="uc-sidebar-col" aria-label="Primary">
+          <div className="uc-sidebar">
             <AppSidebar collapsed={collapsed} />
-          </Sider>
-        )}
+          </div>
+        </aside>
+      )}
 
-        {/* Mobile Navigation Drawer */}
-        {isMobile && (
-          <Drawer
-            title="Navigation"
-            placement="left"
-            onClose={() => setMobileMenuOpen(false)}
-            open={mobileMenuOpen}
-            styles={{
-              body: { padding: 0, backgroundColor: '#0f172a' },
-              header: { backgroundColor: '#0f172a', color: '#ffffff', borderBottom: '1px solid #1e293b' },
-            }}
-            width={260}
-          >
-            <AppSidebar onNavigate={() => setMobileMenuOpen(false)} />
-          </Drawer>
-        )}
-
-        {/* Main Content Area */}
-        <Content
-          style={{
-            padding: isMobile ? '16px' : '24px 32px',
-            backgroundColor: '#f8fafc',
-            maxWidth: '1440px',
-            width: '100%',
-            margin: '0 auto',
-            minHeight: '280px',
-          }}
+      {isMobile && (
+        <Drawer
+          title="Unicomply"
+          placement="left"
+          onClose={() => setMobileMenuOpen(false)}
+          open={mobileMenuOpen}
+          width={280}
+          styles={{ body: { padding: '8px 0' } }}
         >
-          <Outlet />
-        </Content>
-      </Layout>
-    </Layout>
+          <AppSidebar onNavigate={() => setMobileMenuOpen(false)} hideBrand />
+        </Drawer>
+      )}
+
+      <div className="uc-main">
+        <AppHeader
+          collapsed={collapsed}
+          onToggleCollapse={() => setCollapsed((c) => !c)}
+          isMobile={isMobile}
+          onOpenMobileMenu={() => setMobileMenuOpen(true)}
+          scrolled={scrolled}
+          onOpenCommand={openCommand}
+        />
+        <main className="uc-content" id="main" tabIndex={-1}>
+          <motion.div
+            // Moving between cases in the split view is a selection, not a new page: keep it mounted.
+            key={/^\/cases\/\d+/.test(location.pathname) ? '/cases' : location.pathname}
+            initial={motionPrefs.enter()}
+            animate={{ opacity: 1, y: 0 }}
+            transition={motionPrefs.spring}
+          >
+            <Outlet />
+          </motion.div>
+        </main>
+      </div>
+      <CommandBar open={commandOpen} onClose={() => setCommandOpen(false)} />
+    </div>
   );
 };
 

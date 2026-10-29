@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import { Card, Typography, Button, Space, Result, Modal, message, Tag, Alert, Row, Col } from 'antd';
-import {
-  ExclamationCircleOutlined,
-  ReloadOutlined,
-  SettingOutlined,
-  SafetyCertificateOutlined,
-  InfoCircleOutlined,
-} from '@ant-design/icons';
+import { Card, Button, Descriptions, Result, Modal, message } from 'antd';
+import { ExclamationCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/AuthProvider';
 import { client } from '../lib/api/client';
 import type { DemoResetResult, Envelope } from '../lib/api/types';
 import { apiErrorMessage } from '../lib/format';
-
-const { Title, Paragraph, Text } = Typography;
+import { PageHeader, Section } from '../components/layout/PageHeader';
 
 export const AdminPage: React.FC = () => {
   const { user } = useAuth();
@@ -23,16 +16,16 @@ export const AdminPage: React.FC = () => {
   // Non-admin guard: restricted access
   if (!user?.is_admin) {
     return (
-      <div style={{ maxWidth: '640px', margin: '40px auto' }}>
-        <Card style={{ borderRadius: '8px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+      <div className="uc-page uc-page--narrow">
+        <Card style={{ textAlign: 'center' }}>
           <Result
             status="403"
             title="Access Restricted"
             subTitle="System Administration controls and demo operations are restricted to administrators (Senior Management)."
             extra={
-              <Tag color="volcano" style={{ padding: '4px 10px', fontSize: '13px' }}>
-                Current Role: {user?.role ?? 'Unauthenticated'} (Non-Admin)
-              </Tag>
+              <span className="uc-meta">
+                Current role: {user?.role ?? 'Unauthenticated'} (not an administrator)
+              </span>
             }
           />
         </Card>
@@ -43,7 +36,7 @@ export const AdminPage: React.FC = () => {
   const handleResetConfirm = () => {
     Modal.confirm({
       title: 'Reset demo environment to baseline fixtures?',
-      icon: <ExclamationCircleOutlined style={{ color: '#dc2626' }} />,
+      icon: <ExclamationCircleOutlined style={{ color: 'var(--uc-red)' }} />,
       content:
         'This operation will erase all case changes, review actions, and overlap resolutions performed in this session and restore the initial seed fixtures. Are you sure you wish to proceed?',
       okText: 'Yes, Reset Everything',
@@ -69,154 +62,38 @@ export const AdminPage: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-      {/* Page Header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px',
-          marginBottom: '24px',
-        }}
-      >
-        <div>
-          <Title level={2} style={{ margin: '0 0 4px 0', color: '#0f172a' }}>
-            System Administration
-          </Title>
-          <Text type="secondary" style={{ fontSize: '13px' }}>
-            Portal parameters, audit controls, and demo environment reset operations
-          </Text>
-        </div>
+    <div className="uc-page uc-page--narrow">
+      <PageHeader
+        title="System Administration"
+        subtitle={`Demo environment operations and the parameters this deployment runs with. Signed in as ${user.email}.`}
+      />
 
-        <Space orientation="horizontal" size={8}>
-          <Tag color="gold" icon={<SafetyCertificateOutlined />}>
-            Administrator Access Active
-          </Tag>
-          <Tag color="blue">{user.email}</Tag>
-        </Space>
+      <div className="uc-stack">
+        <Section title="Reset the demo database" aria-label="Demo database reset">
+          <div className="uc-admin-row">
+            <div style={{ maxWidth: '64ch' }}>
+              <p style={{ margin: 0 }}>
+                Restore all cases, institutions, match review items and overlap groups to the baseline seed. Any case
+                registered or workflow changed during this demonstration is reverted.
+              </p>
+              <p className="uc-meta" style={{ margin: '6px 0 0' }}>
+                Use before a new demonstration run or after end-to-end testing. Runs <code>POST /demo/reset</code>.
+              </p>
+            </div>
+            <Button danger icon={<ReloadOutlined />} loading={resetting} onClick={handleResetConfirm}>
+              Reset Demo Database
+            </Button>
+          </div>
+        </Section>
+
+        <Section title="Operational parameters">
+          <Descriptions className="uc-fields" layout="vertical" colon={false} size="small" column={{ xs: 1, md: 3 }}>
+            <Descriptions.Item label="Default grievance SLA">21 calendar days</Descriptions.Item>
+            <Descriptions.Item label="SLA warning">From day 17</Descriptions.Item>
+            <Descriptions.Item label="Configuration">Read-only: set by backend environment variables</Descriptions.Item>
+          </Descriptions>
+        </Section>
       </div>
-
-      <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-        {/* Reset Demo Database Card (Deliberate Warning Style) */}
-        <Card
-          style={{
-            borderRadius: '8px',
-            border: '1px solid #fcd34d',
-            backgroundColor: '#fffdf5',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-          }}
-          styles={{ body: { padding: '24px' } }}
-        >
-          <Row gutter={[20, 20]} align="middle">
-            <Col xs={24} md={18}>
-              <Space orientation="horizontal" size={14} align="start">
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 8,
-                    backgroundColor: '#fef3c7',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    border: '1px solid #fde68a',
-                  }}
-                >
-                  <ExclamationCircleOutlined style={{ fontSize: '24px', color: '#d97706' }} />
-                </div>
-
-                <div>
-                  <Title level={4} style={{ margin: '0 0 6px 0', color: '#92400e' }}>
-                    Demo Database Reset (POST /demo/reset)
-                  </Title>
-                  <Paragraph
-                    style={{
-                      margin: '0 0 8px 0',
-                      fontSize: '13px',
-                      color: '#78350f',
-                      lineHeight: '1.5',
-                    }}
-                  >
-                    Restore all cases, institutions, match review items, and overlap groups back to
-                    the baseline seed fixtures. Any intake records created or workflows modified
-                    during this demonstration will be reverted.
-                  </Paragraph>
-                  <Text type="secondary" style={{ fontSize: '12px', color: '#a16207' }}>
-                    Recommended before starting a new demonstration run or after completing end-to-end testing.
-                  </Text>
-                </div>
-              </Space>
-            </Col>
-
-            <Col xs={24} md={6} style={{ textAlign: 'right' }}>
-              <Button
-                type="primary"
-                danger
-                icon={<ReloadOutlined />}
-                size="large"
-                loading={resetting}
-                onClick={handleResetConfirm}
-                style={{
-                  fontWeight: 600,
-                  boxShadow: '0 2px 4px rgba(220, 38, 38, 0.25)',
-                }}
-              >
-                Reset Demo Database
-              </Button>
-            </Col>
-          </Row>
-        </Card>
-
-        {/* System Information & Operational Parameters */}
-        <Card
-          title={
-            <Space orientation="horizontal" size={8}>
-              <SettingOutlined style={{ color: '#1e3a8a' }} />
-              <span>Operational Environment Parameters</span>
-            </Space>
-          }
-          style={{
-            borderRadius: '8px',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
-          }}
-        >
-          <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12} md={8}>
-              <div
-                style={{
-                  padding: '14px',
-                  backgroundColor: '#f8fafc',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                }}
-              >
-                <Text type="secondary" style={{ fontSize: '12px' }}>
-                  Default Grievance SLA
-                </Text>
-                <div style={{ fontSize: '16px', fontWeight: 600, color: '#0f172a', marginTop: '4px' }}>
-                  21 Calendar Days
-                </div>
-                <Text type="secondary" style={{ fontSize: '11px' }}>
-                  Warning triggered at Day 17
-                </Text>
-              </div>
-            </Col>
-          </Row>
-
-          <Alert
-            title="Read-Only Configuration"
-            description="System configuration thresholds are managed via backend environment variables and PRD specifications. Only administrators can initiate database resets."
-            type="info"
-            showIcon
-            icon={<InfoCircleOutlined />}
-            style={{ marginTop: '20px', borderRadius: '6px' }}
-          />
-        </Card>
-      </Space>
     </div>
   );
 };

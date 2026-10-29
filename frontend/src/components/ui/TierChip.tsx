@@ -10,13 +10,14 @@ export interface TierChipProps {
 
 export const TierChip: React.FC<TierChipProps> = ({ tier, className, style }) => {
   const isProbable = tier === 'probable';
-  const color = isProbable ? 'red' : 'gold';
+  // Preset 'error'/'warning' tags are restyled to AA-contrast tints in index.css.
+  const color = isProbable ? 'error' : 'warning';
   const label = OVERLAP_TIER_LABELS[tier] ?? tier;
 
   return (
     <Tag
       color={color}
-      className={className}
+      className={['uc-tier', className].filter(Boolean).join(' ')}
       style={{
         fontWeight: 600,
         textTransform: 'capitalize',

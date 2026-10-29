@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
 import { client } from '../../../lib/api/client';
 import type { OverlapGroupStatus, OverlapLevel, OverlapTier } from '../../../lib/api/enums';
 import type { OverlapGroupListItem, Page } from '../../../lib/api/types';
@@ -36,4 +36,40 @@ export function useOverlapList(filters: OverlapListFilters) {
     placeholderData: keepPreviousData,
     queryFn: async ({ signal }) => (await client.get<Page<OverlapGroupListItem>>('/overlaps', { params, signal })).data,
   });
+}
+
+const COUNT_PARAMS: [OverlapTab | OverlapGroupStatus, Record<string, string | number>][] = [
+  ['probable', { tier: 'probable', status: 'open' }],
+  ['possible', { tier: 'possible', status: 'open' }],
+  ...DECIDED_STATUSES.map((s): [OverlapGroupStatus, Record<string, string | number>] => [s, { status: s }]),
+];
+
+/**
+ * How many groups each tab holds, from `pagination.total` of a one-row request per tier and outcome.
+ * They wait until the list itself has answered, so the list is always the first thing asked for.
+ */
+export function useOverlapCounts(enabled: boolean): Partial<Record<OverlapTab, number>> {
+  const results = useQueries({
+    queries: COUNT_PARAMS.map(([, p]) => {
+      const params = { ...p, page: 1, limit: 1 };
+      return {
+        queryKey: ['overlaps', 'count', params],
+        enabled,
+        retry: false,
+        staleTime: 30_000,
+        queryFn: async ({ signal }: { signal: AbortSignal }) =>
+          (await client.get<Page<OverlapGroupListItem>>('/overlaps', { params, signal })).data.pagination.total,
+      };
+    }),
+  });
+  const total = (key: string) => {
+    const i = COUNT_PARAMS.findIndex(([k]) => k === key);
+    return results[i]?.data;
+  };
+  const decided = DECIDED_STATUSES.map(total);
+  return {
+    probable: total('probable'),
+    possible: total('possible'),
+    decided: decided.every((n) => n !== undefined) ? decided.reduce<number>((a, n) => a + (n as number), 0) : undefined,
+  };
 }

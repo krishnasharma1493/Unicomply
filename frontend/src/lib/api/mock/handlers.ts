@@ -89,6 +89,10 @@ function viewerOf(config: AxiosRequestConfig): UserMe | null {
 
 // ── Routes ───────────────────────────────────────────────────────────────
 
+/** GET /cases `sort`: the backend's two orders (newest received, or soonest SLA due). */
+const sortCases = (rows: CaseRead[], sort: string | null): CaseRead[] =>
+  sort === 'sla_due_asc' ? [...rows].sort((a, b) => a.sla_due_on.localeCompare(b.sla_due_on) || a.id - b.id) : rows;
+
 const routes: Route[] = [
   { method: 'GET', pattern: /^\/health$/, public: true, handle: () => [200, fixtures.health] },
 
@@ -152,7 +156,7 @@ const routes: Route[] = [
     pattern: /^\/cases$/,
     handle: ({ query, viewer }) =>
       paged(
-        where<CaseRead>(
+        sortCases(where<CaseRead>(
           db.world.cases.filter((c) => db.inScope(viewer, c)),
           query,
           [
@@ -170,7 +174,7 @@ const routes: Route[] = [
             ['beyond_sla', (c, v) => c.beyond_sla === (v === 'true')],
             ['in_overlap', (c, v) => c.in_overlap === (v === 'true')],
           ],
-        ),
+        ), query.get('sort')),
         query,
       ),
   },

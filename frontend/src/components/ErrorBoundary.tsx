@@ -46,7 +46,7 @@ export class ErrorBoundary extends Component<Props, State> {
             justifyContent: 'center',
             minHeight: '100vh',
             padding: '24px',
-            backgroundColor: '#f8fafc',
+            backgroundColor: 'var(--uc-canvas)',
           }}
         >
           <Result

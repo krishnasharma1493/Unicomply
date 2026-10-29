@@ -20,7 +20,8 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
   });
 
   it.each([
-    ['/', 'Dashboard'],
+    ['/', 'Today'],
+    ['/overview', 'Overview'],
     ['/cases', 'Cases'],
     ['/cases/new', 'Register a case'],
     ['/cases/101', 'PGRC/2026/00412'],
@@ -44,7 +45,7 @@ describe('Routes with the mock API (VITE_USE_MOCKS)', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 2, name: new RegExp(title, 'i') })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 1, name: new RegExp(title, 'i') })).toBeInTheDocument();
     });
     expect(tokenStore.get()).toBe(fixtures.login.senior.data.access_token);
   });

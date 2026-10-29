@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { Alert, Button, Card, DatePicker, Descriptions, Segmented, Select, Space, Table, Typography } from 'antd';
+import { Alert, Button, Card, DatePicker, Segmented, Select, Space, Table, Typography } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { PageHeader } from '../components/layout/PageHeader';
 import { QueryBoundary } from '../components/states';
 import { chartSpec, formatCell } from '../features/reports/chartSpec';
 import { useCsvDownload, useReport, type Grouping, type ReportRequest } from '../features/reports/useReport';
@@ -11,33 +12,63 @@ import { REPORT_KINDS, REPORT_KIND_LABELS, type ReportKind } from '../lib/api/en
 import type { AnyReport, Meta } from '../lib/api/types';
 import { apiErrorMessage, formatDate, formatDateTime } from '../lib/format';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
+
+/** Phone width: the chart turns on its side rather than disappearing. */
+function useNarrow(query = '(max-width: 600px)'): boolean {
+  const [narrow, setNarrow] = React.useState(() => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia(query).matches);
+  React.useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const mql = window.matchMedia(query);
+    const on = () => setNarrow(mql.matches);
+    mql.addEventListener('change', on);
+    return () => mql.removeEventListener('change', on);
+  }, [query]);
+  return narrow;
+}
 
 const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
   const spec = chartSpec(report);
   const rows = report.rows as unknown as Record<string, unknown>[];
+  const narrow = useNarrow();
   const totals = report.totals as unknown as Record<string, unknown>;
   return (
     <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
       <Text type="secondary">
         {REPORT_KIND_LABELS[report.kind]}, cases received {formatDate(report.from)} to {formatDate(report.to)}. Generated {formatDateTime(report.generated_at)}.
       </Text>
-      <Card size="small" title="Chart">
-        <div style={{ width: '100%', height: 280 }} aria-hidden="true">
+      <Card size="small" title="Chart" className="uc-report-chart">
+        <div style={{ width: '100%', height: narrow ? Math.max(260, spec.data.length * spec.series.length * 12 + 80) : 280 }} aria-hidden="true" inert>
           <ResponsiveContainer>
+            {narrow ? (
+              // On a phone the categories run down the side, so thirteen bureau codes stay legible.
+              <BarChart data={spec.data} layout="vertical" margin={{ top: 4, right: 12, bottom: 0, left: 0 }}>
+                <CartesianGrid horizontal={false} stroke="rgba(0, 0, 0, 0.07)" />
+                <YAxis type="category" dataKey={spec.categoryKey} width={70} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={{ stroke: 'rgba(0, 0, 0, 0.15)' }} interval={0} />
+                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={false} tickFormatter={(v: number) => (spec.percent ? `${Math.round(v * 100)}%` : String(v))} domain={spec.percent ? [0, 1] : undefined} />
+                <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 13 }} formatter={(value: string) => <span style={{ color: 'var(--uc-text)' }}>{value}</span>} />
+                {spec.series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.colour} radius={[0, 3, 3, 0]} maxBarSize={10} animationDuration={700} animationEasing="ease-out" />)}
+              </BarChart>
+            ) : (
             <BarChart data={spec.data} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey={spec.categoryKey} tick={{ fontSize: 12 }} interval={0} />
-              <YAxis allowDecimals={false} tickFormatter={(v: number) => (spec.percent ? `${Math.round(v * 100)}%` : String(v))} domain={spec.percent ? [0, 1] : undefined} />
-              <Tooltip formatter={(v) => (spec.percent && typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : String(v))} />
-              <Legend />
-              {spec.series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.colour} />)}
+              <CartesianGrid vertical={false} stroke="rgba(0, 0, 0, 0.07)" />
+              <XAxis dataKey={spec.categoryKey} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={{ stroke: 'rgba(0, 0, 0, 0.15)' }} interval={0} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#5b625e' }} tickLine={false} axisLine={false} tickFormatter={(v: number) => (spec.percent ? `${Math.round(v * 100)}%` : String(v))} domain={spec.percent ? [0, 1] : undefined} />
+              <Tooltip
+                cursor={{ fill: 'rgba(0, 0, 0, 0.04)' }}
+                contentStyle={{ borderRadius: 10, border: 0, boxShadow: '0 8px 24px rgba(0,0,0,0.14)', fontSize: 13 }}
+                formatter={(v) => (spec.percent && typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : String(v))}
+              />
+              <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 13 }} formatter={(value: string) => <span style={{ color: 'var(--uc-text)' }}>{value}</span>} />
+              {spec.series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.colour} radius={[3, 3, 0, 0]} maxBarSize={28} animationDuration={700} animationEasing="ease-out" />)}
             </BarChart>
+            )}
           </ResponsiveContainer>
         </div>
         <Text type="secondary" style={{ fontSize: 12 }}>The table below holds the same numbers.</Text>
       </Card>
       <Card size="small" title="Data">
+        <div className="uc-grid-scroll">
         <Table
           size="small"
           pagination={rows.length > 15 ? { pageSize: 15, showSizeChanger: false } : false}
@@ -57,6 +88,7 @@ const ReportView: React.FC<{ report: AnyReport }> = ({ report }) => {
             )
           }
         />
+        </div>
       </Card>
     </Space>
   );
@@ -107,11 +139,8 @@ const Reports: React.FC<{ meta: Meta }> = ({ meta }) => {
 export const ReportsPage: React.FC = () => {
   const meta = useMeta();
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-      <Title level={2} style={{ marginBottom: 0 }}>Reports</Title>
-      <Descriptions size="small" style={{ marginBottom: 8 }}>
-        <Descriptions.Item><Text type="secondary">Statutory and analytical reports for the cases in your scope. The CSV is generated by the server.</Text></Descriptions.Item>
-      </Descriptions>
+    <div className="uc-page">
+      <PageHeader title="Reports" subtitle="Statutory and analytical reports for the cases in your scope. The CSV is generated by the server." />
       <QueryBoundary query={meta} loadingTip="Loading">{(m) => <Reports meta={m} />}</QueryBoundary>
     </div>
   );

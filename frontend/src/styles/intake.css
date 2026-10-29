@@ -1,0 +1,256 @@
+/* Case intake: the form, the live institution match, and the registered outcome. */
+
+.uc-intake-stage {
+  position: relative;
+}
+
+/* ---------- Form ---------- */
+
+.uc-intake-form-section {
+  padding: var(--uc-s5) var(--uc-s5) var(--uc-s5);
+}
+.uc-intake-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.uc-intake-group + .uc-intake-group {
+  margin-top: var(--uc-s2);
+  padding-top: var(--uc-s4);
+  border-top: 1px solid var(--uc-hairline);
+}
+.uc-intake-group > legend {
+  float: left; /* lets the legend sit inside the fieldset's flow, like any heading */
+  width: 100%;
+  margin: 0 0 var(--uc-s3);
+  padding: 0;
+  border: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--uc-text-2);
+}
+.uc-intake-group > legend + * {
+  clear: both;
+}
+body .uc-intake-form .ant-form-item {
+  margin-bottom: var(--uc-s3);
+}
+body .uc-intake-form .ant-form-item-label {
+  padding-bottom: 0.25rem;
+}
+.uc-intake-submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--uc-s3);
+  margin-top: var(--uc-s4);
+}
+.uc-intake-submit kbd {
+  margin: 0 0.125rem;
+}
+
+/* A possible duplicate: amber words above the button; it warns and never blocks */
+.uc-intake-duplicate {
+  display: flex;
+  gap: var(--uc-s2);
+  align-items: baseline;
+  margin-top: var(--uc-s4);
+  padding: var(--uc-s3) var(--uc-s3);
+  border-radius: var(--uc-radius-sm);
+  background: var(--uc-amber-tint);
+  color: var(--uc-amber-text);
+  line-height: 1.45;
+}
+.uc-intake-duplicate .uc-ref {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* ---------- Institution match panel ---------- */
+
+.uc-intake-panel .uc-section-body {
+  padding-top: var(--uc-s3);
+}
+.uc-intake-prompt {
+  margin: 0;
+}
+.uc-intake-chosen {
+  display: flex;
+  align-items: center;
+  gap: var(--uc-s2);
+  margin-bottom: var(--uc-s3);
+  padding-bottom: var(--uc-s3);
+  border-bottom: 1px solid var(--uc-hairline);
+  color: var(--uc-accent-text);
+  font-weight: 500;
+}
+.uc-intake-chosen .ant-btn {
+  margin-left: auto;
+}
+.uc-intake-match {
+  transition: opacity 0.15s ease-out;
+}
+.uc-intake-match.is-updating {
+  opacity: 0.72;
+}
+.uc-intake-decision {
+  display: flex;
+  align-items: center;
+  gap: var(--uc-s2);
+  margin: 0 0 var(--uc-s2);
+  font-weight: 600;
+}
+.uc-intake-decision > .anticon {
+  color: var(--uc-green);
+}
+.uc-intake-decision.is-review > .anticon {
+  color: var(--uc-amber-text);
+}
+.uc-intake-resline {
+  margin: 0 0 var(--uc-s3);
+  padding-bottom: var(--uc-s3);
+  border-bottom: 1px solid var(--uc-hairline);
+  font-size: 0.9375rem;
+}
+.uc-rerank > ol > li {
+  will-change: transform;
+}
+
+/* A still placeholder shaped like the coming rows; no shimmer, no spinner */
+.uc-intake-skel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s3);
+  padding: var(--uc-s1) 0;
+}
+.uc-intake-skel span {
+  display: block;
+  height: 0.625rem;
+  border-radius: 0.25rem;
+  background: #e9ebe8;
+}
+.uc-intake-skel-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uc-s2);
+  padding-top: var(--uc-s3);
+  border-top: 1px solid var(--uc-hairline);
+}
+
+/* ---------- Registered outcome ---------- */
+
+.uc-intake-summary {
+  padding: var(--uc-s4) var(--uc-s5);
+}
+.uc-intake-summary-grid {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--uc-s1) var(--uc-s3);
+}
+.uc-intake-summary-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.uc-intake-summary-main h2 {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  letter-spacing: -0.01em;
+}
+.uc-intake-summary-main h2:focus {
+  outline: none;
+}
+.uc-intake-summary-main h2:focus-visible {
+  outline: 3px solid var(--uc-focus);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+.uc-intake-summary-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--uc-s2);
+  margin: 0;
+}
+.uc-intake-ok {
+  color: var(--uc-green);
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+}
+.uc-intake-summary-inst {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.uc-intake-summary-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--uc-s2);
+}
+.uc-intake-linkbtn {
+  display: inline-flex;
+  align-items: center;
+  height: 2rem;
+  padding: 0 0.9375rem;
+  border-radius: var(--uc-radius-sm);
+  box-shadow: inset 0 0 0 1px var(--uc-border);
+  background: var(--uc-surface);
+  color: var(--uc-text);
+  font-weight: 500;
+  transition: box-shadow 0.15s ease, color 0.15s ease;
+}
+.uc-intake-linkbtn:hover {
+  text-decoration: none;
+  color: var(--uc-accent-text);
+  box-shadow: inset 0 0 0 1px var(--uc-accent);
+}
+.uc-intake-linkbtn:active {
+  transform: scale(0.97);
+}
+.uc-intake-next {
+  margin: 0;
+  line-height: 1.5;
+  max-width: 80ch;
+}
+.uc-intake-note {
+  margin: 0 0 var(--uc-s2);
+}
+.uc-intake-cause {
+  display: flex;
+  align-items: baseline;
+  gap: var(--uc-s2);
+}
+.uc-intake-cause-dot {
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--uc-accent);
+  box-shadow: 0 0 0 3px var(--uc-surface), 0 0 0 4px var(--uc-accent);
+  translate: 0 0.0625rem;
+  margin: 0 0.25rem;
+}
+.uc-intake-overlap .uc-stack {
+  gap: var(--uc-s5);
+}
+
+@media (max-width: 767px) {
+  .uc-intake-summary-grid {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+}
+@media (max-width: 575px) {
+  .uc-intake-form-section,
+  .uc-intake-summary {
+    padding-inline: var(--uc-s4);
+  }
+  .uc-intake-summary-actions {
+    grid-column: 2 / -1;
+    margin-top: var(--uc-s2);
+  }
+}

@@ -30,11 +30,16 @@ router = APIRouter(prefix="/cases", tags=["cases"])
 
 @router.get("", response_model=Page[CaseRead], responses=error_responses(400, 401))
 def list_cases(user: CurrentUser, session: SessionDep, params: Annotated[CaseListParams, Query()]) -> Page[CaseRead]:
-    """Search & filters (PS feature 6), scoped to the caller; newest received first."""
+    """Search & filters (PS feature 6), scoped to the caller; newest received first, or soonest SLA due first."""
     base = filter_cases(scope_cases(select(Case), user), params)
     total = session.exec(select(func.count()).select_from(base.subquery())).one()
+    order = (
+        (col(Case.sla_due_on).asc(), col(Case.id).asc())
+        if params.sort == "sla_due_asc"
+        else (col(Case.received_at).desc(), col(Case.id).desc())
+    )
     rows = session.exec(
-        base.order_by(col(Case.received_at).desc(), col(Case.id).desc())
+        base.order_by(*order)
         .offset((params.page - 1) * params.limit)
         .limit(params.limit)
     ).all()

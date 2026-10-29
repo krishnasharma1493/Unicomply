@@ -47,11 +47,25 @@ def test_default_sort_is_received_desc_and_senior_sees_all(seeded_client: TestCl
     assert body["pagination"]["total"] == 13 and received == sorted(received, reverse=True)
 
 
+def test_sort_by_sla_due_puts_the_soonest_first(seeded_client: TestClient, auth_headers: Headers) -> None:
+    body = seeded_client.get("/api/v1/cases?limit=100&pending=true&sort=sla_due_asc", headers=auth_headers(SENIOR)).json()
+    due = [c["sla_due_on"] for c in body["data"]]
+    assert due and due == sorted(due)
+    assert body["pagination"]["total"] == seeded_client.get("/api/v1/cases?limit=1&pending=true", headers=auth_headers(SENIOR)).json()["pagination"]["total"]
+
+
+def test_sort_keeps_scope_and_rejects_unknown_values(seeded_client: TestClient, auth_headers: Headers) -> None:
+    pgrc = set(refs(seeded_client, auth_headers(PGRC), "sort=sla_due_asc"))
+    assert pgrc == set(refs(seeded_client, auth_headers(PGRC)))
+    assert seeded_client.get("/api/v1/cases?sort=newest", headers=auth_headers(SENIOR)).status_code == 400
+
+
 @pytest.mark.parametrize(
     "query, expected",
     [
         ("q=agrasen", {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133", "RB/2026/00079"}),  # name, via Permanent ID
         ("q=MAIT", {"PGRC/2026/00412"}),  # raw text
+        ("q=00412", {"PGRC/2026/00412"}),  # a reference's serial
         (f"permanent_id={MAIT}", {"PGRC/2026/00412", "RB/2026/00087", "RO-NWRO/2026/00133"}),
         ("case_ref=rb/2026/00087", {"RB/2026/00087"}),
         ("bureau_id=3", {"AB/2026/00056"}),

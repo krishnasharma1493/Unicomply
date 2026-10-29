@@ -64,7 +64,9 @@ describe('Institutions on the mock API (Issue #32)', () => {
       const user = userEvent.setup();
       wrap('senior', '/institutions');
       await user.type(await screen.findByLabelText('Name or Permanent ID'), hero.institution.permanent_id);
-      const item = (await screen.findByRole('link', { name: heroName })).closest('li') as HTMLElement;
+      const link = await screen.findByRole('link', { name: heroName });
+      expect(screen.getByRole('heading', { level: 2, name: heroName })).toContainElement(link);
+      const item = link.closest('li') as HTMLElement;
       expect(within(item).getByText(hero.institution.permanent_id)).toBeInTheDocument();
       expect(within(item).getByText(/open case/)).toBeInTheDocument();
       expect(within(item).getByText(hero.trust!.name)).toBeInTheDocument();
@@ -116,7 +118,13 @@ describe('Institutions on the mock API (Issue #32)', () => {
       expect(screen.getByText(hero.trust!.name)).toBeInTheDocument();
       expect(screen.getByText(`Other institutions of ${hero.trust!.name}`)).toBeInTheDocument();
       for (const sib of hero.trust_institutions) expect(screen.getByRole('link', { name: sib.name })).toHaveAttribute('href', `/institutions/${sib.permanent_id}`);
-      expect(screen.getByText('Cases').closest('.ant-statistic')).toHaveTextContent(String(hero.case_counts.total));
+      const total = hero.case_counts.total;
+      expect(screen.getByRole('link', { name: `${total} ${total === 1 ? 'case' : 'cases'}` })).toHaveAttribute(
+        'href',
+        `/cases?permanent_id=${hero.institution.permanent_id}`,
+      );
+      expect(screen.getByRole('link', { name: `${hero.case_counts.open} open` })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: `${hero.case_counts.beyond_sla} beyond SLA` })).toBeInTheDocument();
     });
 
     it('lays the cases out one column per bureau', async () => {
@@ -134,13 +142,32 @@ describe('Institutions on the mock API (Issue #32)', () => {
       expect(screen.getByText('Potential Overlapping Cases – Coordination Required')).toBeInTheDocument();
     });
 
-    it('lists the complaints newest first', async () => {
+    it('draws every case on one timeline, and lists each bureau newest first', async () => {
       wrap('senior', `/institutions/${hero.institution.permanent_id}`);
       await screen.findByRole('heading', { name: heroName });
-      const card = screen.getByText('Complaint timeline').closest('.ant-card') as HTMLElement;
-      const refs = within(card).getAllByText(/\/2026\//).map((n) => n.textContent);
-      const received = hero.cases_by_bureau.flatMap((c) => c.cases).sort((a, b) => b.received_at.localeCompare(a.received_at)).map((c) => c.case_ref);
-      expect(refs).toEqual(received);
+      const all = hero.cases_by_bureau.flatMap((c) => c.cases);
+      // The lanes replace the separate timeline: their text equivalent names every case in date order.
+      const lanes = screen.getByRole('img', { name: /cases at .*one lane per bureau/i });
+      const label = lanes.getAttribute('aria-label') ?? '';
+      const oldestFirst = [...all].sort((a, b) => a.received_at.localeCompare(b.received_at)).map((c) => c.case_ref);
+      expect(oldestFirst.map((ref) => label.indexOf(ref))).toEqual([...oldestFirst.map((ref) => label.indexOf(ref))].sort((a, b) => a - b));
+      expect(oldestFirst.every((ref) => label.includes(ref))).toBe(true);
+      for (const col of hero.cases_by_bureau) {
+        const group = screen.getByRole('group', { name: `Cases at ${col.bureau_code}` });
+        const refs = within(group).getAllByText(/\/2026\//).map((n) => n.textContent);
+        expect(refs).toEqual([...col.cases].sort((a, b) => b.received_at.localeCompare(a.received_at)).map((c) => c.case_ref));
+      }
+    });
+
+    it('summarises each overlap group once, with its own evidence and a way to the group', async () => {
+      wrap('senior', `/institutions/${hero.institution.permanent_id}`);
+      await screen.findByRole('heading', { name: heroName });
+      const labels = hero.overlap_groups.map((g) => screen.getByRole('region', { name: new RegExp(`^Overlap group ${g.group_id}:`) }));
+      expect(new Set(labels.map((l) => l.getAttribute('aria-label'))).size).toBe(hero.overlap_groups.length);
+      for (const [i, g] of hero.overlap_groups.entries()) {
+        expect(within(labels[i]).getByRole('link', { name: 'Open overlap group' })).toHaveAttribute('href', `/overlaps/${g.group_id}`);
+        expect(within(labels[i]).getByRole('heading', { name: 'Why flagged, for this group' })).toBeInTheDocument();
+      }
     });
 
     it('shows other bureaus\' cases as summary cards only, never a description or complainant', async () => {
@@ -159,7 +186,7 @@ describe('Institutions on the mock API (Issue #32)', () => {
       wrap('senior', '/institutions/1-0000000');
       expect(await screen.findByText('Unable to load data')).toBeInTheDocument();
       expect(screen.getByText('Institution not found')).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: '← Institutions' })).toHaveAttribute('href', '/institutions');
+      expect(screen.getByRole('link', { name: 'Institutions' })).toHaveAttribute('href', '/institutions');
     });
   });
 });
