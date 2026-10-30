@@ -8,7 +8,7 @@ Generated from the build script. Box names are the shape names inside the templa
 
 ## Slide 2: Idea (Proposed Solution, Key Innovations, Actionable Intelligence, Addressing the Problem)
 
-- `TextBox 65`: UNICOMPLY / ONE VIEW OF EVERY INSTITUTION COMPLAINT ACROSS AICTE UNITS
+- `TextBox 65`: UNICOMPLY / ONE VIEW OF EVERY INSTITUTION COMPLAINT
 - `TextBox 46`: Complaint Intake and Tracking: / One register for cases from CPGRAMS, email, letters and Regional Offices, each with a 21-day SLA clock.
 - `TextBox 70`: Institution Resolution:  / Turns a misspelt name such as “agrsen” into the right Permanent ID from a registry of 3,751 institutions.
 - `TextBox 71`: Overlap Detection: / Finds open cases on the same institution, university or trust in different units and lists the reasons.
@@ -54,7 +54,7 @@ Generated from the build script. Box names are the shape names inside the templa
 - `TextBox 150`: Auto-link at 0.50 if 0.05 ahead of the runner-up / Otherwise: review queue, or no match / A reviewer’s pick is saved as an alias / The same spelling then resolves on its own / A dismissed pair never raises an alert again
 - `TextBox 157`: How it was tuned
 - `TextBox 158`: tune.py · eval.py
-- `TextBox 159`: Synthetic data, seed 26264, 769 test cases / Weights tuned on the dev split only / Test split: F1 0.919, precision 0.998, recall 0.852
+- `TextBox 159`: Synthetic data, seed 26264 / Tuned on the dev split only / Test split: F1 0.919, precision 0.998, recall 0.852
 - `TextBox 171`: Raise the alerts
 - `TextBox 172`: alerts/service.py
 - `TextBox 173`: Probable: critical alert to heads and senior officers / Possible: warning to the involved heads / SLA warning on day 17 of 21, breach after / No repeat alert per person, case and day
@@ -77,9 +77,9 @@ Generated from the build script. Box names are the shape names inside the templa
 - `TextBox 251`: Trust
 - `TextBox 254`: Institutions run by one trust
 - `TextBox 260`: Probable
-- `TextBox 263`: Pair score ≥ 0.50: coordination required
+- `TextBox 263`: Pair score ≥ 0.50: coordinate
 - `TextBox 269`: Possible
-- `TextBox 272`: Pair score ≥ 0.45: review suggested
+- `TextBox 272`: Pair score ≥ 0.45: review
 - `TextBox 278`: Dismissed
 - `TextBox 281`: Never raised again for that pair
 - `TextBox 282`: Scoring Weights  all in thresholds.json
@@ -94,13 +94,13 @@ Generated from the build script. Box names are the shape names inside the templa
 - `TextBox 305`: 1,500
 - `TextBox 308`: cases in the demo world
 - `TextBox 313`: 39
-- `TextBox 316`: open overlaps: 25 Probable, 14 Possible
+- `TextBox 316`: open overlaps, 25 Probable
 - `TextBox 321`: 22
-- `TextBox 324`: uncertain matches in the review queue
+- `TextBox 324`: uncertain matches to review
 - `TextBox 329`: 604
 - `TextBox 332`: backend tests passing
 - `TextBox 333`: Known Limitations  from the test split
-- `TextBox 336`: Overlap recall is 0.72, not 0.90. / Misses start at unresolved names. Given the right institution: 32 of 32.
+- `TextBox 336`: Overlap recall is 0.72, not 0.90. / Misses start at names that never resolved.
 - `TextBox 339`: Acronym-only names resolve at 0.52. / Names like VVIET have little else to match on.
 - `TextBox 342`: Wrong state means no link. / The state blocks the search: 0 of 14 linked.
 - `TextBox 345`: The cases are fabricated. / Institutions are real; cases are not.
@@ -123,7 +123,7 @@ Generated from the build script. Box names are the shape names inside the templa
 - `TextBox 51`: Link precision
 - `TextBox 52`: 655 of 656 automatic links were right on the test split. Recall is 0.852.
 - `TextBox 58`: RESOLUTION
-- `TextBox 62`: Acronym-only names resolve at 0.52, and a wrong state blocks the link.
+- `TextBox 62`: Acronyms resolve at 0.52; a wrong state blocks the link.
 - `TextBox 66`: Review choices become aliases. Next: look beyond the stated state and keep a register of acronyms.
 - `TextBox 67`: 23 / 32
 - `TextBox 68`: Pairs found
@@ -133,10 +133,10 @@ Generated from the build script. Box names are the shape names inside the templa
 - `TextBox 83`: Fix resolution first. Probable precision is already 15 of 15, so hold the thresholds and re-run the eval after each change.
 - `TextBox 84`: 39
 - `TextBox 85`: Open overlaps
-- `TextBox 86`: Demo data: 25 Probable and 14 Possible. Each shows its reasons and waits for a head.
+- `TextBox 86`: Demo data: 25 Probable, 14 Possible. Each waits for a head.
 - `TextBox 92`: ALERT
 - `TextBox 96`: Flags are noisy: 23 of 70 flagged pairs were planted overlaps.
-- `TextBox 100`: Tier and deduplicate alerts; Possible reaches heads only. A head confirms or dismisses, and dismissed pairs stay out.
+- `TextBox 100`: Tier and deduplicate alerts. A head confirms or dismisses, and a dismissed pair stays out.
 - `TextBox 101`: 604
 - `TextBox 102`: Backend tests
 - `TextBox 103`: Passing on main, plus 369 frontend tests. It runs in a browser; nothing to install.
@@ -148,7 +148,7 @@ Generated from the build script. Box names are the shape names inside the templa
 ## Slide 5: Impacts and Benefits
 
 - `TextBox 7`: 1,500 cases across 14 AICTE units in the demo data; 3,751 real institutions in the registry
-- `TextBox 10`: 39 open overlaps: 25 Probable, 14 Possible
+- `TextBox 10`: 39 open overlaps, 25 Probable
 - `TextBox 13`: Senior management
 - `TextBox 14`: All 14 units
 - `TextBox 15`: 630
@@ -167,7 +167,7 @@ Generated from the build script. Box names are the shape names inside the templa
 - `TextBox 55`: Intake operators
 - `TextBox 56`: Intake desk and match review
 - `TextBox 57`: 22
-- `TextBox 60`: uncertain matches in the review queue
+- `TextBox 60`: uncertain matches to review
 - `TextBox 61`: The engine shows ranked candidates with reasons. The pick is saved, so the same spelling resolves next time.
 - `TextBox 69`: Institutions
 - `TextBox 70`: AICTE-approved, six states
@@ -177,7 +177,7 @@ Generated from the build script. Box names are the shape names inside the templa
 - `TextBox 85`: Students and parents get one answer from AICTE, not two that contradict. The 21-day clock and the day-17 warning keep cases from sitting unseen.
 - `TextBox 90`: Built on open tools and AICTE’s public list, with no licences or hardware to buy. Heads start from one ranked queue instead of several registers.
 - `TextBox 95`: No new hardware. If two units learn of each other’s case early, one site visit can replace two. We have not measured this.
-- `TextBox 100`: Every flag lists its reasons. A head confirms or dismisses, and each action goes to an audit log. Names with no match stay unlinked, never guessed.
+- `TextBox 100`: Every flag lists its reasons. A head confirms or dismisses, and each action is logged. Unmatched names stay unlinked.
 
 ## Slide 6: Research and References
 
@@ -187,5 +187,12 @@ Generated from the build script. Box names are the shape names inside the templa
 - `TextBox 45`: Synthetic test data / Synthetic data with replicated errors estimated linkage quality well (Lam et al., 2024)
 - `TextBox 46`: Kang et al., 2026 / Registry-anchored name matching / doi.org/10.6087/kcse.396
 - `TextBox 47`: Reimers and Gurevych, 2019 / Sentence-BERT, EMNLP-IJCNLP / aclanthology.org/D19-1410
-- `TextBox 48`: CPGRAMS guidelines / DARPG memorandum, 23 Aug 2024: 21-day limit / pgportal.gov.in
+- `TextBox 48`: CPGRAMS guidelines / DARPG memo, 23 Aug 2024: 21 days / pgportal.gov.in
 - `TextBox 50`: Unicomply / Source code and documentation / github.com/krishnasharma1493/Unicomply
+
+
+## Layout notes
+
+- The font is Arial throughout (the template's Helvetica Now is not available in Google Slides or most PowerPoint installs, and the substitute was wider, which pushed text out of its boxes).
+- Slide titles and the section headings are widened to one line; the slide 5 chart was redrawn with a left margin and no footnote.
+- Checked by rendering all six slides and measuring each text box against its container.

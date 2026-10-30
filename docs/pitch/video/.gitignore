@@ -1,0 +1,13 @@
+# Rebuilt by the steps in README.md
+unicomply-demo.mp4
+final/clips/
+final/png/
+final/t/
+cards/accuracy/
+cards/architecture/
+cards/outro/
+cards/problem/
+cards/solution/
+**/.hyperframes/
+**/renders/
+record/node_modules/
