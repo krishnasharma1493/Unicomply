@@ -1,0 +1,16 @@
+0:00 Cold open
+0:18 The problem
+0:45 The solution
+1:00 Demo 1: Sign in
+1:10 Demo 2: Overview
+1:21 Demo 3: Case intake
+1:47 Demo 4: Institutions
+1:59 Demo 5: Case history and SLA
+2:18 Demo 6: Confirm the overlap
+2:33 Demo 7: Alerts
+2:42 Demo 8: Match review
+2:49 Demo 9: Reports
+2:56 Technical approach
+3:16 Accuracy
+3:26 Impact and next steps
+(total 216.63s)
